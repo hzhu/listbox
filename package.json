@@ -1,0 +1,34 @@
+{
+  "name": "listbox",
+  "version": "0.1.0",
+  "license": "MIT",
+  "homepage": "http://listbox.surge.sh",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hzhu/listbox.git"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/plugin-proposal-class-properties": "^7.3.0",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-react": "^7.0.0",
+    "@storybook/react": "^4.1.11",
+    "babel-jest": "^24.1.0",
+    "babel-loader": "^8.0.5",
+    "jest": "^24.1.0",
+    "jest-dom": "^3.1.0",
+    "react-testing-library": "^5.5.4"
+  },
+  "dependencies": {
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0"
+  },
+  "scripts": {
+    "test": "jest",
+    "storybook": "start-storybook -p 9009 -s public",
+    "build-storybook": "build-storybook -s public"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  }
+}
