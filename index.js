@@ -1,5 +1,6 @@
 import React, { Component, createRef } from "react";
 import * as PropTypes from "prop-types";
+import "@babel/polyfill";
 
 const standardTypeChars = e => e.which < 127 && e.which > 31;
 
@@ -225,7 +226,12 @@ export class Listbox extends Component {
               );
             });
             if (filteredChildren.length) {
-              this.setState({ activeIndex: filteredChildren[0].props.index });
+              this.setState({
+                activeIndex: filteredChildren[0].props.index,
+                activeOptionId: `listbox-option-${
+                  filteredChildren[0].props.index
+                }`
+              });
             }
           }
         }}
