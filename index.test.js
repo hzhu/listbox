@@ -85,7 +85,7 @@ test("should select the second option using arrow key navigation", () => {
   expect(getByText(CARROT)).toHaveAttribute("aria-selected", "true");
 });
 
-test("selects and focuses the next option that starts with the typed character", () => {
+test("Type a character: selects and focuses the next option that starts with the typed character", () => {
   // Given
   const BANANNA = "Bananna";
   const fruits = ["Apple", BANANNA, "Carrot"];
@@ -108,6 +108,37 @@ test("selects and focuses the next option that starts with the typed character",
 
   // Then
   const activeIdx = fruits.indexOf(BANANNA);
+  expect(getByTestId("Listbox-ul").getAttribute("aria-activedescendant")).toBe(
+    `listbox-option-${activeIdx}`
+  );
+});
+
+test("Type multiple characters in rapid succession: focus moves to next item with a name that starts with the string of characters typed.", () => {
+  // Given
+  const transuraniumElements = [
+    "Plutonium",
+    "Americium",
+    "Curium",
+    "Berkelium",
+    "Californium",
+    "Moscovium",
+    "Tennessine"
+  ];
+  const { getByTestId } = render(
+    <Listbox>
+      {transuraniumElements.map(element => (
+        <Option key={element}>{element}</Option>
+      ))}
+    </Listbox>
+  );
+  const node = getByTestId("Listbox-ul");
+
+  // When
+  fireEvent.keyDown(node, { key: "c", which: 67, keyCode: 67 });
+  fireEvent.keyDown(node, { key: "a", which: 65, keyCode: 65 });
+
+  // Then
+  const activeIdx = transuraniumElements.indexOf("Californium");
   expect(getByTestId("Listbox-ul").getAttribute("aria-activedescendant")).toBe(
     `listbox-option-${activeIdx}`
   );

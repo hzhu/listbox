@@ -149,6 +149,9 @@ export class Listbox extends Component {
     return children;
   };
 
+  cacheTypedChars = "";
+  cachedTimeoutId;
+
   isControlled = () => {
     const controlPropExists = this.props.activeIndex !== undefined;
     const controlPropIsNumber = typeof this.props.activeIndex === "number";
@@ -218,18 +221,26 @@ export class Listbox extends Component {
           this.focusItem(e, children);
           if (e.key === "Enter") return;
           if (!standardTypeChars(e)) return;
-          // search
-          let filteredChildren = children.filter(child => {
-            let value = getDeepestChild(child).toLowerCase();
-            return value.startsWith(String.fromCharCode(e.which).toLowerCase());
-          });
-          if (filteredChildren.length) {
-            this.setState({
-              activeIndex: filteredChildren[0].props.index,
-              activeOptionId: `listbox-option-${
-                filteredChildren[0].props.index
-              }`
+          this.cacheTypedChars += String.fromCharCode(e.which).toLowerCase();
+          if (this.cachedTimeoutId) {
+            clearTimeout(this.cachedTimeoutId);
+          }
+          this.cachedTimeoutId = setTimeout(() => {
+            this.cacheTypedChars = "";
+          }, 500);
+          if (this.cacheTypedChars) {
+            const filteredChildren = children.filter(child => {
+              let value = getDeepestChild(child).toLowerCase();
+              return value.startsWith(this.cacheTypedChars);
             });
+            if (filteredChildren.length) {
+              this.setState({
+                activeIndex: filteredChildren[0].props.index,
+                activeOptionId: `listbox-option-${
+                  filteredChildren[0].props.index
+                }`
+              });
+            }
           }
         }}
       >
