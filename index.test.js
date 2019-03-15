@@ -59,8 +59,10 @@ test("is focused and selects first <Option> on mount when passed the focus prop"
 
 test("should select the second option using arrow key navigation", () => {
   // Given
+  const APPLE = "Apple";
+  const BANANNA = "Bananna";
   const CARROT = "Carrot";
-  const fruits = ["Apple", "Bananna", CARROT];
+  const fruits = [APPLE, BANANNA, CARROT];
   const { getByText, getByTestId } = render(
     <Listbox>
       {fruits.map(element => (
@@ -77,12 +79,23 @@ test("should select the second option using arrow key navigation", () => {
 
   // When
   fireEvent.keyDown(node, eventProperties);
+  expect(getByText(APPLE)).toHaveAttribute("aria-selected", "true");
+
   fireEvent.keyDown(node, eventProperties);
+  expect(getByText(APPLE)).not.toHaveAttribute("aria-selected");
+  expect(getByText(BANANNA)).toHaveAttribute("aria-selected", "true");
+
   fireEvent.keyDown(node, eventProperties);
+  expect(getByText(APPLE)).not.toHaveAttribute("aria-selected");
+  expect(getByText(BANANNA)).not.toHaveAttribute("aria-selected");
+  expect(getByText(CARROT)).toHaveAttribute("aria-selected", "true");
 
   // Then
-  expect(node).toHaveAttribute("aria-activedescendant", "listbox-option-2");
-  expect(getByText(CARROT)).toHaveAttribute("aria-selected", "true");
+  const activeIdx = fruits.indexOf(CARROT);
+  expect(node).toHaveAttribute(
+    "aria-activedescendant",
+    `listbox-option-${activeIdx}`
+  );
 });
 
 test("Type a character: selects and focuses the next option that starts with the typed character", () => {
