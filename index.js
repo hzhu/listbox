@@ -217,22 +217,19 @@ export class Listbox extends Component {
           // Only prevent default behavior on listBox related keys
           this.focusItem(e, children);
           if (e.key === "Enter") return;
-          if (standardTypeChars(e)) {
-            // search
-            let filteredChildren = children.filter(child => {
-              let value = getDeepestChild(child).toLowerCase();
-              return value.startsWith(
-                String.fromCharCode(e.which).toLowerCase()
-              );
+          if (!standardTypeChars(e)) return;
+          // search
+          let filteredChildren = children.filter(child => {
+            let value = getDeepestChild(child).toLowerCase();
+            return value.startsWith(String.fromCharCode(e.which).toLowerCase());
+          });
+          if (filteredChildren.length) {
+            this.setState({
+              activeIndex: filteredChildren[0].props.index,
+              activeOptionId: `listbox-option-${
+                filteredChildren[0].props.index
+              }`
             });
-            if (filteredChildren.length) {
-              this.setState({
-                activeIndex: filteredChildren[0].props.index,
-                activeOptionId: `listbox-option-${
-                  filteredChildren[0].props.index
-                }`
-              });
-            }
           }
         }}
       >
