@@ -49,6 +49,10 @@ class CollapsibleDropdownListbox extends Component {
   };
   btnRef = createRef();
   render() {
+    let rect;
+    if (this.btnRef.current !== null) {
+      rect = this.btnRef.current.getBoundingClientRect();
+    }
     return (
       <div>
         <div
@@ -133,11 +137,24 @@ class CollapsibleDropdownListbox extends Component {
                     console.log(this);
                     this.setState(updater);
                   }}
+                  style={{
+                    width: "148px",
+                    maxHeight: "18em",
+                    overflowY: "auto",
+                    background: "#fff",
+                    position: "relative",
+                    borderTop: 0,
+                    border: "1px solid #aaa",
+                    position: "absolute",
+                    left: rect.x,
+                    zIndex: 9999,
+                    top: rect.y + rect.height
+                  }}
                 >
                   {transuraniumElements.map(element => {
                     return (
                       <Option key={element}>
-                        <span>{element}</span>
+                        <div style={{ padding: "5px" }}>{element}</div>
                       </Option>
                     );
                   })}
