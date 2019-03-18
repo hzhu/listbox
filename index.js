@@ -187,28 +187,17 @@ export class Listbox extends Component {
         className="Listbox"
         ref={this.listboxRef}
         aria-activedescendant={this.isControlled() ? undefined : activeOptionId}
-        style={{
-          // CSS Reset
-          margin: 0,
-          padding: 0,
-          ...style
-        }}
+        style={{ margin: 0, padding: 0, ...style }}
         onFocus={() => {
-          if (this.state.activeIndex !== 0) {
-            const updater = state => {
-              if (state.activeOptionId === "") {
-                return {
-                  activeOptionId: children[0].props.id,
-                  activeIndex: 0
-                };
-              }
-            };
-            if (!this.isControlled()) {
-              this.setState(updater);
-            }
-            if (this.props.focused) {
-              updateValue({ activeIndex: children[0].props.index });
-            }
+          if (!this.isControlled()) {
+            console.log(children[0].props.id);
+            this.setState({
+              activeOptionId: children[0].props.id,
+              activeIndex: 0
+            });
+          }
+          if (this.props.focused) {
+            updateValue({ activeIndex: children[0].props.index });
           }
         }}
         onKeyDown={e => {
@@ -216,6 +205,7 @@ export class Listbox extends Component {
           this.focusItem(e, children);
           if (e.key === "Enter") return;
           if (!standardTypeChars(e)) return;
+          if (Object.values(keyCode).includes(e.which)) return;
           this.cacheTypedChars += String.fromCharCode(e.which).toLowerCase();
           if (this.cachedTimeoutId) {
             clearTimeout(this.cachedTimeoutId);
