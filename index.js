@@ -16,8 +16,7 @@ export class Listbox extends Component {
     style: PropTypes.object,
     activeClass: PropTypes.string,
     updateValue: PropTypes.func,
-    activeStyles: PropTypes.object,
-    firstFocused: PropTypes.bool
+    activeStyles: PropTypes.object
   };
 
   static defaultProps = {
@@ -25,22 +24,19 @@ export class Listbox extends Component {
     activeClass: "",
     updateValue: () => {},
     activeStyles: { background: "#BDE4FF" },
-    firstFocused: false,
     activeIndex: undefined
   };
 
   state = {
-    activeItem: "",
     activeOptionId: "",
-    activeIndex: undefined,
-    isListboxFocused: false
+    activeIndex: undefined
   };
 
   listboxRef = createRef();
   selectedOptionRef = createRef();
 
   focusItem = (e, children) => {
-    const { style, updateValue } = this.props;
+    const { updateValue } = this.props;
 
     if (Object.values(keyCode).includes(e.which)) {
       e.preventDefault();
@@ -197,12 +193,11 @@ export class Listbox extends Component {
           padding: 0,
           ...style
         }}
-        onFocus={e => {
-          if (!this.state.isListboxFocused) {
+        onFocus={() => {
+          if (this.state.activeIndex !== 0) {
             const updater = state => {
               if (state.activeOptionId === "") {
                 return {
-                  isListboxFocused: true,
                   activeOptionId: children[0].props.id,
                   activeIndex: 0
                 };
