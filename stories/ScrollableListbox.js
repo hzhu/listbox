@@ -1,5 +1,5 @@
 import React, { Component, createRef } from "react";
-import { Listbox, Option } from "../";
+import { Listbox, Option, OptionsList } from "../";
 import { transuraniumElements } from "./constants";
 
 class ScrollableListbox extends Component {
@@ -39,20 +39,22 @@ class ScrollableListbox extends Component {
               border: "1px solid #aaa"
             }}
           >
-            {transuraniumElements.map(element => (
-              <Option key={element}>
-                <div
-                  style={{
-                    color: "black",
-                    padding: "0 1em",
-                    lineHeight: "1.8em",
-                    position: "relative"
-                  }}
-                >
-                  {element}
-                </div>
-              </Option>
-            ))}
+            <OptionsList>
+              {transuraniumElements.map(element => (
+                <Option key={element}>
+                  <div
+                    style={{
+                      color: "black",
+                      padding: "0 1em",
+                      lineHeight: "1.8em",
+                      position: "relative"
+                    }}
+                  >
+                    {element}
+                  </div>
+                </Option>
+              ))}
+            </OptionsList>
           </Listbox>
         </div>
       </div>

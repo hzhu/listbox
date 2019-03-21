@@ -1,6 +1,6 @@
 import React, { Component, createRef, forwardRef } from "react";
 import { createPortal } from "react-dom";
-import { Listbox, Option } from "../index";
+import { Listbox, Option, OptionsList } from "../index";
 import { transuraniumElements } from "./constants";
 
 class Portal extends React.Component {
@@ -151,13 +151,15 @@ class CollapsibleDropdownListbox extends Component {
                     top: rect.y + rect.height
                   }}
                 >
-                  {transuraniumElements.map(element => {
-                    return (
-                      <Option key={element}>
-                        <div style={{ padding: "5px" }}>{element}</div>
-                      </Option>
-                    );
-                  })}
+                  <OptionsList>
+                    {transuraniumElements.map(element => {
+                      return (
+                        <Option key={element}>
+                          <div style={{ padding: "5px" }}>{element}</div>
+                        </Option>
+                      );
+                    })}
+                  </OptionsList>
                 </Listbox>
               </div>
             </Portal>
