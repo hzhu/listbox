@@ -1,15 +1,27 @@
-import React, { Component, createRef } from "react";
+import React, { Component, createRef, createContext } from "react";
 import * as PropTypes from "prop-types";
 import "@babel/polyfill";
 
 const standardTypeChars = e => e.which < 127 && e.which > 31;
 
 const keyCode = {
-  UP: 38,
-  DOWN: 40,
+  BACKSPACE: 8,
+  TAB: 9,
+  RETURN: 13,
+  ESC: 27,
+  SPACE: 32,
+  PAGE_UP: 33,
+  PAGE_DOWN: 34,
+  END: 35,
+  HOME: 36,
   LEFT: 37,
-  RIGHT: 39
+  UP: 38,
+  RIGHT: 39,
+  DOWN: 40,
+  DELETE: 46
 };
+
+let ListboxContext = createContext();
 
 export class Listbox extends Component {
   static propTypes = {
@@ -28,234 +40,228 @@ export class Listbox extends Component {
   };
 
   state = {
-    activeOptionId: "",
-    activeIndex: undefined
+    activeIndex: this.props.activeIndex || -1, // this.props.defaultActiveIndex?
+    activeId: undefined,
+    selectOptionIndex: (activeIndex, activeId, selectedItem) => {
+      this.isControlled()
+        ? this.props.updateValue({ activeIndex, activeId, selectedItem })
+        : this.setState({ activeIndex, activeId });
+    }
   };
+
+  componentDidMount() {
+    if (this.props.focused) {
+      this.setState({
+        activeIndex: 0,
+        activeId: "listbox__option__0-0"
+      });
+      this.listboxRef.current.focus();
+    }
+  }
 
   listboxRef = createRef();
   selectedOptionRef = createRef();
 
-  focusItem = (e, children) => {
-    const { updateValue } = this.props;
+  // activeDescendant = this.listboxRef.current;
 
-    if (Object.values(keyCode).includes(e.which)) {
-      e.preventDefault();
+  setItem(element) {
+    const activeId = element.id;
+    const { index } = element.dataset;
+    const activeIndex = Number(index);
+    this.setState({ activeId, activeIndex });
+  }
+
+  focusItem(element) {
+    const listboxNode = this.listboxRef.current;
+    var scrollBottom = listboxNode.clientHeight + listboxNode.scrollTop;
+    var elementBottom = element.offsetTop + element.offsetHeight;
+    if (elementBottom > scrollBottom) {
+      listboxNode.scrollTop = elementBottom - listboxNode.clientHeight;
+    } else if (element.offsetTop < listboxNode.scrollTop) {
+      listboxNode.scrollTop = element.offsetTop;
     }
-    let nextOptionId;
-    let nextChild;
-    let nextIdx;
+  }
 
-    const currOptionIdx = children.findIndex(
-      child => child.props.index === this.state.activeIndex
-    );
-
-    if (e.which === keyCode.RIGHT || e.which === keyCode.DOWN) {
-      if (currOptionIdx === children.length - 1) {
-        nextOptionId = children[0].props.id;
-        nextChild = children[0].props.children;
-        nextIdx = 0;
-        if (!this.props.cycle) {
-          return;
+  checkKeyPress(e, children) {
+    let currentItem;
+    let nextItem;
+    switch (e.which) {
+      case keyCode.UP:
+      case keyCode.DOWN:
+        e.preventDefault();
+        currentItem = this.isControlled()
+          ? document.getElementById(this.props.activeId)
+          : document.getElementById(this.state.activeId);
+        if (e.which === keyCode.UP) {
+          nextItem = currentItem.previousElementSibling;
+        } else {
+          nextItem = currentItem.nextElementSibling;
         }
-      } else {
-        nextOptionId = children[currOptionIdx + 1].props.id;
-        nextChild = children[currOptionIdx + 1].props.children;
-        nextIdx = currOptionIdx + 1;
-      }
-      const updater = () => ({
-        activeOptionId: nextOptionId,
-        activeIndex: nextIdx
-      });
-      this.setState(updater, () => {
-        updateValue(this.state);
-        this.selectItem();
-      });
+        if (nextItem) {
+          this.focusItem(nextItem);
+          this.setItem(nextItem);
+        }
+      default:
+        this.findItemToFocus(e.which, children);
     }
-
-    if (e.which === keyCode.LEFT || e.which === keyCode.UP) {
-      if (currOptionIdx === 0) {
-        nextOptionId = children[children.length - 1].props.id;
-        nextChild = children[children.length - 1].props.children;
-        nextIdx = children.length - 1;
-        if (!this.props.cycle) {
-          return;
-        }
-      } else {
-        nextOptionId = children[currOptionIdx - 1].props.id;
-        nextChild = children[currOptionIdx - 1].props.children;
-        nextIdx = currOptionIdx - 1;
-      }
-      const updater = () => ({
-        activeOptionId: nextOptionId,
-        activeIndex: nextIdx
-      });
-      this.setState(updater, () => {
-        updateValue(this.state);
-        this.selectItem();
-      });
-    }
-  };
-
-  // occurs on every render, potentially a perf issue
-  makeChildren = () => {
-    const { updateValue } = this.props;
-    let children = React.Children.map(this.props.children, (child, index) => {
-      let id = `listbox-option-${index}`;
-      let isSelected = index === this.state.activeIndex;
-
-      let isHighlighted = index === this.state.highlightedIndex;
-
-      if (this.isControlled()) {
-        if (index === this.props.activeIndex) {
-          isSelected = true;
-        }
-      }
-
-      const props = {
-        id,
-        index,
-        isSelected,
-        isHighlighted,
-        onMouseEnter: this.isControlled()
-          ? e => {
-              this.props.onMouseEnter(index);
-              this.setState({
-                highlightedIndex: index
-              });
-            }
-          : () => {},
-        activeStyles: this.props.activeStyles,
-        selectedOptionRef: isSelected ? this.selectedOptionRef : undefined,
-        onSelect: () => {
-          const updater = state => {
-            return {
-              activeIndex: index,
-              activeOptionId: id,
-              selectedItem: child.props.children
-            };
-          };
-          this.setState(updater, () => {
-            updateValue(this.state);
-          });
-        }
-      };
-      return React.cloneElement(child, props);
-    });
-
-    return children;
-  };
+  }
 
   cacheTypedChars = "";
   cachedTimeoutId;
 
-  isControlled = () => {
-    const controlPropExists = this.props.activeIndex !== undefined;
-    const controlPropIsNumber = typeof this.props.activeIndex === "number";
-    return controlPropExists && controlPropIsNumber;
-  };
-  selectItem() {
-    const listBoxNode = this.listboxRef.current;
-    const element = this.selectedOptionRef.current;
-    const { clientHeight, scrollTop } = listBoxNode;
-    const { offsetTop, offsetHeight } = element;
-    const scrollBottom = clientHeight + scrollTop;
-    const elementBottom = offsetTop + offsetHeight;
+  findItemToFocus(key, children) {
+    this.cacheTypedChars += String.fromCharCode(key).toLowerCase();
+    if (this.cachedTimeoutId) {
+      clearTimeout(this.cachedTimeoutId);
+    }
+    this.cachedTimeoutId = setTimeout(() => {
+      this.cacheTypedChars = "";
+    }, 500);
+    if (this.cacheTypedChars) {
+      // ouch
+      const filteredChildren = children[0].props.children.filter(child => {
+        let value = getDeepestChild(child).toLowerCase();
+        return value.startsWith(this.cacheTypedChars);
+      });
+      if (filteredChildren.length) {
+        this.setState({
+          activeIndex: filteredChildren[0].props.optionIndex,
+          activeId: filteredChildren[0].props.id
+        });
+      }
+    }
+  }
 
-    if (elementBottom > scrollBottom) {
-      listBoxNode.scrollTop = elementBottom - clientHeight;
-    } else if (offsetTop < scrollTop) {
-      listBoxNode.scrollTop = offsetTop;
+  checkKeyPressGrid(e) {
+    let currentItem;
+    let nextItem;
+    switch (e.which) {
+      case keyCode.UP:
+        e.preventDefault();
+        currentItem = document.getElementById(
+          `listbox__option__0-${this.state.activeIndex}`
+        );
+        nextItem = currentItem.previousElementSibling;
+        this.focusItem(nextItem);
+        this.setItem(nextItem);
     }
   }
-  componentDidMount() {
-    if (this.props.focused) {
-      this.listboxRef.current.focus();
-      const activeOptionId = this.listboxRef.current.children[0].id;
-      this.setState({ activeOptionId, activeIndex: 0 });
+
+  onKeyDown = (e, children) => {
+    if (this.props.grid) {
+      this.checkKeyPressGrid(e);
+    } else {
+      this.checkKeyPress(e, children);
     }
+  };
+
+  isControlled() {
+    return this.props.activeIndex != null;
   }
+
   render() {
-    const { activeOptionId } = this.state;
-    const { style, updateValue } = this.props;
-    let children = this.makeChildren();
+    const { style } = this.props;
+    let index = 0;
+    let children = React.Children.map(this.props.children, (OptionsList, row) =>
+      React.cloneElement(OptionsList, {
+        children: React.Children.map(
+          OptionsList.props.children,
+          (Option, col) => {
+            const optionIndex = index;
+            index++;
+            const id = `listbox__option__${row}-${col}`;
+            return React.cloneElement(Option, {
+              row,
+              col,
+              id,
+              optionIndex,
+              foo: "BARRRRR"
+            });
+          }
+        )
+      })
+    );
+    const value = this.isControlled()
+      ? {
+          ...this.state,
+          activeIndex: this.props.activeIndex,
+          activeId: this.props.activeId
+        }
+      : this.state;
 
     return (
-      <ul
-        data-testid="Listbox-ul"
-        tabIndex={this.isControlled() ? undefined : 0}
-        role="listbox"
-        className="Listbox"
-        ref={this.listboxRef}
-        aria-activedescendant={this.isControlled() ? undefined : activeOptionId}
-        style={{ margin: 0, padding: 0, ...style }}
-        onFocus={() => {
-          if (!this.isControlled()) {
-            console.log(children[0].props.id);
-            this.setState({
-              activeOptionId: children[0].props.id,
-              activeIndex: 0
-            });
-          }
-          if (this.props.focused) {
-            updateValue({ activeIndex: children[0].props.index });
-          }
-        }}
-        onKeyDown={e => {
-          // Only prevent default behavior on listBox related keys
-          this.focusItem(e, children);
-          if (e.key === "Enter") return;
-          if (!standardTypeChars(e)) return;
-          if (Object.values(keyCode).includes(e.which)) return;
-          this.cacheTypedChars += String.fromCharCode(e.which).toLowerCase();
-          if (this.cachedTimeoutId) {
-            clearTimeout(this.cachedTimeoutId);
-          }
-          this.cachedTimeoutId = setTimeout(() => {
-            this.cacheTypedChars = "";
-          }, 500);
-          if (this.cacheTypedChars) {
-            const filteredChildren = children.filter(child => {
-              let value = getDeepestChild(child).toLowerCase();
-              return value.startsWith(this.cacheTypedChars);
-            });
-            if (filteredChildren.length) {
+      <ListboxContext.Provider value={value}>
+        <div
+          tabIndex={0}
+          onKeyDown={e => this.onKeyDown(e, children)}
+          onFocus={e => {
+            if (this.state.activeId === undefined) {
               this.setState({
-                activeIndex: filteredChildren[0].props.index,
-                activeOptionId: `listbox-option-${
-                  filteredChildren[0].props.index
-                }`
+                activeIndex: 0,
+                activeId: "listbox__option__0-0"
               });
             }
-          }
+          }}
+          role="listbox"
+          data-testid="Listbox"
+          ref={this.listboxRef}
+          style={style}
+          aria-activedescendant={value.activeId}
+        >
+          {children}
+        </div>
+      </ListboxContext.Provider>
+    );
+  }
+}
+
+export class OptionsList extends Component {
+  render() {
+    return (
+      <ListboxContext.Consumer>
+        {context => {
+          let children = React.Children.map(this.props.children, child => {
+            return React.cloneElement(child, {
+              foo: "BAAAARRR",
+              index: child.props.optionIndex,
+              isSelected: context.activeIndex === child.props.optionIndex,
+              onSelect: e => {
+                const { row, col } = child.props;
+                const activeId = `listbox__option__${row}-${col}`;
+                context.selectOptionIndex(
+                  child.props.optionIndex,
+                  activeId,
+                  child.props.children
+                );
+              }
+            });
+          });
+          return (
+            <ul
+              style={{
+                padding: 0,
+                ...this.props.style
+              }}
+            >
+              {children}
+            </ul>
+          );
         }}
-      >
-        {children}
-      </ul>
+      </ListboxContext.Consumer>
     );
   }
 }
 
 export class Option extends Component {
   render() {
-    const {
-      id,
-      onSelect,
-      isSelected,
-      isHighlighted,
-      activeStyles,
-      selectedOptionRef,
-      onMouseEnter
-    } = this.props;
-    const styles = isSelected || isHighlighted ? activeStyles : undefined;
+    const { index, onSelect, isSelected, onMouseEnter, row, col } = this.props;
+    const styles = isSelected ? { background: "#BDE4FF" } : undefined;
     return (
       <li
-        id={id}
-        onMouseEnter={onMouseEnter}
+        id={`listbox__option__${row}-${col}`}
+        data-index={index}
         role="option"
         onClick={onSelect}
-        ref={selectedOptionRef}
-        className="Listbox-option"
-        data-index={this.props.index}
         aria-selected={isSelected || undefined}
         style={{ ...styles, listStyle: "none" }}
       >

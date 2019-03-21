@@ -1,5 +1,5 @@
 import React, { Component, createRef } from "react";
-import { Listbox, Option } from "../";
+import { Listbox, Option, OptionsList } from "../";
 import { FRUITS_AND_VEGGIES } from "./constants";
 
 class Combobox extends Component {
@@ -82,6 +82,7 @@ class Combobox extends Component {
                 const { current: listboxNode } = this.listboxRef;
                 if (e.key === "ArrowDown") {
                   e.preventDefault();
+
                   updater = state => {
                     const { activeIndex, suggestions } = state;
                     let nextActiveIndex;
@@ -93,8 +94,11 @@ class Combobox extends Component {
                     }
 
                     if (listboxNode !== null) {
+                      // Ouch
                       activeOptionId =
-                        listboxNode.children[0].children[nextActiveIndex].id;
+                        listboxNode.children[0].children[0].children[
+                          nextActiveIndex
+                        ].id;
                     }
 
                     return { activeIndex: nextActiveIndex, activeOptionId };
@@ -112,10 +116,12 @@ class Combobox extends Component {
 
                     if (listboxNode !== null) {
                       activeOptionId =
-                        listboxNode.children[0].children[nextActiveIndex].id;
+                        listboxNode.children[0].children[0].children[
+                          nextActiveIndex
+                        ].id;
                     }
 
-                    return { activeIndex: nextActiveIndex };
+                    return { activeIndex: nextActiveIndex, activeOptionId };
                   };
                 }
                 this.setState(updater);
@@ -126,9 +132,11 @@ class Combobox extends Component {
             <div ref={this.listboxRef}>
               <Listbox
                 activeIndex={this.state.activeIndex}
+                activeOptionId={this.state.activeOptionId}
                 // onSelect
                 updateValue={({ activeItem, activeOptionId, selectedItem }) => {
                   const updater = state => {
+                    console.log("i should happen");
                     return {
                       value: selectedItem,
                       query: selectedItem,
@@ -142,9 +150,11 @@ class Combobox extends Component {
                   this.setState({ highlightedIndex: index })
                 }
               >
-                {this.state.suggestions.map(item => {
-                  return <Option key={item}>{item}</Option>;
-                })}
+                <OptionsList>
+                  {this.state.suggestions.map(item => {
+                    return <Option key={item}>{item}</Option>;
+                  })}
+                </OptionsList>
               </Listbox>
             </div>
           ) : null}
