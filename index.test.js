@@ -167,3 +167,35 @@ test("Type multiple characters in rapid succession: focus moves to next item wit
     `listbox__option__0-${activeIdx}`
   );
 });
+
+test("Should expose a highlighted index when user 'enters' an <Option> for controlled <Listbox> component", () => {
+  // Given
+  const CALIFORNIUM = "Californium";
+  const transuraniumElements = [
+    "Americium",
+    "Curium",
+    "Berkelium",
+    CALIFORNIUM,
+    "Moscovium",
+    "Tennessine"
+  ];
+  const { getByText } = render(
+    <Listbox activeIndex={-1} onMouseEnter={onMouseEnter}>
+      <OptionsList>
+        {transuraniumElements.map(element => (
+          <Option key={element}>{element}</Option>
+        ))}
+      </OptionsList>
+    </Listbox>
+  );
+  const californiumOption = getByText(CALIFORNIUM);
+
+  // When
+  fireEvent.mouseEnter(californiumOption);
+
+  // Then (async)
+  function onMouseEnter(event, index) {
+    expect(event.type).toBe("mouseenter");
+    expect(index).toBe(transuraniumElements.indexOf(CALIFORNIUM));
+  }
+});

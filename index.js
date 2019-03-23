@@ -2,8 +2,6 @@ import React, { Component, createRef, createContext } from "react";
 import * as PropTypes from "prop-types";
 import "@babel/polyfill";
 
-const standardTypeChars = e => e.which < 127 && e.which > 31;
-
 const keyCode = {
   BACKSPACE: 8,
   TAB: 9,
@@ -40,8 +38,9 @@ export class Listbox extends Component {
   };
 
   state = {
-    activeIndex: this.props.activeIndex || -1, // this.props.defaultActiveIndex?
+    activeIndex: this.props.activeIndex || -1,
     activeId: undefined,
+    highlightedIndex: undefined,
     selectOptionIndex: (activeIndex, activeId, selectedItem) => {
       this.isControlled()
         ? this.props.updateValue({ activeIndex, activeId, selectedItem })
@@ -62,8 +61,6 @@ export class Listbox extends Component {
   listboxRef = createRef();
   selectedOptionRef = createRef();
 
-  // activeDescendant = this.listboxRef.current;
-
   setItem(element) {
     const activeId = element.id;
     const { index } = element.dataset;
@@ -73,8 +70,8 @@ export class Listbox extends Component {
 
   focusItem(element) {
     const listboxNode = this.listboxRef.current;
-    var scrollBottom = listboxNode.clientHeight + listboxNode.scrollTop;
-    var elementBottom = element.offsetTop + element.offsetHeight;
+    const scrollBottom = listboxNode.clientHeight + listboxNode.scrollTop;
+    const elementBottom = element.offsetTop + element.offsetHeight;
     if (elementBottom > scrollBottom) {
       listboxNode.scrollTop = elementBottom - listboxNode.clientHeight;
     } else if (element.offsetTop < listboxNode.scrollTop) {
@@ -161,6 +158,7 @@ export class Listbox extends Component {
 
   render() {
     const { style } = this.props;
+    const isControlled = this.isControlled();
     let index = 0;
     let children = React.Children.map(this.props.children, (OptionsList, row) =>
       React.cloneElement(OptionsList, {
@@ -171,11 +169,18 @@ export class Listbox extends Component {
             index++;
             const id = `listbox__option__${row}-${col}`;
             return React.cloneElement(Option, {
+              id,
               row,
               col,
-              id,
               optionIndex,
-              foo: "BARRRRR"
+              onMouseEnter: isControlled
+                ? e => {
+                    this.props.onMouseEnter(e, optionIndex);
+                    this.setState({
+                      highlightedIndex: optionIndex
+                    });
+                  }
+                : () => {}
             });
           }
         )
@@ -222,9 +227,10 @@ export class OptionsList extends Component {
         {context => {
           let children = React.Children.map(this.props.children, child => {
             return React.cloneElement(child, {
-              foo: "BAAAARRR",
               index: child.props.optionIndex,
               isSelected: context.activeIndex === child.props.optionIndex,
+              isHighlighted:
+                child.props.optionIndex === context.highlightedIndex,
               onSelect: e => {
                 const { row, col } = child.props;
                 const activeId = `listbox__option__${row}-${col}`;
@@ -254,14 +260,24 @@ export class OptionsList extends Component {
 
 export class Option extends Component {
   render() {
-    const { index, onSelect, isSelected, onMouseEnter, row, col } = this.props;
-    const styles = isSelected ? { background: "#BDE4FF" } : undefined;
+    const {
+      row,
+      col,
+      index,
+      onSelect,
+      isSelected,
+      onMouseEnter,
+      isHighlighted
+    } = this.props;
+    const styles =
+      isSelected || isHighlighted ? { background: "#BDE4FF" } : undefined;
     return (
       <li
-        id={`listbox__option__${row}-${col}`}
-        data-index={index}
         role="option"
+        data-index={index}
         onClick={onSelect}
+        onMouseEnter={onMouseEnter}
+        id={`listbox__option__${row}-${col}`}
         aria-selected={isSelected || undefined}
         style={{ ...styles, listStyle: "none" }}
       >

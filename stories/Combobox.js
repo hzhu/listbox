@@ -146,7 +146,7 @@ class Combobox extends Component {
                   };
                   this.setState(updater);
                 }}
-                onMouseEnter={index =>
+                onMouseEnter={(event, index) =>
                   this.setState({ highlightedIndex: index })
                 }
               >
