@@ -11,27 +11,20 @@ import { Listbox, Option, OptionsList } from "./index";
 
 afterEach(cleanup);
 
-test("Snapshot: render <Listbox> with first <Option> selected", () => {
+test("render listbox with the first option selected (snapshot)", () => {
   // Given
-  const { getByLabelText, getByText, getByTestId, container } = render(
+  const { getByTestId } = render(
     <Listbox>
       <OptionsList>
-        {["Apple", "Bananna", "Carrot"].map(element => (
-          <Option key={element}>
-            <div
-              style={{
-                color: "black",
-                padding: "0 1em"
-              }}
-            >
-              {element}
-            </div>
+        {["Apple", "Bananna", "Carrot"].map(fruit => (
+          <Option key={fruit}>
+            <div style={{ color: "black" }}>{fruit}</div>
           </Option>
         ))}
       </OptionsList>
     </Listbox>
   );
-  const node = getByTestId("Listbox");
+  const listboxNode = getByTestId("Listbox");
   const eventProperties = {
     key: "ArrowDown",
     keyCode: 40,
@@ -39,26 +32,29 @@ test("Snapshot: render <Listbox> with first <Option> selected", () => {
   };
 
   // When
-  node.focus();
-  fireEvent.keyDown(node, eventProperties);
+  listboxNode.focus();
+  fireEvent.keyDown(listboxNode, eventProperties);
 
   // Then
-  expect(node).toMatchSnapshot();
+  expect(listboxNode).toMatchSnapshot();
 });
 
-test("is focused and selects first <Option> on mount when passed the focus prop", () => {
+test("listbox is focused and selects first option on mount when passed the focus prop", () => {
   const { getByTestId } = render(
     <Listbox focused>
       <OptionsList>
-        {["Apple", "Bananna", "Carrot"].map(element => (
-          <Option key={element}>{element}</Option>
+        {["Apple", "Bananna", "Carrot"].map(fruit => (
+          <Option key={fruit}>{fruit}</Option>
         ))}
       </OptionsList>
     </Listbox>
   );
   const testId = "Listbox";
-  const node = getByTestId(testId);
-  expect(node).toHaveAttribute("aria-activedescendant", "listbox__option__0-0");
+  const listboxNode = getByTestId(testId);
+  expect(listboxNode).toHaveAttribute(
+    "aria-activedescendant",
+    "listbox__option__0-0"
+  );
   expect(document.activeElement.dataset.testid).toBe(testId);
 });
 
@@ -71,13 +67,13 @@ test("should select the second option using arrow key navigation", () => {
   const { getByText, getByTestId } = render(
     <Listbox>
       <OptionsList>
-        {fruits.map(element => (
-          <Option key={element}>{element}</Option>
+        {fruits.map(fruit => (
+          <Option key={fruit}>{fruit}</Option>
         ))}
       </OptionsList>
     </Listbox>
   );
-  const node = getByTestId("Listbox");
+  const listboxNode = getByTestId("Listbox");
   const eventProperties = {
     key: "ArrowDown",
     keyCode: 40,
@@ -85,27 +81,27 @@ test("should select the second option using arrow key navigation", () => {
   };
 
   // When
-  node.focus();
+  listboxNode.focus();
   expect(getByText(APPLE)).toHaveAttribute("aria-selected", "true");
 
-  fireEvent.keyDown(node, eventProperties);
+  fireEvent.keyDown(listboxNode, eventProperties);
   expect(getByText(APPLE)).not.toHaveAttribute("aria-selected");
   expect(getByText(BANANNA)).toHaveAttribute("aria-selected", "true");
 
-  fireEvent.keyDown(node, eventProperties);
+  fireEvent.keyDown(listboxNode, eventProperties);
   expect(getByText(APPLE)).not.toHaveAttribute("aria-selected");
   expect(getByText(BANANNA)).not.toHaveAttribute("aria-selected");
   expect(getByText(CARROT)).toHaveAttribute("aria-selected", "true");
 
   // // Then
   const activeIdx = fruits.indexOf(CARROT);
-  expect(node).toHaveAttribute(
+  expect(listboxNode).toHaveAttribute(
     "aria-activedescendant",
     `listbox__option__0-${activeIdx}`
   );
 });
 
-test("Type a character: selects and focuses the next option that starts with the typed character", () => {
+test("type a character: selects and focuses the next option that starts with the typed character", () => {
   // Given
   const BANANNA = "Bananna";
   const fruits = ["Apple", BANANNA, "Carrot"];
@@ -135,7 +131,7 @@ test("Type a character: selects and focuses the next option that starts with the
   );
 });
 
-test("Type multiple characters in rapid succession: focus moves to next item with a name that starts with the string of characters typed.", () => {
+test("type multiple characters in rapid succession: focus moves to next item with a name that starts with the string of characters typed.", () => {
   // Given
   const transuraniumElements = [
     "Plutonium",
@@ -155,20 +151,20 @@ test("Type multiple characters in rapid succession: focus moves to next item wit
       </OptionsList>
     </Listbox>
   );
-  const node = getByTestId("Listbox");
+  const listboxNode = getByTestId("Listbox");
 
   // When
-  fireEvent.keyDown(node, { key: "c", which: 67, keyCode: 67 });
-  fireEvent.keyDown(node, { key: "a", which: 65, keyCode: 65 });
+  fireEvent.keyDown(listboxNode, { key: "c", which: 67, keyCode: 67 });
+  fireEvent.keyDown(listboxNode, { key: "a", which: 65, keyCode: 65 });
 
   // Then
   const activeIdx = transuraniumElements.indexOf("Californium");
-  expect(getByTestId("Listbox").getAttribute("aria-activedescendant")).toBe(
+  expect(listboxNode.getAttribute("aria-activedescendant")).toBe(
     `listbox__option__0-${activeIdx}`
   );
 });
 
-test("Should expose a highlighted index when user 'enters' an <Option> for controlled <Listbox> component", () => {
+test("should expose a highlighted index when user 'enters' an option for controlled listbox component", () => {
   // Given
   const CALIFORNIUM = "Californium";
   const transuraniumElements = [

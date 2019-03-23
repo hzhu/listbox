@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Snapshot: render <Listbox> with first <Option> selected 1`] = `
+exports[`render listbox with the first option selected (snapshot) 1`] = `
 <div
   aria-activedescendant="listbox__option__0-1"
   data-testid="Listbox"
@@ -17,7 +17,7 @@ exports[`Snapshot: render <Listbox> with first <Option> selected 1`] = `
       style="list-style: none;"
     >
       <div
-        style="color: black; padding: 0px 1em;"
+        style="color: black;"
       >
         Apple
       </div>
@@ -30,7 +30,7 @@ exports[`Snapshot: render <Listbox> with first <Option> selected 1`] = `
       style="list-style: none; background: rgb(189, 228, 255);"
     >
       <div
-        style="color: black; padding: 0px 1em;"
+        style="color: black;"
       >
         Bananna
       </div>
@@ -42,7 +42,7 @@ exports[`Snapshot: render <Listbox> with first <Option> selected 1`] = `
       style="list-style: none;"
     >
       <div
-        style="color: black; padding: 0px 1em;"
+        style="color: black;"
       >
         Carrot
       </div>
