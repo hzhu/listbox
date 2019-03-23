@@ -223,72 +223,67 @@ export class Listbox extends Component {
   }
 }
 
-export class OptionsList extends Component {
-  render() {
-    return (
-      <ListboxContext.Consumer>
-        {context => {
-          let children = React.Children.map(this.props.children, child => {
-            return React.cloneElement(child, {
-              index: child.props.optionIndex,
-              isSelected: context.activeIndex === child.props.optionIndex,
-              isHighlighted:
-                child.props.optionIndex === context.highlightedIndex,
-              onSelect: e => {
-                const { row, col } = child.props;
-                const activeId = `listbox__option__${row}-${col}`;
-                context.selectOptionIndex(
-                  child.props.optionIndex,
-                  activeId,
-                  child.props.children
-                );
-              }
-            });
+export const OptionsList = ({ style, children }) => {
+  return (
+    <ListboxContext.Consumer>
+      {context => {
+        children = React.Children.map(children, child => {
+          return React.cloneElement(child, {
+            index: child.props.optionIndex,
+            isSelected: context.activeIndex === child.props.optionIndex,
+            isHighlighted: child.props.optionIndex === context.highlightedIndex,
+            onSelect: e => {
+              const { row, col } = child.props;
+              const activeId = `listbox__option__${row}-${col}`;
+              context.selectOptionIndex(
+                child.props.optionIndex,
+                activeId,
+                child.props.children
+              );
+            }
           });
-          return (
-            <ul
-              style={{
-                padding: 0,
-                ...this.props.style
-              }}
-            >
-              {children}
-            </ul>
-          );
-        }}
-      </ListboxContext.Consumer>
-    );
-  }
-}
+        });
+        return (
+          <ul
+            style={{
+              padding: 0,
+              ...style
+            }}
+          >
+            {children}
+          </ul>
+        );
+      }}
+    </ListboxContext.Consumer>
+  );
+};
 
-export class Option extends Component {
-  render() {
-    const {
-      row,
-      col,
-      index,
-      onSelect,
-      isSelected,
-      onMouseEnter,
-      isHighlighted
-    } = this.props;
-    const styles =
-      isSelected || isHighlighted ? { background: "#BDE4FF" } : undefined;
-    return (
-      <li
-        role="option"
-        data-index={index}
-        onClick={onSelect}
-        onMouseEnter={onMouseEnter}
-        id={`listbox__option__${row}-${col}`}
-        aria-selected={isSelected || undefined}
-        style={{ ...styles, listStyle: "none" }}
-      >
-        {this.props.children}
-      </li>
-    );
-  }
-}
+export const Option = ({
+  row,
+  col,
+  index,
+  onSelect,
+  isSelected,
+  onMouseEnter,
+  isHighlighted,
+  children
+}) => {
+  const styles =
+    isSelected || isHighlighted ? { background: "#BDE4FF" } : undefined;
+  return (
+    <li
+      role="option"
+      data-index={index}
+      onClick={onSelect}
+      onMouseEnter={onMouseEnter}
+      id={`listbox__option__${row}-${col}`}
+      aria-selected={isSelected || undefined}
+      style={{ ...styles, listStyle: "none" }}
+    >
+      {children}
+    </li>
+  );
+};
 
 function getDeepestChild(node) {
   if (typeof node.props.children === "string") {
