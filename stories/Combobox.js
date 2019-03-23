@@ -133,18 +133,12 @@ class Combobox extends Component {
               <Listbox
                 activeIndex={this.state.activeIndex}
                 activeOptionId={this.state.activeOptionId}
-                // onSelect
-                updateValue={({ activeItem, activeOptionId, selectedItem }) => {
-                  const updater = state => {
-                    console.log("i should happen");
-                    return {
-                      value: selectedItem,
-                      query: selectedItem,
-                      showListbox: false,
-                      activeIndex: -1
-                    };
-                  };
-                  this.setState(updater);
+                updateValue={({ selectedItem }) => {
+                  this.setState({
+                    value: selectedItem,
+                    query: selectedItem,
+                    showListbox: false
+                  });
                 }}
                 onMouseEnter={(event, index) =>
                   this.setState({ highlightedIndex: index })

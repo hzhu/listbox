@@ -195,3 +195,46 @@ test("should expose a highlighted index when user 'enters' an option for control
     expect(index).toBe(transuraniumElements.indexOf(CALIFORNIUM));
   }
 });
+
+test("calls updateValue prop when listbox option selection changes", () => {
+  // Given
+  const APPLE = "Apple";
+  const BANANNA = "Bananna";
+  const CARROT = "Carrot";
+  const fruits = [APPLE, BANANNA, CARROT];
+  const updateValue = jest.fn();
+  const { getByText, getByTestId } = render(
+    <Listbox updateValue={updateValue}>
+      <OptionsList>
+        {fruits.map(fruit => (
+          <Option key={fruit}>{fruit}</Option>
+        ))}
+      </OptionsList>
+    </Listbox>
+  );
+  const listboxNode = getByTestId("Listbox");
+  const eventProperties = {
+    key: "ArrowDown",
+    keyCode: 40,
+    which: 40
+  };
+  listboxNode.focus();
+  expect(getByText(APPLE)).toHaveAttribute("aria-selected", "true");
+  expect(listboxNode).toHaveAttribute(
+    "aria-activedescendant",
+    `listbox__option__0-0`
+  );
+
+  // When
+  fireEvent.keyDown(listboxNode, eventProperties);
+
+  // TODO: assert that updateValue was called with activeItem, activeOptionId, selectedItem.
+  // And then
+  expect(updateValue).toBeCalledTimes(1);
+
+  // And when
+  fireEvent.click(getByText(APPLE));
+
+  // And then
+  expect(updateValue).toBeCalledTimes(2);
+});

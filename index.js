@@ -42,9 +42,10 @@ export class Listbox extends Component {
     activeId: undefined,
     highlightedIndex: undefined,
     selectOptionIndex: (activeIndex, activeId, selectedItem) => {
-      this.isControlled()
-        ? this.props.updateValue({ activeIndex, activeId, selectedItem })
-        : this.setState({ activeIndex, activeId });
+      this.props.updateValue({ activeIndex, activeId, selectedItem });
+      if (!this.isControlled()) {
+        this.setState({ activeIndex, activeId });
+      }
     }
   };
 
@@ -65,7 +66,9 @@ export class Listbox extends Component {
     const activeId = element.id;
     const { index } = element.dataset;
     const activeIndex = Number(index);
-    this.setState({ activeId, activeIndex });
+    this.setState({ activeId, activeIndex }, () => {
+      this.props.updateValue({ activeIndex, activeId });
+    });
   }
 
   focusItem(element) {

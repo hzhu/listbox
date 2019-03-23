@@ -30,15 +30,15 @@ class CollapsibleDropdownListbox extends Component {
     currentOption: "Neptunium",
     showDropdown: false
   };
-  updateValue = value => {
+  updateValue = ({ activeIndex }) => {
     const updater = state => {
       if (state.showDropdown === false) {
         return {
-          currentOption: transuraniumElements[value.activeIndex],
+          currentOption: transuraniumElements[activeIndex],
           showDropdown: true
         };
       } else {
-        return { currentOption: transuraniumElements[value.activeIndex] };
+        return { currentOption: transuraniumElements[activeIndex] };
       }
     };
     this.setState(updater);
@@ -132,11 +132,6 @@ class CollapsibleDropdownListbox extends Component {
                   firstFocused
                   activeStyles={{ background: "#bde4ff" }}
                   updateValue={this.updateValue}
-                  onSelect={() => {
-                    const updater = state => ({ showDropdown: false });
-                    console.log(this);
-                    this.setState(updater);
-                  }}
                   style={{
                     width: "148px",
                     maxHeight: "18em",
