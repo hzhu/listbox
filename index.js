@@ -247,6 +247,7 @@ export const OptionsList = ({ style, children }) => {
           <ul
             style={{
               padding: 0,
+              margin: 0,
               ...style
             }}
           >

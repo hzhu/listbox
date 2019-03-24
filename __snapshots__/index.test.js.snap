@@ -8,7 +8,7 @@ exports[`render listbox with the first option selected (snapshot) 1`] = `
   tabindex="0"
 >
   <ul
-    style="padding: 0px;"
+    style="padding: 0px; margin: 0px;"
   >
     <li
       data-index="0"
