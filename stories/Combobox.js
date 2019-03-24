@@ -1,5 +1,5 @@
 import React, { Component, createRef } from "react";
-import { Listbox, Option, OptionsList } from "../";
+import { Listbox, Option, OptionsList } from "../src";
 import { FRUITS_AND_VEGGIES } from "./constants";
 
 class Combobox extends Component {

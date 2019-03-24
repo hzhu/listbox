@@ -1,5 +1,5 @@
 import React from "react";
-import { Listbox, OptionsList, Option } from "../";
+import { Listbox, OptionsList, Option } from "../src";
 import { CAR_COMPANIES } from "./constants";
 
 export default () => (

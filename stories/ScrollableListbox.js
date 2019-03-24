@@ -1,5 +1,5 @@
 import React, { Component, createRef } from "react";
-import { Listbox, Option, OptionsList } from "../";
+import { Listbox, Option, OptionsList } from "../src";
 import { transuraniumElements } from "./constants";
 
 class ScrollableListbox extends Component {
