@@ -23,10 +23,11 @@ class ScrollableListbox extends Component {
             border: "1px solid #aaa"
           }}
         >
-          <p>Transuranium Elements</p>
+          <span id="lb-title">Transuranium Elements</span>
           <Listbox
             // focused
             // cycle
+            ariaLabelledBy="lb-title"
             updateValue={this.updateValue}
             activeClass=""
             activeStyles={{ background: "#bde4ff" }}

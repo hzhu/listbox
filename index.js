@@ -160,7 +160,7 @@ export class Listbox extends Component {
   }
 
   render() {
-    const { style } = this.props;
+    const { style, ariaLabelledBy } = this.props;
     const isControlled = this.isControlled();
     let index = 0;
     let children = React.Children.map(this.props.children, (OptionsList, row) =>
@@ -201,6 +201,12 @@ export class Listbox extends Component {
       <ListboxContext.Provider value={value}>
         <div
           tabIndex={0}
+          style={style}
+          role="listbox"
+          data-testid="Listbox"
+          ref={this.listboxRef}
+          aria-labelledby={ariaLabelledBy}
+          aria-activedescendant={value.activeId}
           onKeyDown={e => this.onKeyDown(e, children)}
           onFocus={e => {
             if (this.state.activeId === undefined) {
@@ -210,11 +216,6 @@ export class Listbox extends Component {
               });
             }
           }}
-          role="listbox"
-          data-testid="Listbox"
-          ref={this.listboxRef}
-          style={style}
-          aria-activedescendant={value.activeId}
         >
           {children}
         </div>

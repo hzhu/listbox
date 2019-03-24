@@ -13,16 +13,20 @@ afterEach(cleanup);
 
 test("render listbox with the first option selected (snapshot)", () => {
   // Given
+  const titleId = "lb-title";
   const { getByTestId } = render(
-    <Listbox>
-      <OptionsList>
-        {["Apple", "Bananna", "Carrot"].map(fruit => (
-          <Option key={fruit}>
-            <div style={{ color: "black" }}>{fruit}</div>
-          </Option>
-        ))}
-      </OptionsList>
-    </Listbox>
+    <div>
+      <span id={titleId}>Delicious Fruits</span>
+      <Listbox ariaLabelledBy={titleId}>
+        <OptionsList>
+          {["Apple", "Bananna", "Carrot"].map(fruit => (
+            <Option key={fruit}>
+              <div style={{ color: "black" }}>{fruit}</div>
+            </Option>
+          ))}
+        </OptionsList>
+      </Listbox>
+    </div>
   );
   const listboxNode = getByTestId("Listbox");
   const eventProperties = {
@@ -37,6 +41,24 @@ test("render listbox with the first option selected (snapshot)", () => {
 
   // Then
   expect(listboxNode).toMatchSnapshot();
+});
+
+test("renders listbox with a label", () => {
+  const titleId = "lb-title";
+  const { getByTestId } = render(
+    <div>
+      <span id={titleId}>Delicious Fruits</span>
+      <Listbox ariaLabelledBy={titleId}>
+        <OptionsList>
+          {["Apple", "Bananna", "Carrot"].map(fruit => (
+            <Option key={fruit}>{fruit}</Option>
+          ))}
+        </OptionsList>
+      </Listbox>
+    </div>
+  );
+  const listboxNode = getByTestId("Listbox");
+  expect(listboxNode).toHaveAttribute("aria-labelledby", titleId);
 });
 
 test("listbox is focused and selects first option on mount when passed the focus prop", () => {
@@ -93,7 +115,7 @@ test("should select the second option using arrow key navigation", () => {
   expect(getByText(BANANNA)).not.toHaveAttribute("aria-selected");
   expect(getByText(CARROT)).toHaveAttribute("aria-selected", "true");
 
-  // // Then
+  // Then
   const activeIdx = fruits.indexOf(CARROT);
   expect(listboxNode).toHaveAttribute(
     "aria-activedescendant",
