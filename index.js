@@ -245,7 +245,7 @@ export const OptionsList = ({ style, children }) => {
           });
         });
         return (
-          <ul
+          <div
             style={{
               padding: 0,
               margin: 0,
@@ -253,7 +253,7 @@ export const OptionsList = ({ style, children }) => {
             }}
           >
             {children}
-          </ul>
+          </div>
         );
       }}
     </ListboxContext.Consumer>
@@ -273,7 +273,7 @@ export const Option = ({
   const styles =
     isSelected || isHighlighted ? { background: "#BDE4FF" } : undefined;
   return (
-    <li
+    <div
       role="option"
       data-index={index}
       onClick={onSelect}
@@ -283,7 +283,7 @@ export const Option = ({
       style={{ ...styles, listStyle: "none" }}
     >
       {children}
-    </li>
+    </div>
   );
 };
 

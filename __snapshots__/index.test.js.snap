@@ -8,10 +8,10 @@ exports[`render listbox with the first option selected (snapshot) 1`] = `
   role="listbox"
   tabindex="0"
 >
-  <ul
+  <div
     style="padding: 0px; margin: 0px;"
   >
-    <li
+    <div
       data-index="0"
       id="listbox__option__0-0"
       role="option"
@@ -22,8 +22,8 @@ exports[`render listbox with the first option selected (snapshot) 1`] = `
       >
         Apple
       </div>
-    </li>
-    <li
+    </div>
+    <div
       aria-selected="true"
       data-index="1"
       id="listbox__option__0-1"
@@ -35,8 +35,8 @@ exports[`render listbox with the first option selected (snapshot) 1`] = `
       >
         Bananna
       </div>
-    </li>
-    <li
+    </div>
+    <div
       data-index="2"
       id="listbox__option__0-2"
       role="option"
@@ -47,7 +47,7 @@ exports[`render listbox with the first option selected (snapshot) 1`] = `
       >
         Carrot
       </div>
-    </li>
-  </ul>
+    </div>
+  </div>
 </div>
 `;
