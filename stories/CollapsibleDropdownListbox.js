@@ -4,8 +4,8 @@ import { transuraniumElements } from "./constants";
 
 class CollapsibleDropdownListbox extends Component {
   state = {
-    currentOption: "Neptunium",
-    showDropdown: false
+    showDropdown: false,
+    currentOption: "Neptunium"
   };
   updateValue = ({ activeIndex }) => {
     const updater = state => {
@@ -30,37 +30,42 @@ class CollapsibleDropdownListbox extends Component {
       <div>
         <div
           style={{
+            padding: "20px",
             maxWidth: "50em",
             margin: "0 auto",
-            padding: "20px",
-            background: "#eee",
-            border: "1px solid #aaa"
+            background: "#EEE",
+            border: "1px solid #AAA"
           }}
         >
-          <p>{this.state.currentOption}</p>
-          <p>Choose an element</p>
+          <div style={{ marginBottom: "10px" }}>
+            <span id="exp_elem">Choose an element</span>
+          </div>
           <button
-            ref={this.btnRef}
             tabIndex={0}
+            id="exp_button"
+            ref={this.btnRef}
+            aria-haspopup="listbox"
+            aria-labelledby="exp_elem exp_button"
+            aria-expanded={this.state.showDropdown}
             style={{
-              borderRadius: "0",
+              width: "150px",
+              display: "flex",
               fontSize: "16px",
               textAlign: "left",
+              borderRadius: "0",
+              background: "#fff",
               padding: "5px 10px",
-              width: "150px",
               position: "relative",
-              display: "flex",
               alignItems: "center",
-              justifyContent: "space-between",
-              background: "#fff"
+              justifyContent: "space-between"
             }}
-            onClick={() => {
+            onClick={() =>
               this.setState(state => ({
                 showDropdown: !state.showDropdown
-              }));
-            }}
+              }))
+            }
           >
-            <div>{this.state.currentOption}</div>
+            <span>{this.state.currentOption}</span>
             {this.state.showDropdown ? (
               <div
                 style={{
@@ -68,7 +73,7 @@ class CollapsibleDropdownListbox extends Component {
                   height: "0",
                   borderLeft: "8px solid transparent",
                   borderRight: "8px solid transparent",
-                  borderBottom: "8px solid #aaa",
+                  borderBottom: "8px solid #AAA",
                   content: ""
                 }}
               />
@@ -79,17 +84,12 @@ class CollapsibleDropdownListbox extends Component {
                   height: "0",
                   borderLeft: "8px solid transparent",
                   borderRight: "8px solid transparent",
-                  borderTop: "8px solid #aaa",
+                  borderTop: "8px solid #AAA",
                   content: ""
                 }}
               />
             )}
           </button>
-          {/* 
-              what if this prop isn't passed? 
-              position the listbox right under the button
-            */}
-
           {this.state.showDropdown ? (
             <div
               tabIndex={0}
@@ -104,27 +104,25 @@ class CollapsibleDropdownListbox extends Component {
               <Listbox
                 focused
                 firstFocused
+                ariaLabelledBy="exp_elem"
                 updateValue={this.updateValue}
-                activeStyles={{ background: "#bde4ff" }}
+                activeStyles={{ background: "#BDE4FF" }}
                 style={{
+                  borderTop: 0,
                   width: "148px",
                   maxHeight: "18em",
                   overflowY: "auto",
-                  background: "#fff",
-                  borderTop: 0,
-                  border: "1px solid #aaa",
+                  background: "#FFF",
                   position: "absolute",
-                  zIndex: 9999
+                  border: "1px solid #AAA"
                 }}
               >
                 <OptionsList>
-                  {transuraniumElements.map(element => {
-                    return (
-                      <Option key={element}>
-                        <div style={{ padding: "5px" }}>{element}</div>
-                      </Option>
-                    );
-                  })}
+                  {transuraniumElements.map(element => (
+                    <Option key={element}>
+                      <div style={{ padding: "5px" }}>{element}</div>
+                    </Option>
+                  ))}
                 </OptionsList>
               </Listbox>
             </div>
