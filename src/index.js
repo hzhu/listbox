@@ -26,7 +26,8 @@ export class Listbox extends Component {
     style: PropTypes.object,
     activeClass: PropTypes.string,
     updateValue: PropTypes.func,
-    activeStyles: PropTypes.object
+    activeStyles: PropTypes.object,
+    onKeyDown: PropTypes.func
   };
 
   static defaultProps = {
@@ -34,7 +35,8 @@ export class Listbox extends Component {
     activeClass: "",
     updateValue: () => {},
     activeStyles: { background: "#BDE4FF" },
-    activeIndex: undefined
+    activeIndex: undefined,
+    onKeyDown: () => {}
   };
 
   state = {
@@ -148,7 +150,9 @@ export class Listbox extends Component {
   }
 
   onKeyDown = (e, children) => {
-    if (this.props.grid) {
+    const { grid, onKeyDown } = this.props;
+    onKeyDown(e);
+    if (grid) {
       this.checkKeyPressGrid(e);
     } else {
       this.checkKeyPress(e, children);

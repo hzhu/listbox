@@ -1,6 +1,6 @@
 import React, { Component, createRef } from "react";
-import { Listbox, Option, OptionsList } from "../src";
-import { transuraniumElements } from "./constants";
+import { Listbox, Option, OptionsList } from "../../src";
+import { transuraniumElements } from "../constants";
 
 class CollapsibleDropdownListbox extends Component {
   state = {
@@ -20,9 +20,10 @@ class CollapsibleDropdownListbox extends Component {
     };
     this.setState(updater);
   };
-  hideListbox = () => {
-    this.btnRef.current.focus();
-    this.setState({ showDropdown: false });
+  hideDropdown = () => {
+    this.setState({ showDropdown: false }, () =>
+      setTimeout(() => this.btnRef.current.focus(), 0)
+    );
   };
   btnRef = createRef();
   render() {
@@ -65,7 +66,7 @@ class CollapsibleDropdownListbox extends Component {
               }))
             }
           >
-            <span>{this.state.currentOption}</span>
+            {this.state.currentOption}
             {this.state.showDropdown ? (
               <div
                 style={{
@@ -91,19 +92,16 @@ class CollapsibleDropdownListbox extends Component {
             )}
           </button>
           {this.state.showDropdown ? (
-            <div
-              tabIndex={0}
-              onBlur={this.hideListbox}
-              onKeyDown={e => {
-                e.preventDefault();
-                if (e.key === "Escape" || e.key === "Enter") {
-                  this.hideListbox();
-                }
-              }}
-            >
+            <div tabIndex={0} onBlur={() => this.hideDropdown}>
               <Listbox
                 focused
                 firstFocused
+                onKeyDown={e => {
+                  e.preventDefault();
+                  if (e.key === "Escape" || e.key === "Enter") {
+                    this.hideDropdown();
+                  }
+                }}
                 ariaLabelledBy="exp_elem"
                 updateValue={this.updateValue}
                 activeStyles={{ background: "#BDE4FF" }}
