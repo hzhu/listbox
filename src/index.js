@@ -1,23 +1,7 @@
 import React, { Component, createRef, createContext } from "react";
 import * as PropTypes from "prop-types";
 import "@babel/polyfill";
-
-const keyCode = {
-  BACKSPACE: 8,
-  TAB: 9,
-  RETURN: 13,
-  ESC: 27,
-  SPACE: 32,
-  PAGE_UP: 33,
-  PAGE_DOWN: 34,
-  END: 35,
-  HOME: 36,
-  LEFT: 37,
-  UP: 38,
-  RIGHT: 39,
-  DOWN: 40,
-  DELETE: 46
-};
+import { KEY_CODE } from "./constants";
 
 let ListboxContext = createContext();
 
@@ -86,13 +70,13 @@ export class Listbox extends Component {
     let currentItem;
     let nextItem;
     switch (e.which) {
-      case keyCode.UP:
-      case keyCode.DOWN:
+      case KEY_CODE.up:
+      case KEY_CODE.down:
         e.preventDefault();
         currentItem = this.isControlled()
           ? document.getElementById(this.props.activeId)
           : document.getElementById(this.state.activeId);
-        if (e.which === keyCode.UP) {
+        if (e.which === KEY_CODE.up) {
           nextItem = currentItem.previousElementSibling;
         } else {
           nextItem = currentItem.nextElementSibling;
@@ -136,7 +120,7 @@ export class Listbox extends Component {
     let currentItem;
     let nextItem;
     switch (e.which) {
-      case keyCode.UP:
+      case KEY_CODE.up:
         e.preventDefault();
         currentItem = document.getElementById(
           `listbox__option__0-${this.state.activeIndex}`
@@ -205,7 +189,6 @@ export class Listbox extends Component {
           tabIndex={0}
           style={style}
           role="listbox"
-          data-testid="Listbox"
           ref={this.listboxRef}
           aria-labelledby={ariaLabelledBy}
           aria-activedescendant={value.activeId}

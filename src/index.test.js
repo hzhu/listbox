@@ -1,20 +1,21 @@
 import React from "react";
 import {
+  wait,
   render,
-  prettyDOM,
-  fireEvent,
   cleanup,
-  wait
+  fireEvent,
+  prettyDOM
 } from "react-testing-library";
 import "jest-dom/extend-expect";
 import { Listbox, Option, OptionsList } from "./index";
+import { KEY_CODE } from "./constants";
 
 afterEach(cleanup);
 
 test("render listbox with the first option selected (snapshot)", () => {
   // Given
   const titleId = "lb-title";
-  const { getByTestId } = render(
+  const { getByRole } = render(
     <div>
       <span id={titleId}>Delicious Fruits</span>
       <Listbox ariaLabelledBy={titleId}>
@@ -28,11 +29,11 @@ test("render listbox with the first option selected (snapshot)", () => {
       </Listbox>
     </div>
   );
-  const listboxNode = getByTestId("Listbox");
+  const listboxNode = getByRole("listbox");
   const eventProperties = {
     key: "ArrowDown",
-    keyCode: 40,
-    which: 40
+    keyCode: KEY_CODE.down,
+    which: KEY_CODE.down
   };
 
   // When
@@ -45,7 +46,7 @@ test("render listbox with the first option selected (snapshot)", () => {
 
 test("renders listbox with a label", () => {
   const titleId = "lb-title";
-  const { getByTestId } = render(
+  const { getByRole } = render(
     <div>
       <span id={titleId}>Delicious Fruits</span>
       <Listbox ariaLabelledBy={titleId}>
@@ -57,12 +58,12 @@ test("renders listbox with a label", () => {
       </Listbox>
     </div>
   );
-  const listboxNode = getByTestId("Listbox");
+  const listboxNode = getByRole("listbox");
   expect(listboxNode).toHaveAttribute("aria-labelledby", titleId);
 });
 
 test("listbox is focused and selects first option on mount when passed the focus prop", () => {
-  const { getByTestId } = render(
+  const { getByRole } = render(
     <Listbox focused>
       <OptionsList>
         {["Apple", "Bananna", "Carrot"].map(fruit => (
@@ -71,13 +72,12 @@ test("listbox is focused and selects first option on mount when passed the focus
       </OptionsList>
     </Listbox>
   );
-  const testId = "Listbox";
-  const listboxNode = getByTestId(testId);
+  const listboxNode = getByRole("listbox");
   expect(listboxNode).toHaveAttribute(
     "aria-activedescendant",
     "listbox__option__0-0"
   );
-  expect(document.activeElement.dataset.testid).toBe(testId);
+  expect(listboxNode).toHaveFocus();
 });
 
 test("should select the second option using arrow key navigation", () => {
@@ -86,7 +86,7 @@ test("should select the second option using arrow key navigation", () => {
   const BANANNA = "Bananna";
   const CARROT = "Carrot";
   const fruits = [APPLE, BANANNA, CARROT];
-  const { getByText, getByTestId } = render(
+  const { getByText, getByRole } = render(
     <Listbox>
       <OptionsList>
         {fruits.map(fruit => (
@@ -95,11 +95,11 @@ test("should select the second option using arrow key navigation", () => {
       </OptionsList>
     </Listbox>
   );
-  const listboxNode = getByTestId("Listbox");
+  const listboxNode = getByRole("listbox");
   const eventProperties = {
     key: "ArrowDown",
-    keyCode: 40,
-    which: 40
+    keyCode: KEY_CODE.down,
+    which: KEY_CODE.down
   };
 
   // When
@@ -127,7 +127,7 @@ test("type a character: selects and focuses the next option that starts with the
   // Given
   const BANANNA = "Bananna";
   const fruits = ["Apple", BANANNA, "Carrot"];
-  const { getByTestId } = render(
+  const { getByRole } = render(
     <Listbox>
       <OptionsList>
         {fruits.map(fruit => (
@@ -136,7 +136,7 @@ test("type a character: selects and focuses the next option that starts with the
       </OptionsList>
     </Listbox>
   );
-  const node = getByTestId("Listbox");
+  const listboxNode = getByRole("listbox");
   const eventProperties = {
     key: "b",
     which: 66,
@@ -144,11 +144,11 @@ test("type a character: selects and focuses the next option that starts with the
   };
 
   // When
-  fireEvent.keyDown(node, eventProperties);
+  fireEvent.keyDown(listboxNode, eventProperties);
 
   // Then
   const activeIdx = fruits.indexOf(BANANNA);
-  expect(getByTestId("Listbox").getAttribute("aria-activedescendant")).toBe(
+  expect(getByRole("listbox").getAttribute("aria-activedescendant")).toBe(
     `listbox__option__0-${activeIdx}`
   );
 });
@@ -164,7 +164,7 @@ test("type multiple characters in rapid succession: focus moves to next item wit
     "Moscovium",
     "Tennessine"
   ];
-  const { getByTestId } = render(
+  const { getByRole } = render(
     <Listbox>
       <OptionsList>
         {transuraniumElements.map(element => (
@@ -173,7 +173,7 @@ test("type multiple characters in rapid succession: focus moves to next item wit
       </OptionsList>
     </Listbox>
   );
-  const listboxNode = getByTestId("Listbox");
+  const listboxNode = getByRole("listbox");
 
   // When
   fireEvent.keyDown(listboxNode, { key: "c", which: 67, keyCode: 67 });
@@ -200,7 +200,7 @@ test("calls updateValue prop with the new listbox state when user types multiple
   ];
   const SELECTED_IDX = transuraniumElements.indexOf(CALIFORNIUM);
   const updateValue = jest.fn();
-  const { getByTestId } = render(
+  const { getByRole } = render(
     <Listbox updateValue={updateValue}>
       <OptionsList>
         {transuraniumElements.map(element => (
@@ -209,7 +209,7 @@ test("calls updateValue prop with the new listbox state when user types multiple
       </OptionsList>
     </Listbox>
   );
-  const listboxNode = getByTestId("Listbox");
+  const listboxNode = getByRole("listbox");
 
   // When
   const keyEvents = [
@@ -265,7 +265,7 @@ test("calls updateValue prop when listbox option selection changes", () => {
   const CARROT = "Carrot";
   const fruits = [APPLE, BANANNA, CARROT];
   const updateValue = jest.fn();
-  const { getByText, getByTestId } = render(
+  const { getByText, getByRole } = render(
     <Listbox updateValue={updateValue}>
       <OptionsList>
         {fruits.map(fruit => (
@@ -274,11 +274,11 @@ test("calls updateValue prop when listbox option selection changes", () => {
       </OptionsList>
     </Listbox>
   );
-  const listboxNode = getByTestId("Listbox");
+  const listboxNode = getByRole("listbox");
   const eventProperties = {
     key: "ArrowDown",
-    keyCode: 40,
-    which: 40
+    keyCode: KEY_CODE.down,
+    which: KEY_CODE.down
   };
   listboxNode.focus();
   expect(getByText(APPLE)).toHaveAttribute("aria-selected", "true");

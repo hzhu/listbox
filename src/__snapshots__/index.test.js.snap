@@ -4,7 +4,6 @@ exports[`render listbox with the first option selected (snapshot) 1`] = `
 <div
   aria-activedescendant="listbox__option__0-1"
   aria-labelledby="lb-title"
-  data-testid="Listbox"
   role="listbox"
   tabindex="0"
 >
