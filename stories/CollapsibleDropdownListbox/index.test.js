@@ -44,3 +44,21 @@ test("closing the collapsible dropdown returns focus to the button", async () =>
     expect(dropdownButton).toHaveFocus();
   });
 });
+
+test("pressing letter selects corresponding option and sets the button's text accordingly", () => {
+  // Given
+  const { getByLabelText, getByRole } = render(<CollapsibleDropdown />);
+  const dropdownButton = getByLabelText("Choose an element");
+  expect(dropdownButton).toHaveAttribute("aria-expanded", "false");
+  fireEvent.click(dropdownButton);
+  expect(dropdownButton).toHaveAttribute("aria-expanded", "true");
+  const listboxNode = getByRole("listbox");
+  expect(dropdownButton.textContent).toBe("Neptunium");
+
+  // When
+  fireEvent.keyDown(listboxNode, { key: "c", which: 67, keyCode: 67 });
+  fireEvent.keyDown(listboxNode, { key: "a", which: 65, keyCode: 65 });
+
+  // Then
+  expect(dropdownButton.textContent).toBe("Californium");
+});

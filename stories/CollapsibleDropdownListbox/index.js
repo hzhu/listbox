@@ -92,7 +92,7 @@ class CollapsibleDropdownListbox extends Component {
             )}
           </button>
           {this.state.showDropdown ? (
-            <div tabIndex={0} onBlur={() => this.hideDropdown}>
+            <div tabIndex={0} onBlur={this.hideDropdown}>
               <Listbox
                 focused
                 firstFocused

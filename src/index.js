@@ -68,9 +68,7 @@ export class Listbox extends Component {
     const activeId = element.id;
     const { index } = element.dataset;
     const activeIndex = Number(index);
-    this.setState({ activeId, activeIndex }, () => {
-      this.props.updateValue({ activeIndex, activeId });
-    });
+    this.state.selectOptionIndex(activeIndex, activeId);
   }
 
   focusItem(element) {
@@ -126,10 +124,10 @@ export class Listbox extends Component {
         return value.startsWith(this.cacheTypedChars);
       });
       if (filteredChildren.length) {
-        this.setState({
-          activeIndex: filteredChildren[0].props.optionIndex,
-          activeId: filteredChildren[0].props.id
-        });
+        this.state.selectOptionIndex(
+          filteredChildren[0].props.optionIndex,
+          filteredChildren[0].props.id
+        );
       }
     }
   }

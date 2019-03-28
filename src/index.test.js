@@ -186,6 +186,46 @@ test("type multiple characters in rapid succession: focus moves to next item wit
   );
 });
 
+test("calls updateValue prop with the new listbox state when user types multiple characters in rapid succession", () => {
+  // Given
+  const CALIFORNIUM = "Californium";
+  const transuraniumElements = [
+    "Plutonium",
+    "Americium",
+    "Curium",
+    "Berkelium",
+    CALIFORNIUM,
+    "Moscovium",
+    "Tennessine"
+  ];
+  const SELECTED_IDX = transuraniumElements.indexOf(CALIFORNIUM);
+  const updateValue = jest.fn();
+  const { getByTestId } = render(
+    <Listbox updateValue={updateValue}>
+      <OptionsList>
+        {transuraniumElements.map(element => (
+          <Option key={element}>{element}</Option>
+        ))}
+      </OptionsList>
+    </Listbox>
+  );
+  const listboxNode = getByTestId("Listbox");
+
+  // When
+  const keyEvents = [
+    { key: "c", which: 67, keyCode: 67 },
+    { key: "a", which: 65, keyCode: 65 }
+  ];
+  keyEvents.forEach(event => fireEvent.keyDown(listboxNode, event));
+
+  // Then
+  expect(updateValue).toBeCalledTimes(keyEvents.length);
+  expect(updateValue).toHaveBeenLastCalledWith({
+    activeId: `listbox__option__0-${SELECTED_IDX}`,
+    activeIndex: SELECTED_IDX
+  });
+});
+
 test("should expose a highlighted index when user 'enters' an option for controlled listbox component", () => {
   // Given
   const CALIFORNIUM = "Californium";

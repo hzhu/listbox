@@ -25,7 +25,7 @@
     "react-dom": "^16.8.4"
   },
   "scripts": {
-    "test": "jest",
+    "test": "jest --verbose",
     "storybook": "start-storybook -p 9009 -s public",
     "build-storybook": "build-storybook -s public"
   },
