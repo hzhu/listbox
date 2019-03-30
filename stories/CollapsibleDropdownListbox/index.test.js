@@ -1,10 +1,10 @@
 import React from "react";
 import {
+  wait,
   render,
-  prettyDOM,
-  fireEvent,
   cleanup,
-  wait
+  fireEvent,
+  prettyDOM
 } from "react-testing-library";
 import "jest-dom/extend-expect";
 import CollapsibleDropdown from "./index";
@@ -61,4 +61,48 @@ test("pressing letter selects corresponding option and sets the button's text ac
 
   // Then
   expect(dropdownButton.textContent).toBe("Californium");
+});
+
+test("tabbing out of the collapsible dropdown (open state) puts the focus on the next focusable element", () => {
+  // Given
+  const { getByLabelText, getByRole, getByText } = render(
+    <div>
+      <CollapsibleDropdown />
+      <button>Submit</button>
+    </div>
+  );
+  const dropdownButton = getByLabelText("Choose an element");
+  expect(dropdownButton).toHaveAttribute("aria-expanded", "false");
+  fireEvent.click(dropdownButton);
+  expect(dropdownButton).toHaveAttribute("aria-expanded", "true");
+  expect(dropdownButton.textContent).toBe("Neptunium");
+  const listboxNode = getByRole("listbox");
+  const submitButton = getByText("Submit");
+
+  // When
+  fireEvent.keyDown(listboxNode, { key: "c", which: 67, keyCode: 67 });
+  expect(listboxNode).toHaveFocus();
+  fireEvent.keyDown(listboxNode, { key: "Tab", which: 9, keyCode: 9 });
+
+  // Then
+  expect(submitButton).toHaveFocus();
+});
+
+test("tabbing out of the collapsible dropdown (open state) puts the focus on the body element", () => {
+  // Given
+  const { getByLabelText, getByRole } = render(<CollapsibleDropdown />);
+  const dropdownButton = getByLabelText("Choose an element");
+  expect(dropdownButton).toHaveAttribute("aria-expanded", "false");
+  fireEvent.click(dropdownButton);
+  expect(dropdownButton).toHaveAttribute("aria-expanded", "true");
+  expect(dropdownButton.textContent).toBe("Neptunium");
+  const listboxNode = getByRole("listbox");
+
+  // When
+  fireEvent.keyDown(listboxNode, { key: "c", which: 67, keyCode: 67 });
+  expect(listboxNode).toHaveFocus();
+  fireEvent.keyDown(listboxNode, { key: "Tab", which: 9, keyCode: 9 });
+
+  // Then
+  expect(document.body).toHaveFocus();
 });
