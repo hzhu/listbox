@@ -222,7 +222,8 @@ test("calls updateValue prop with the new listbox state when user types multiple
   expect(updateValue).toBeCalledTimes(keyEvents.length);
   expect(updateValue).toHaveBeenLastCalledWith({
     activeId: `listbox__option__0-${SELECTED_IDX}`,
-    activeIndex: SELECTED_IDX
+    activeIndex: SELECTED_IDX,
+    selectedItem: CALIFORNIUM
   });
 });
 
@@ -299,4 +300,57 @@ test("calls updateValue prop when listbox option selection changes", () => {
 
   // And then
   expect(updateValue).toBeCalledTimes(2);
+});
+
+test("should be able to navigate a grid based listbox", () => {
+  // Given
+  const updateValue = jest.fn();
+  const { getByRole } = render(
+    <Listbox grid updateValue={updateValue}>
+      <OptionsList>
+        <Option>One</Option>
+        <Option>Two</Option>
+        <Option>Three</Option>
+      </OptionsList>
+      <OptionsList>
+        <Option>Four</Option>
+        <Option>Five</Option>
+        <Option>Six</Option>
+      </OptionsList>
+    </Listbox>
+  );
+  const listboxNode = getByRole("listbox");
+
+  listboxNode.focus();
+
+  expect(listboxNode).toHaveAttribute(
+    "aria-activedescendant",
+    "listbox__option__0-0"
+  );
+
+  // Navigate down one row
+  fireEvent.keyDown(listboxNode, {
+    keyCode: KEY_CODE.down
+  });
+
+  // Navigate right one column
+  fireEvent.keyDown(listboxNode, {
+    keyCode: KEY_CODE.right
+  });
+
+  // Navigate right another column
+  fireEvent.keyDown(listboxNode, {
+    keyCode: KEY_CODE.right
+  });
+
+  expect(listboxNode).toHaveAttribute(
+    "aria-activedescendant",
+    "listbox__option__1-2"
+  );
+  expect(updateValue).toBeCalledTimes(3);
+  expect(updateValue).toHaveBeenLastCalledWith({
+    activeId: "listbox__option__1-2",
+    activeIndex: 5,
+    selectedItem: "Six"
+  });
 });

@@ -52,7 +52,7 @@ export class Listbox extends Component {
     const activeId = element.id;
     const { index } = element.dataset;
     const activeIndex = Number(index);
-    this.state.selectOptionIndex(activeIndex, activeId);
+    this.state.selectOptionIndex(activeIndex, activeId, element.textContent);
   }
 
   focusItem(element) {
@@ -110,25 +110,50 @@ export class Listbox extends Component {
       if (filteredChildren.length) {
         this.state.selectOptionIndex(
           filteredChildren[0].props.optionIndex,
-          filteredChildren[0].props.id
+          filteredChildren[0].props.id,
+          getDeepestChild(filteredChildren[0])
         );
       }
     }
   }
 
+  /**
+   * Handles setting the next active option in a grid based listbox.
+   * @param {Object} e
+   */
   checkKeyPressGrid(e) {
-    let currentItem;
+    const idPrefix = "listbox__option__";
+    const activeNode = document.getElementById(this.state.activeId);
+    const currentCoords = activeNode.id.slice(idPrefix.length).split("-");
     let nextItem;
-    switch (e.which) {
+    switch (e.which || e.keyCode) {
+      case KEY_CODE.left:
+        e.preventDefault();
+        nextItem = activeNode.previousElementSibling;
+        break;
+      case KEY_CODE.right:
+        e.preventDefault();
+        nextItem = activeNode.nextElementSibling;
+        break;
       case KEY_CODE.up:
         e.preventDefault();
-        currentItem = document.getElementById(
-          `listbox__option__0-${this.state.activeIndex}`
-        );
-        nextItem = currentItem.previousElementSibling;
-        this.focusItem(nextItem);
-        this.setItem(nextItem);
+        currentCoords[0] = Number(currentCoords[0]) - 1;
+        var nextCoords = currentCoords.join("-");
+        var nextActiveId = idPrefix + nextCoords;
+        nextItem = document.getElementById(nextActiveId);
+        break;
+      case KEY_CODE.down:
+        e.preventDefault();
+        currentCoords[0] = Number(currentCoords[0]) + 1;
+        var nextCoords = currentCoords.join("-");
+        var nextActiveId = idPrefix + nextCoords;
+        nextItem = document.getElementById(nextActiveId);
+        break;
+      default:
+        break;
     }
+
+    if (nextItem) this.setItem(nextItem);
   }
 
   onKeyDown = (e, children) => {
@@ -249,14 +274,15 @@ export const Option = ({
   row,
   col,
   index,
+  style,
   onSelect,
   isSelected,
   onMouseEnter,
   isHighlighted,
   children
 }) => {
-  const styles =
-    isSelected || isHighlighted ? { background: "#BDE4FF" } : undefined;
+  const activeStyle =
+    isSelected || isHighlighted ? { background: "#BDE4FF" } : {};
   return (
     <div
       role="option"
@@ -265,7 +291,7 @@ export const Option = ({
       onMouseEnter={onMouseEnter}
       id={`listbox__option__${row}-${col}`}
       aria-selected={isSelected || undefined}
-      style={{ ...styles, listStyle: "none" }}
+      style={{ ...activeStyle, listStyle: "none", ...style }}
     >
       {children}
     </div>
