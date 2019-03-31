@@ -1,42 +1,40 @@
 import React, { Component, createRef } from "react";
 import { Listbox, Option, OptionsList } from "../../src";
 import { transuraniumElements } from "../constants";
+import { KEY_CODE } from "../../src/constants";
 
 class CollapsibleDropdownListbox extends Component {
   state = {
     showDropdown: false,
     currentOption: "Neptunium"
   };
-  updateValue = ({ activeIndex }) => {
+  updateValue = ({ activeIndex, activeId }) => {
     const updater = state => {
-      if (state.showDropdown === false) {
-        return {
-          currentOption: transuraniumElements[activeIndex],
-          showDropdown: true
-        };
-      } else {
-        return { currentOption: transuraniumElements[activeIndex] };
-      }
+      return {
+        currentOption: transuraniumElements[activeIndex],
+        activeIndex,
+        activeId
+      };
     };
     this.setState(updater);
   };
   hideDropdown = (event = {}) => {
     event.preventDefault();
     event.persist();
-    if (event.which === 32) return;
-    this.setState({ showDropdown: false }, () => {
-      const button = this.btnRef.current;
-      const dropdown = this.collapsibleDropdownRef.current;
-      switch (event.key) {
-        case "Escape":
-        case "Enter":
-          button && button.focus();
-          break;
-        case "Tab":
-          dropdown && dropdown.nextSibling && dropdown.nextSibling.focus();
-          break;
-      }
-    });
+    if (event.keyCode === KEY_CODE.esc || event.keyCode === KEY_CODE.return) {
+      this.setState({ showDropdown: false }, () => {
+        setTimeout(() => this.btnRef.current.focus(), 0);
+      });
+    }
+    if (event.keyCode === KEY_CODE.tab) {
+      this.setState({ showDropdown: false }, () => {
+        const dropdown = this.collapsibleDropdownRef.current;
+        dropdown && dropdown.nextSibling && dropdown.nextSibling.focus();
+      });
+    }
+    if (event.type === "blur") {
+      this.setState({ showDropdown: false });
+    }
   };
   btnRef = createRef();
   collapsibleDropdownRef = createRef();
@@ -109,8 +107,9 @@ class CollapsibleDropdownListbox extends Component {
           <div tabIndex={0} onBlur={this.hideDropdown}>
             <Listbox
               focused
-              firstFocused
               ariaLabelledBy="exp_elem"
+              activeId={this.state.activeId}
+              activeIndex={this.state.activeIndex}
               updateValue={this.updateValue}
               onKeyDown={e => this.hideDropdown(e)}
               activeStyles={{ background: "#BDE4FF" }}

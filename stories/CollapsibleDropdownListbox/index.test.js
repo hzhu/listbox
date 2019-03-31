@@ -106,3 +106,7 @@ test("tabbing out of the collapsible dropdown (open state) puts the focus on the
   // Then
   expect(document.body).toHaveFocus();
 });
+
+test("selecting an option from the opened dropdown results in that item being highlighted the next time dropown is opened", () => {});
+
+test("collapsing the dropdown with esc key brings focus back to the button", () => {});

@@ -24,7 +24,7 @@ export class Listbox extends Component {
   };
 
   state = {
-    activeIndex: this.props.activeIndex || -1,
+    activeIndex: this.props.activeIndex,
     activeId: undefined,
     highlightedIndex: undefined,
     selectOptionIndex: (activeIndex, activeId, selectedItem) => {
@@ -85,6 +85,7 @@ export class Listbox extends Component {
           this.focusItem(nextItem);
           this.setItem(nextItem);
         }
+        break;
       default:
         this.findItemToFocus(e.which, children);
     }
@@ -189,10 +190,12 @@ export class Listbox extends Component {
               optionIndex,
               onMouseEnter: isControlled
                 ? e => {
-                    this.props.onMouseEnter(e, optionIndex);
-                    this.setState({
-                      highlightedIndex: optionIndex
-                    });
+                    if (this.props.onMouseEnter) {
+                      this.props.onMouseEnter(e, optionIndex);
+                      this.setState({
+                        highlightedIndex: optionIndex
+                      });
+                    }
                   }
                 : () => {}
             });
