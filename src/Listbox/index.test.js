@@ -8,7 +8,7 @@ import {
 } from "react-testing-library";
 import "jest-dom/extend-expect";
 import { Listbox, Option, OptionsList } from "./index";
-import { KEY_CODE } from "./constants";
+import { KEY_CODE } from "../constants.js";
 
 afterEach(cleanup);
 
