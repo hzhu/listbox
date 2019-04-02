@@ -46,6 +46,8 @@ export const FRUITS_AND_VEGGIES = [
   "Cucumber",
   "Daikon",
   "Date",
+  "Durian",
+  "Dragon fruit",
   "Edamame",
   "Eggplant",
   "Elderberry",
@@ -60,6 +62,7 @@ export const FRUITS_AND_VEGGIES = [
   "Kiwi",
   "Leek",
   "Lemon",
+  "Lychee",
   "Mango",
   "Mangosteen",
   "Melon",
@@ -70,6 +73,7 @@ export const FRUITS_AND_VEGGIES = [
   "Onion",
   "Orange",
   "Parship",
+  "Passion Fruit",
   "Pea",
   "Pear",
   "Pineapple",
@@ -111,4 +115,95 @@ export const CAR_COMPANIES = [
   "Toyota Motor Corp.",
   "Volkswagen Group",
   "Zhejiang Geely Holding Group"
+];
+
+export const EMOJIS = [
+  [
+    {
+      name: "grinning face",
+      emoji: "😀",
+      alias: ":grinning:"
+    },
+    {
+      name: "smiling face with sunglasses",
+      emoji: "😎",
+      alias: ":sunglasses:"
+    },
+    {
+      name: "drooling face",
+      emoji: "🤤",
+      alias: ":drooling_face:"
+    },
+    {
+      name: "smiling face with heart-eyes",
+      emoji: "😍",
+      alias: ":heart_eyes:"
+    }
+  ],
+  [
+    {
+      name: "smiling pile of poo",
+      emoji: "💩",
+      alias: ":poop:"
+    },
+    {
+      name: "pool 8 ball",
+      emoji: "🎱",
+      alias: ":8ball:"
+    },
+    {
+      name: "rocket",
+      emoji: "🚀",
+      alias: ":rocket:"
+    },
+    {
+      name: "nail polish",
+      emoji: "💅",
+      alias: ":nail_care:"
+    }
+  ],
+  [
+    {
+      name: "laptop computer",
+      emoji: "💻",
+      alias: ":computer:"
+    },
+    {
+      name: "table tennis paddle and ball",
+      emoji: "🏓",
+      alias: ":table-tennis-paddle-and-ball:"
+    },
+    {
+      name: "mushroom",
+      emoji: "🍄",
+      alias: ":mushroom:"
+    },
+    {
+      name: "basketball",
+      emoji: "🏀",
+      alias: ":basketball:"
+    }
+  ],
+  [
+    {
+      name: "strawberry",
+      emoji: "🍓",
+      alias: ":strawberry:"
+    },
+    {
+      name: "baseball",
+      emoji: "⚾️",
+      alias: ":baseball:"
+    },
+    {
+      name: "christmas tree",
+      emoji: "🎄",
+      alias: ":christmas_tree:"
+    },
+    {
+      name: "avacado",
+      emoji: "🥑",
+      alias: ":avacado:"
+    }
+  ]
 ];

@@ -2,14 +2,14 @@ import React from "react";
 
 import { storiesOf } from "@storybook/react";
 import Listbox from "./Listbox";
-import CollapsibleDropdownListbox from "./CollapsibleDropdownListbox";
-import CollapsibleDropdownExample from "./CollapsibleDropdownExample";
+import CollapsibleDropdown from "./CollapsibleDropdown";
 import Combobox from "./Combobox";
 import ScrollableListbox from "./ScrollableListbox";
+import EmojiPicker from "./EmojiPicker";
 
 storiesOf("Listbox Widgets", module)
-  .add("Listbox (base)", () => <Listbox />)
+  .add("Listbox (BASE)", () => <Listbox />)
+  .add("Scrollable Listbox", () => <ScrollableListbox />)
   .add("Combobox", () => <Combobox />)
-  .add("Collapsible Dropdown Listbox", () => <CollapsibleDropdownListbox />)
-  .add("Collapsible Dropdown Example", () => <CollapsibleDropdownExample />)
-  .add("Scrollable Listbox", () => <ScrollableListbox />);
+  .add("Collapsible Dropdown", () => <CollapsibleDropdown />)
+  .add("Collapsible Dropdown (Emoji)", () => <EmojiPicker />);

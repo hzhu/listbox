@@ -1,20 +1,19 @@
 import React, { Component, createRef, createContext } from "react";
-import * as PropTypes from "prop-types";
 import "@babel/polyfill";
 import { KEY_CODE } from "../constants";
-import { prettyDOM } from "react-testing-library";
+import { isDescendantListbox } from "../utils";
 
 const DropdownContext = createContext();
 
 export class CollapsibleDropdown extends Component {
   state = { expanded: false };
-
   toggleDropdown = () => {
     this.setState(state => ({ expanded: !state.expanded }));
   };
-
+  isControlled() {
+    return this.props.expanded != null;
+  }
   btnRef = createRef();
-
   render() {
     const contextValue = {
       ...this.state,
@@ -25,14 +24,19 @@ export class CollapsibleDropdown extends Component {
       <DropdownContext.Provider value={contextValue}>
         <div
           style={this.props.style}
+          onClick={e => {
+            if (!this.isControlled() && isDescendantListbox(e.target)) {
+              this.toggleDropdown();
+            }
+          }}
           onBlur={e => {
-            if (e.target.getAttribute("role") === "listbox") {
-              this.setState({ expanded: false });
+            if (isDescendantListbox(e.target)) {
+              this.toggleDropdown();
             }
           }}
           onKeyDown={e => {
+            if (!isDescendantListbox(e.target)) return;
             if (e.keyCode === KEY_CODE.space) e.preventDefault();
-            if (e.target.getAttribute("role") !== "listbox") return;
             if (e.keyCode === KEY_CODE.return || e.keyCode === KEY_CODE.esc) {
               this.setState({ expanded: false }, () => {
                 setTimeout(() => {
@@ -42,7 +46,7 @@ export class CollapsibleDropdown extends Component {
             }
           }}
         >
-          {this.props.children(this.state)}
+          {this.props.children(this.state.expanded)}
         </div>
       </DropdownContext.Provider>
     );

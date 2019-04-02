@@ -23,7 +23,9 @@ class ScrollableListbox extends Component {
             border: "1px solid #aaa"
           }}
         >
-          <span id="lb-title">Transuranium Elements</span>
+          <div style={{ marginBottom: "10px" }}>
+            <span id="lb-title">Transuranium Elements</span>
+          </div>
           <Listbox
             // focused
             // cycle

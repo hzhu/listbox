@@ -2,8 +2,9 @@ import React, { Component, createRef, createContext } from "react";
 import * as PropTypes from "prop-types";
 import "@babel/polyfill";
 import { KEY_CODE } from "../constants";
+import { getDeepestChild } from "../utils";
 
-let ListboxContext = createContext();
+const ListboxContext = createContext();
 
 export class Listbox extends Component {
   static propTypes = {
@@ -124,7 +125,9 @@ export class Listbox extends Component {
    */
   checkKeyPressGrid(e) {
     const idPrefix = "listbox__option__";
-    const activeNode = document.getElementById(this.state.activeId);
+    const activeNode = this.isControlled()
+      ? document.getElementById(this.props.activeId)
+      : document.getElementById(this.state.activeId);
     const currentCoords = activeNode.id.slice(idPrefix.length).split("-");
     let nextItem;
     switch (e.which || e.keyCode) {
@@ -172,8 +175,7 @@ export class Listbox extends Component {
   }
 
   render() {
-    const { style, ariaLabelledBy } = this.props;
-    const isControlled = this.isControlled();
+    const { style, highlight, ariaLabelledBy } = this.props;
     let index = 0;
     let children = React.Children.map(this.props.children, (OptionsList, row) =>
       React.cloneElement(OptionsList, {
@@ -188,16 +190,13 @@ export class Listbox extends Component {
               row,
               col,
               optionIndex,
-              onMouseEnter: isControlled
-                ? e => {
-                    if (this.props.onMouseEnter) {
-                      this.props.onMouseEnter(e, optionIndex);
-                      this.setState({
-                        highlightedIndex: optionIndex
-                      });
-                    }
-                  }
-                : () => {}
+              onMouseEnter: () => {
+                if (highlight) {
+                  this.setState({
+                    highlightedIndex: optionIndex
+                  });
+                }
+              }
             });
           }
         )
@@ -252,7 +251,7 @@ export const OptionsList = ({ style, children }) => {
               context.selectOptionIndex(
                 child.props.optionIndex,
                 activeId,
-                child.props.children
+                getDeepestChild(child)
               );
             }
           });
@@ -300,11 +299,3 @@ export const Option = ({
     </div>
   );
 };
-
-function getDeepestChild(node) {
-  if (typeof node.props.children === "string") {
-    return node.props.children;
-  } else {
-    return getDeepestChild(node.props.children);
-  }
-}
