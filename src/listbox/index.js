@@ -25,7 +25,7 @@ export class Listbox extends Component {
   };
 
   state = {
-    activeIndex: this.props.activeIndex,
+    activeIndex: undefined,
     activeId: undefined,
     highlightedIndex: undefined,
     selectOptionIndex: (activeIndex, activeId, selectedItem) => {

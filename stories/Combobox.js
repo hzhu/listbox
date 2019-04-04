@@ -131,6 +131,7 @@ class Combobox extends Component {
           {this.state.showListbox && this.state.query ? (
             <div ref={this.listboxRef}>
               <Listbox
+                highlight
                 activeIndex={this.state.activeIndex}
                 activeOptionId={this.state.activeOptionId}
                 updateValue={({ selectedItem }) => {

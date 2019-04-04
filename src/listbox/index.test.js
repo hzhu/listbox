@@ -302,7 +302,7 @@ test("calls updateValue prop when listbox option selection changes", () => {
   expect(updateValue).toBeCalledTimes(2);
 });
 
-test("should be able to navigate a grid based listbox", () => {
+test("able to navigate a grid based listbox with keyboard navigation", () => {
   // Given
   const updateValue = jest.fn();
   const { getByRole } = render(
@@ -328,6 +328,7 @@ test("should be able to navigate a grid based listbox", () => {
     "listbox__option__0-0"
   );
 
+  // When
   // Navigate down one row
   fireEvent.keyDown(listboxNode, {
     keyCode: KEY_CODE.down
@@ -343,6 +344,7 @@ test("should be able to navigate a grid based listbox", () => {
     keyCode: KEY_CODE.right
   });
 
+  // Then
   expect(listboxNode).toHaveAttribute(
     "aria-activedescendant",
     "listbox__option__1-2"
@@ -352,5 +354,72 @@ test("should be able to navigate a grid based listbox", () => {
     activeId: "listbox__option__1-2",
     activeIndex: 5,
     selectedItem: "Six"
+  });
+});
+
+test("clicking an option should focus and highlight that option", () => {
+  // Given
+  const APPLE = "Apple";
+  const BANANNA = "Bananna";
+  const CARROT = "Carrot";
+  const fruits = [APPLE, BANANNA, CARROT];
+  const { getByText, getByRole } = render(
+    <Listbox>
+      <OptionsList>
+        {fruits.map(fruit => (
+          <Option key={fruit}>{fruit}</Option>
+        ))}
+      </OptionsList>
+    </Listbox>
+  );
+  const listbox = getByRole("listbox");
+  const carrotNode = getByText(CARROT);
+  expect(listbox).not.toHaveAttribute("aria-activedescendant");
+  expect(carrotNode).not.toHaveAttribute("aria-selected", "true");
+
+  // When
+  const idx = fruits.indexOf(CARROT);
+  fireEvent.click(carrotNode);
+
+  // Then
+  expect(listbox).toHaveAttribute(
+    "aria-activedescendant",
+    `listbox__option__0-${idx}`
+  );
+  expect(carrotNode).toHaveAttribute("aria-selected", "true");
+});
+
+test("highlights the option on mouse enter when listbox is provided the highlight prop", () => {
+  // Given
+  const APPLE = "Apple";
+  const BANANNA = "Bananna";
+  const CARROT = "Carrot";
+  const fruits = ["Apple", "Bananna", "Carrot"];
+  const activeStyle = "background: rgb(189, 228, 255);";
+  const { getByText } = render(
+    <Listbox highlight>
+      <OptionsList>
+        {fruits.map(fruit => (
+          <Option key={fruit}>{fruit}</Option>
+        ))}
+      </OptionsList>
+    </Listbox>
+  );
+  const OPTION_TO_HIGHLIGHT = getByText(BANANNA);
+  fruits.forEach(fruit => {
+    expect(getByText(fruit)).not.toHaveStyle(activeStyle);
+  });
+
+  // When
+  fireEvent.mouseEnter(OPTION_TO_HIGHLIGHT);
+
+  // Then
+  fruits.forEach(fruit => {
+    const node = getByText(fruit);
+    if (fruit === BANANNA) {
+      expect(node).toHaveStyle(activeStyle);
+    } else {
+      expect(node).not.toHaveStyle(activeStyle);
+    }
   });
 });
