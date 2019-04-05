@@ -5,11 +5,13 @@ import Listbox from "./Listbox";
 import CollapsibleDropdown from "./CollapsibleDropdown";
 import Combobox from "./Combobox";
 import ScrollableListbox from "./ScrollableListbox";
-import EmojiPicker from "./EmojiPicker";
+import EmojiDropdown from "./EmojiDropdown";
+import EmojiListbox from "./EmojiListbox/";
 
 storiesOf("Listbox Widgets", module)
-  .add("Listbox (BASE)", () => <Listbox />)
+  .add("Listbox (Base)", () => <Listbox />)
+  .add("Listbox (Emoji)", () => <EmojiListbox />)
   .add("Scrollable Listbox", () => <ScrollableListbox />)
-  .add("Combobox", () => <Combobox />)
   .add("Collapsible Dropdown", () => <CollapsibleDropdown />)
-  .add("Collapsible Dropdown (Emoji)", () => <EmojiPicker />);
+  .add("Collapsible Dropdown (Emoji)", () => <EmojiDropdown />)
+  .add("Combobox", () => <Combobox />);

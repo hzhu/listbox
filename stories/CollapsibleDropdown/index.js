@@ -20,7 +20,7 @@ const Example = () => {
     setValue(selectedItem);
   };
   return (
-    <React.Fragment>
+    <>
       <CollapsibleDropdown
         expanded={expanded}
         style={{
@@ -29,7 +29,7 @@ const Example = () => {
         }}
       >
         {expanded => (
-          <React.Fragment>
+          <>
             <div style={{ marginBottom: "10px" }}>
               <span id="exp_elem">Choose an element</span>
             </div>
@@ -71,11 +71,11 @@ const Example = () => {
                 </OptionsList>
               </Listbox>
             ) : null}
-          </React.Fragment>
+          </>
         )}
       </CollapsibleDropdown>
       <button onClick={() => alert(`Submitting: ${value}`)}>Submit</button>
-    </React.Fragment>
+    </>
   );
 };
 

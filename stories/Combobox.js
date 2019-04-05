@@ -72,6 +72,7 @@ class Combobox extends Component {
                     return {
                       query: state.suggestions[state.activeIndex],
                       value: state.suggestions[state.activeIndex],
+                      activeIndex: -1, // reset
                       showListbox: false
                     };
                   };

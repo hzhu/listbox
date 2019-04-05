@@ -13,10 +13,10 @@ const Example = () => {
   const [activeId, setActiveId] = useState();
   const [activeIndex, setActiveIndex] = useState();
   return (
-    <React.Fragment>
+    <>
       <CollapsibleDropdown>
         {expanded => (
-          <React.Fragment>
+          <>
             <div style={{ marginBottom: "10px" }}>
               <span id="exp_elem">Choose an emoji</span>
             </div>
@@ -69,11 +69,11 @@ const Example = () => {
                 ))}
               </Listbox>
             ) : null}
-          </React.Fragment>
+          </>
         )}
       </CollapsibleDropdown>
       <button onClick={() => alert(`Submitting: ${value}`)}>Submit</button>
-    </React.Fragment>
+    </>
   );
 };
 
