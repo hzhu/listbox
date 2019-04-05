@@ -104,17 +104,15 @@ export class Listbox extends Component {
       this.cacheTypedChars = "";
     }, 500);
     if (this.cacheTypedChars) {
-      // ouch
-      const filteredChildren = children[0].props.children.filter(child => {
+      const optionsList = children[0].props.children.filter(child => {
         let value = getDeepestChild(child).toLowerCase();
         return value.startsWith(this.cacheTypedChars);
       });
-      if (filteredChildren.length) {
-        this.state.selectOptionIndex(
-          filteredChildren[0].props.optionIndex,
-          filteredChildren[0].props.id,
-          getDeepestChild(filteredChildren[0])
-        );
+      if (optionsList.length) {
+        const { id, index } = optionsList[0].props;
+        const selectedItem = getDeepestChild(optionsList[0]);
+        this.state.selectOptionIndex(index, id, selectedItem);
+        document.getElementById(id).scrollIntoView(false);
       }
     }
   }
@@ -175,33 +173,6 @@ export class Listbox extends Component {
   }
 
   render() {
-    const { style, highlight, ariaLabelledBy } = this.props;
-    let index = 0;
-    let children = React.Children.map(this.props.children, (OptionsList, row) =>
-      React.cloneElement(OptionsList, {
-        children: React.Children.map(
-          OptionsList.props.children,
-          (Option, col) => {
-            const optionIndex = index;
-            index++;
-            const id = `listbox__option__${row}-${col}`;
-            return React.cloneElement(Option, {
-              id,
-              row,
-              col,
-              optionIndex,
-              onMouseEnter: () => {
-                if (highlight) {
-                  this.setState({
-                    highlightedIndex: optionIndex
-                  });
-                }
-              }
-            });
-          }
-        )
-      })
-    );
     const value = this.isControlled()
       ? {
           ...this.state,
@@ -209,6 +180,43 @@ export class Listbox extends Component {
           activeId: this.props.activeId
         }
       : this.state;
+    const { style, highlight, ariaLabelledBy } = this.props;
+    let index = 0;
+    const children = React.Children.toArray(this.props.children)
+      .filter(child => typeof child.type === "function")
+      .map((OptionsList, row) =>
+        React.cloneElement(OptionsList, {
+          children: React.Children.map(
+            OptionsList.props.children,
+            (Option, col) => {
+              const optionIndex = index;
+              index++;
+              const id = `listbox__option__${row}-${col}`;
+              return React.cloneElement(Option, {
+                id,
+                index: optionIndex,
+                activeStyles: this.props.activeStyles,
+                isSelected: optionIndex === value.activeIndex,
+                isHighlighted: optionIndex === value.highlightedIndex,
+                onMouseEnter: () => {
+                  if (highlight) {
+                    this.setState({
+                      highlightedIndex: optionIndex
+                    });
+                  }
+                },
+                onSelect: e => {
+                  this.state.selectOptionIndex(
+                    optionIndex,
+                    id,
+                    getDeepestChild(Option)
+                  );
+                }
+              });
+            }
+          )
+        })
+      );
 
     return (
       <ListboxContext.Provider value={value}>
@@ -236,64 +244,41 @@ export class Listbox extends Component {
   }
 }
 
-export const OptionsList = ({ style, children }) => {
-  return (
-    <ListboxContext.Consumer>
-      {context => {
-        children = React.Children.map(children, child => {
-          return React.cloneElement(child, {
-            index: child.props.optionIndex,
-            isSelected: context.activeIndex === child.props.optionIndex,
-            isHighlighted: child.props.optionIndex === context.highlightedIndex,
-            onSelect: e => {
-              const { row, col } = child.props;
-              const activeId = `listbox__option__${row}-${col}`;
-              context.selectOptionIndex(
-                child.props.optionIndex,
-                activeId,
-                getDeepestChild(child)
-              );
-            }
-          });
-        });
-        return (
-          <div
-            style={{
-              padding: 0,
-              margin: 0,
-              ...style
-            }}
-          >
-            {children}
-          </div>
-        );
-      }}
-    </ListboxContext.Consumer>
-  );
-};
+export const OptionsList = ({ style, children }) => (
+  <div
+    style={{
+      padding: 0,
+      margin: 0,
+      ...style
+    }}
+  >
+    {children}
+  </div>
+);
 
 export const Option = ({
-  row,
-  col,
+  id,
   index,
   style,
   onSelect,
   isSelected,
   onMouseEnter,
+  activeStyles,
   isHighlighted,
-  children
+  children,
+  ...restProps
 }) => {
-  const activeStyle =
-    isSelected || isHighlighted ? { background: "#BDE4FF" } : {};
+  activeStyles = (isSelected || isHighlighted) && activeStyles;
   return (
     <div
+      id={id}
       role="option"
       data-index={index}
       onClick={onSelect}
       onMouseEnter={onMouseEnter}
-      id={`listbox__option__${row}-${col}`}
       aria-selected={isSelected || undefined}
-      style={{ listStyle: "none", ...activeStyle, ...style }}
+      style={{ listStyle: "none", ...activeStyles, ...style }}
+      {...restProps}
     >
       {children}
     </div>

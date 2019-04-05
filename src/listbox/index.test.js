@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   wait,
   render,
@@ -11,6 +11,12 @@ import { Listbox, Option, OptionsList } from "./index";
 import { KEY_CODE } from "../constants.js";
 
 afterEach(cleanup);
+
+beforeAll(() => {
+  if (!HTMLElement.prototype.scrollIntoView) {
+    HTMLElement.prototype.scrollIntoView = () => {};
+  }
+});
 
 test("render listbox with the first option selected (snapshot)", () => {
   // Given
@@ -42,6 +48,20 @@ test("render listbox with the first option selected (snapshot)", () => {
 
   // Then
   expect(listboxNode).toMatchSnapshot();
+});
+
+test("renders the listbox when user adds native elements as children of listbox (snapshot)", () => {
+  const { container } = render(
+    <Listbox focused>
+      <h1>Fruits</h1> {/* This element is removed from the tree */}
+      <OptionsList>
+        <Option>Apple</Option>
+        <Option>Bananna</Option>
+        <Option>Carrot</Option>
+      </OptionsList>
+    </Listbox>
+  );
+  expect(container).toMatchSnapshot();
 });
 
 test("renders listbox with a label", () => {
@@ -422,4 +442,47 @@ test("highlights the option on mouse enter when listbox is provided the highligh
       expect(node).not.toHaveStyle(activeStyle);
     }
   });
+});
+
+test("highlights the correct option when a user keys down on an controlled listbox component", () => {
+  // Given
+  const CARROT = "Carrot";
+  const fruits = ["Apple", "Bananna", CARROT];
+  const carrotIdx = fruits.indexOf(CARROT);
+  const Comp = () => {
+    const [activeIndex, setActiveIndex] = useState();
+    const [activeId, setActiveId] = useState();
+    const selectCarrot = () => {
+      setActiveId(`listbox__option__0-${carrotIdx}`);
+      setActiveIndex(carrotIdx);
+    };
+    return (
+      <>
+        <button onClick={selectCarrot}>Select Carrot</button>
+        <Listbox activeIndex={activeIndex} activeId={activeId}>
+          <OptionsList>
+            {fruits.map(fruit => (
+              <Option key={fruit}>{fruit}</Option>
+            ))}
+          </OptionsList>
+        </Listbox>
+      </>
+    );
+  };
+  const { getByText, getByRole } = render(<Comp />);
+  const button = getByText("Select Carrot");
+  const listbox = getByRole("listbox");
+  const carrotNode = getByText(CARROT);
+  expect(listbox).not.toHaveAttribute("aria-activedescendant");
+  expect(carrotNode).not.toHaveAttribute("aria-selected");
+
+  // When
+  fireEvent.click(button);
+
+  // Then
+  expect(listbox).toHaveAttribute(
+    "aria-activedescendant",
+    `listbox__option__0-${carrotIdx}`
+  );
+  expect(carrotNode).toHaveAttribute("aria-selected");
 });

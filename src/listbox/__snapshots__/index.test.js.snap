@@ -50,3 +50,43 @@ exports[`render listbox with the first option selected (snapshot) 1`] = `
   </div>
 </div>
 `;
+
+exports[`renders the listbox when user adds native elements as children of listbox (snapshot) 1`] = `
+<div>
+  <div
+    aria-activedescendant="listbox__option__0-0"
+    role="listbox"
+    tabindex="0"
+  >
+    <div
+      style="padding: 0px; margin: 0px;"
+    >
+      <div
+        aria-selected="true"
+        data-index="0"
+        id="listbox__option__0-0"
+        role="option"
+        style="list-style: none; background: rgb(189, 228, 255);"
+      >
+        Apple
+      </div>
+      <div
+        data-index="1"
+        id="listbox__option__0-1"
+        role="option"
+        style="list-style: none;"
+      >
+        Bananna
+      </div>
+      <div
+        data-index="2"
+        id="listbox__option__0-2"
+        role="option"
+        style="list-style: none;"
+      >
+        Carrot
+      </div>
+    </div>
+  </div>
+</div>
+`;
