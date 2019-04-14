@@ -5,7 +5,7 @@ import {
   cleanup,
   fireEvent,
   prettyDOM
-} from "react-testing-library";
+} from "@testing-library/react";
 import "jest-dom/extend-expect";
 import { Listbox, Option, OptionsList } from "./index";
 import { KEY_CODE, ID_PREFIX } from "../constants.js";
