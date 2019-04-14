@@ -247,7 +247,7 @@ test("calls updateValue prop with the new listbox state when user types multiple
   });
 });
 
-test("should expose a highlighted index when user 'enters' an option for controlled listbox component", () => {
+test("should expose a highlighted index when user highlights an option for controlled listbox component", done => {
   // Given
   const CALIFORNIUM = "Californium";
   const transuraniumElements = [
@@ -259,7 +259,7 @@ test("should expose a highlighted index when user 'enters' an option for control
     "Tennessine"
   ];
   const { getByText } = render(
-    <Listbox activeIndex={-1} onMouseEnter={onMouseEnter}>
+    <Listbox activeIndex={-1} onHighlight={onHighlight}>
       <OptionsList>
         {transuraniumElements.map(element => (
           <Option key={element}>{element}</Option>
@@ -273,9 +273,9 @@ test("should expose a highlighted index when user 'enters' an option for control
   fireEvent.mouseEnter(californiumOption);
 
   // Then (async)
-  function onMouseEnter(event, index) {
-    expect(event.type).toBe("mouseenter");
-    expect(index).toBe(transuraniumElements.indexOf(CALIFORNIUM));
+  function onHighlight(highlightedIndex) {
+    expect(highlightedIndex).toBe(transuraniumElements.indexOf(CALIFORNIUM));
+    done();
   }
 });
 

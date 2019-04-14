@@ -12,7 +12,8 @@ export class Listbox extends Component {
     activeClass: PropTypes.string,
     updateValue: PropTypes.func,
     activeStyles: PropTypes.object,
-    onKeyDown: PropTypes.func
+    onKeyDown: PropTypes.func,
+    onHighlight: PropTypes.func
   };
 
   static defaultProps = {
@@ -21,7 +22,8 @@ export class Listbox extends Component {
     updateValue: () => {},
     activeStyles: { background: "#BDE4FF" },
     activeIndex: undefined,
-    onKeyDown: () => {}
+    onKeyDown: () => {},
+    onHighlight: () => {}
   };
 
   state = {
@@ -180,7 +182,7 @@ export class Listbox extends Component {
           activeId: this.props.activeId
         }
       : this.state;
-    const { style, highlight, ariaLabelledBy } = this.props;
+    const { style, highlight, onHighlight, ariaLabelledBy } = this.props;
     let index = 0;
     const children = React.Children.toArray(this.props.children)
       .filter(child => typeof child.type === "function")
@@ -199,11 +201,11 @@ export class Listbox extends Component {
                 isSelected: optionIndex === value.activeIndex,
                 isHighlighted: optionIndex === value.highlightedIndex,
                 onMouseEnter: () => {
+                  const highlightedIndex = optionIndex;
                   if (highlight) {
-                    this.setState({
-                      highlightedIndex: optionIndex
-                    });
+                    this.setState({ highlightedIndex });
                   }
+                  onHighlight(highlightedIndex);
                 },
                 onSelect: e => {
                   this.state.selectOptionIndex(
