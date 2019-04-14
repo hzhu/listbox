@@ -53,7 +53,12 @@ export class CollapsibleDropdown extends Component {
   }
 }
 
-export const DropdownButton = ({ style, ariaLabelledBy, children }) => (
+export const DropdownButton = ({
+  style,
+  ariaLabelledBy,
+  children,
+  ...restProps
+}) => (
   <DropdownContext.Consumer>
     {context => (
       <button
@@ -65,6 +70,7 @@ export const DropdownButton = ({ style, ariaLabelledBy, children }) => (
         aria-expanded={context.expanded}
         aria-labelledby={`${ariaLabelledBy} exp_button`}
         onClick={context.toggleDropdown}
+        {...restProps}
       >
         {children}
       </button>
