@@ -7,6 +7,7 @@ import Combobox from "./Combobox";
 import ScrollableListbox from "./ScrollableListbox";
 import EmojiDropdown from "./EmojiDropdown";
 import EmojiListbox from "./EmojiListbox/";
+import GitHubEmojiPicker from "./GitHubEmojiPicker/";
 
 storiesOf("Listbox Widgets", module)
   .add("Listbox (Base)", () => <Listbox />)
@@ -14,4 +15,5 @@ storiesOf("Listbox Widgets", module)
   .add("Scrollable Listbox", () => <ScrollableListbox />)
   .add("Collapsible Dropdown", () => <CollapsibleDropdown />)
   .add("Collapsible Dropdown (Emoji)", () => <EmojiDropdown />)
+  .add("GitHub Reaction Picker", () => <GitHubEmojiPicker />)
   .add("Combobox", () => <Combobox />);

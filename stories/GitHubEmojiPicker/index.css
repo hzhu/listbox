@@ -1,0 +1,19 @@
+.grow-large {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  transition: -webkit-transform 0.25s ease-in-out;
+  transition: transform 0.25s ease-in-out;
+  transition: transform 0.25s ease-in-out, -webkit-transform 0.25s ease-in-out;
+}
+.grow-large:hover,
+.grow-large:focus {
+  -webkit-transform: scale(1.2);
+  transform: scale(1.2);
+}
+.grow-large:active {
+  -webkit-transform: scale(0.95);
+  transform: scale(0.95);
+}

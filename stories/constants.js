@@ -117,6 +117,49 @@ export const CAR_COMPANIES = [
   "Zhejiang Geely Holding Group"
 ];
 
+export const GITHUB_EMOJIS = [
+  {
+    name: "+1",
+    emoji: "👍",
+    label: "thumbs up"
+  },
+  {
+    name: "-1",
+    emoji: "👎",
+    label: "thumbs down"
+  },
+  {
+    name: "Laugh",
+    emoji: "😄",
+    label: "grinning face with smiling eyes"
+  },
+  {
+    name: "Hooray",
+    emoji: "🎉",
+    label: "party popper"
+  },
+  {
+    name: "Confused",
+    emoji: "😕",
+    label: "confused face"
+  },
+  {
+    name: "Heart",
+    emoji: "️❤️",
+    label: "red heart"
+  },
+  {
+    name: "Rocket",
+    emoji: "🚀",
+    label: "rocket"
+  },
+  {
+    name: "Eyes",
+    emoji: "👀",
+    label: "eyes"
+  }
+];
+
 export const EMOJIS = [
   [
     {
