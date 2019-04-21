@@ -3,7 +3,7 @@ import React from "react";
 import { storiesOf } from "@storybook/react";
 import Listbox from "./Listbox";
 import CollapsibleDropdown from "./CollapsibleDropdown";
-import Combobox from "./Combobox";
+import ComboBox from "./ComboBox";
 import ScrollableListbox from "./ScrollableListbox";
 import EmojiDropdown from "./EmojiDropdown";
 import EmojiListbox from "./EmojiListbox/";
@@ -16,4 +16,4 @@ storiesOf("Listbox Widgets", module)
   .add("Collapsible Dropdown", () => <CollapsibleDropdown />)
   .add("Collapsible Dropdown (Emoji)", () => <EmojiDropdown />)
   .add("GitHub Reaction Picker", () => <GitHubEmojiPicker />)
-  .add("Combobox", () => <Combobox />);
+  .add("ComboBox", () => <ComboBox />);
