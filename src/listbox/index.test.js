@@ -8,7 +8,7 @@ import {
 } from "react-testing-library";
 import "jest-dom/extend-expect";
 import { Listbox, Option, OptionsList } from "./index";
-import { KEY_CODE } from "../constants.js";
+import { KEY_CODE, ID_PREFIX } from "../constants.js";
 
 afterEach(cleanup);
 
@@ -95,7 +95,7 @@ test("listbox is focused and selects first option on mount when passed the focus
   const listboxNode = getByRole("listbox");
   expect(listboxNode).toHaveAttribute(
     "aria-activedescendant",
-    "listbox__option__0-0"
+    `${ID_PREFIX}0-0`
   );
   expect(listboxNode).toHaveFocus();
 });
@@ -139,7 +139,7 @@ test("should select the second option using arrow key navigation", () => {
   const activeIdx = fruits.indexOf(CARROT);
   expect(listboxNode).toHaveAttribute(
     "aria-activedescendant",
-    `listbox__option__0-${activeIdx}`
+    `${ID_PREFIX}0-${activeIdx}`
   );
 });
 
@@ -169,7 +169,7 @@ test("type a character: selects and focuses the next option that starts with the
   // Then
   const activeIdx = fruits.indexOf(BANANNA);
   expect(getByRole("listbox").getAttribute("aria-activedescendant")).toBe(
-    `listbox__option__0-${activeIdx}`
+    `${ID_PREFIX}0-${activeIdx}`
   );
 });
 
@@ -202,7 +202,7 @@ test("type multiple characters in rapid succession: focus moves to next item wit
   // Then
   const activeIdx = transuraniumElements.indexOf("Californium");
   expect(listboxNode.getAttribute("aria-activedescendant")).toBe(
-    `listbox__option__0-${activeIdx}`
+    `${ID_PREFIX}0-${activeIdx}`
   );
 });
 
@@ -241,7 +241,7 @@ test("calls updateValue prop with the new listbox state when user types multiple
   // Then
   expect(updateValue).toBeCalledTimes(keyEvents.length);
   expect(updateValue).toHaveBeenLastCalledWith({
-    activeId: `listbox__option__0-${SELECTED_IDX}`,
+    activeId: `${ID_PREFIX}0-${SELECTED_IDX}`,
     activeIndex: SELECTED_IDX,
     selectedItem: CALIFORNIUM
   });
@@ -305,7 +305,7 @@ test("calls updateValue prop when listbox option selection changes", () => {
   expect(getByText(APPLE)).toHaveAttribute("aria-selected", "true");
   expect(listboxNode).toHaveAttribute(
     "aria-activedescendant",
-    `listbox__option__0-0`
+    `${ID_PREFIX}0-0`
   );
 
   // When
@@ -345,7 +345,7 @@ test("able to navigate a grid based listbox with keyboard navigation", () => {
 
   expect(listboxNode).toHaveAttribute(
     "aria-activedescendant",
-    "listbox__option__0-0"
+    `${ID_PREFIX}0-0`
   );
 
   // When
@@ -367,11 +367,11 @@ test("able to navigate a grid based listbox with keyboard navigation", () => {
   // Then
   expect(listboxNode).toHaveAttribute(
     "aria-activedescendant",
-    "listbox__option__1-2"
+    `${ID_PREFIX}1-2`
   );
   expect(updateValue).toBeCalledTimes(3);
   expect(updateValue).toHaveBeenLastCalledWith({
-    activeId: "listbox__option__1-2",
+    activeId: `${ID_PREFIX}1-2`,
     activeIndex: 5,
     selectedItem: "Six"
   });
@@ -404,7 +404,7 @@ test("clicking an option should focus and highlight that option", () => {
   // Then
   expect(listbox).toHaveAttribute(
     "aria-activedescendant",
-    `listbox__option__0-${idx}`
+    `${ID_PREFIX}0-${idx}`
   );
   expect(carrotNode).toHaveAttribute("aria-selected", "true");
 });
@@ -453,7 +453,7 @@ test("highlights the correct option when a user keys down on an controlled listb
     const [activeIndex, setActiveIndex] = useState();
     const [activeId, setActiveId] = useState();
     const selectCarrot = () => {
-      setActiveId(`listbox__option__0-${carrotIdx}`);
+      setActiveId(`${ID_PREFIX}0-${carrotIdx}`);
       setActiveIndex(carrotIdx);
     };
     return (
@@ -482,7 +482,43 @@ test("highlights the correct option when a user keys down on an controlled listb
   // Then
   expect(listbox).toHaveAttribute(
     "aria-activedescendant",
-    `listbox__option__0-${carrotIdx}`
+    `${ID_PREFIX}0-${carrotIdx}`
   );
   expect(carrotNode).toHaveAttribute("aria-selected");
+});
+
+test("calls onAriaSelect for a controlled listbox component when aria focus changes", () => {
+  const CARROT = "Carrot";
+  const fruits = ["Apple", "Bananna", CARROT];
+  const carrotIdx = fruits.indexOf(CARROT);
+  const onAriaSelect = jest.fn();
+  const Comp = () => {
+    const [activeIndex, setActiveIndex] = useState();
+    const selectCarrot = () => setActiveIndex(carrotIdx);
+    return (
+      <>
+        <button onClick={selectCarrot}>Select Carrot</button>
+        <Listbox activeIndex={activeIndex} onAriaSelect={onAriaSelect}>
+          <OptionsList>
+            {fruits.map(fruit => (
+              <Option key={fruit}>{fruit}</Option>
+            ))}
+          </OptionsList>
+        </Listbox>
+      </>
+    );
+  };
+  const { getByText, getByRole } = render(<Comp />);
+  const button = getByText("Select Carrot");
+  const listbox = getByRole("listbox");
+  const carrotNode = getByText(CARROT);
+  expect(listbox).not.toHaveAttribute("aria-activedescendant");
+  expect(carrotNode).not.toHaveAttribute("aria-selected");
+
+  // When
+  fireEvent.click(button);
+
+  // Then
+  expect(onAriaSelect).toBeCalledTimes(1);
+  expect(onAriaSelect).toHaveBeenLastCalledWith(`${ID_PREFIX}0-${carrotIdx}`);
 });

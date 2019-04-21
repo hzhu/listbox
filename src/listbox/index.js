@@ -1,7 +1,7 @@
 import React, { Component, createRef, createContext } from "react";
 import * as PropTypes from "prop-types";
 import "@babel/polyfill";
-import { KEY_CODE } from "../constants";
+import { KEY_CODE, ID_PREFIX } from "../constants";
 import { getDeepestChild } from "../utils";
 
 const ListboxContext = createContext();
@@ -13,7 +13,8 @@ export class Listbox extends Component {
     updateValue: PropTypes.func,
     activeStyles: PropTypes.object,
     onKeyDown: PropTypes.func,
-    onHighlight: PropTypes.func
+    onHighlight: PropTypes.func,
+    onAriaSelect: PropTypes.func
   };
 
   static defaultProps = {
@@ -23,7 +24,8 @@ export class Listbox extends Component {
     activeStyles: { background: "#BDE4FF" },
     activeIndex: undefined,
     onKeyDown: () => {},
-    onHighlight: () => {}
+    onHighlight: () => {},
+    onAriaSelect: () => {}
   };
 
   state = {
@@ -42,9 +44,18 @@ export class Listbox extends Component {
     if (this.props.focused) {
       this.setState({
         activeIndex: 0,
-        activeId: "listbox__option__0-0"
+        activeId: `${ID_PREFIX}0-0`
       });
       this.listboxRef.current.focus();
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.isControlled()) {
+      const { activeIndex, onAriaSelect } = this.props;
+      if (activeIndex !== prevProps.activeIndex) {
+        onAriaSelect(`${ID_PREFIX}0-${activeIndex}`);
+      }
     }
   }
 
@@ -124,11 +135,10 @@ export class Listbox extends Component {
    * @param {Object} e
    */
   checkKeyPressGrid(e) {
-    const idPrefix = "listbox__option__";
     const activeNode = this.isControlled()
       ? document.getElementById(this.props.activeId)
       : document.getElementById(this.state.activeId);
-    const currentCoords = activeNode.id.slice(idPrefix.length).split("-");
+    const currentCoords = activeNode.id.slice(ID_PREFIX.length).split("-");
     let nextItem;
     switch (e.which || e.keyCode) {
       case KEY_CODE.left:
@@ -143,14 +153,14 @@ export class Listbox extends Component {
         e.preventDefault();
         currentCoords[0] = Number(currentCoords[0]) - 1;
         var nextCoords = currentCoords.join("-");
-        var nextActiveId = idPrefix + nextCoords;
+        var nextActiveId = ID_PREFIX + nextCoords;
         nextItem = document.getElementById(nextActiveId);
         break;
       case KEY_CODE.down:
         e.preventDefault();
         currentCoords[0] = Number(currentCoords[0]) + 1;
         var nextCoords = currentCoords.join("-");
-        var nextActiveId = idPrefix + nextCoords;
+        var nextActiveId = ID_PREFIX + nextCoords;
         nextItem = document.getElementById(nextActiveId);
         break;
       default:
@@ -193,7 +203,7 @@ export class Listbox extends Component {
             (Option, col) => {
               const optionIndex = index;
               index++;
-              const id = `listbox__option__${row}-${col}`;
+              const id = `${ID_PREFIX}${row}-${col}`;
               return React.cloneElement(Option, {
                 id,
                 index: optionIndex,
@@ -226,6 +236,7 @@ export class Listbox extends Component {
           tabIndex={0}
           style={style}
           role="listbox"
+          id={this.props.id}
           ref={this.listboxRef}
           aria-labelledby={ariaLabelledBy}
           aria-activedescendant={value.activeId}
@@ -234,7 +245,7 @@ export class Listbox extends Component {
             if (this.state.activeId === undefined) {
               this.setState({
                 activeIndex: 0,
-                activeId: "listbox__option__0-0"
+                activeId: `${ID_PREFIX}0-0`
               });
             }
           }}

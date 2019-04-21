@@ -2,7 +2,7 @@
 
 exports[`render listbox with the first option selected (snapshot) 1`] = `
 <div
-  aria-activedescendant="listbox__option__0-1"
+  aria-activedescendant="LISTBOX__OPTION__0-1"
   aria-labelledby="lb-title"
   role="listbox"
   tabindex="0"
@@ -12,7 +12,7 @@ exports[`render listbox with the first option selected (snapshot) 1`] = `
   >
     <div
       data-index="0"
-      id="listbox__option__0-0"
+      id="LISTBOX__OPTION__0-0"
       role="option"
       style="list-style: none;"
     >
@@ -25,7 +25,7 @@ exports[`render listbox with the first option selected (snapshot) 1`] = `
     <div
       aria-selected="true"
       data-index="1"
-      id="listbox__option__0-1"
+      id="LISTBOX__OPTION__0-1"
       role="option"
       style="list-style: none; background: rgb(189, 228, 255);"
     >
@@ -37,7 +37,7 @@ exports[`render listbox with the first option selected (snapshot) 1`] = `
     </div>
     <div
       data-index="2"
-      id="listbox__option__0-2"
+      id="LISTBOX__OPTION__0-2"
       role="option"
       style="list-style: none;"
     >
@@ -54,7 +54,7 @@ exports[`render listbox with the first option selected (snapshot) 1`] = `
 exports[`renders the listbox when user adds native elements as children of listbox (snapshot) 1`] = `
 <div>
   <div
-    aria-activedescendant="listbox__option__0-0"
+    aria-activedescendant="LISTBOX__OPTION__0-0"
     role="listbox"
     tabindex="0"
   >
@@ -64,7 +64,7 @@ exports[`renders the listbox when user adds native elements as children of listb
       <div
         aria-selected="true"
         data-index="0"
-        id="listbox__option__0-0"
+        id="LISTBOX__OPTION__0-0"
         role="option"
         style="list-style: none; background: rgb(189, 228, 255);"
       >
@@ -72,7 +72,7 @@ exports[`renders the listbox when user adds native elements as children of listb
       </div>
       <div
         data-index="1"
-        id="listbox__option__0-1"
+        id="LISTBOX__OPTION__0-1"
         role="option"
         style="list-style: none;"
       >
@@ -80,7 +80,7 @@ exports[`renders the listbox when user adds native elements as children of listb
       </div>
       <div
         data-index="2"
-        id="listbox__option__0-2"
+        id="LISTBOX__OPTION__0-2"
         role="option"
         style="list-style: none;"
       >

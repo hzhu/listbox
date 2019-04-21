@@ -1,3 +1,5 @@
+export const ID_PREFIX = "LISTBOX__OPTION__";
+
 export const KEY_CODE = {
   backspace: 8,
   tab: 9,
