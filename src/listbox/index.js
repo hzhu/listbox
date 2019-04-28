@@ -1,10 +1,8 @@
-import React, { Component, createRef, createContext } from "react";
+import React, { Component, createRef } from "react";
 import * as PropTypes from "prop-types";
 import "@babel/polyfill";
 import { KEY_CODE, ID_PREFIX } from "../constants";
 import { getDeepestChild } from "../utils";
-
-const ListboxContext = createContext();
 
 export class Listbox extends Component {
   static propTypes = {
@@ -194,13 +192,6 @@ export class Listbox extends Component {
   }
 
   render() {
-    const value = this.isControlled()
-      ? {
-          ...this.state,
-          activeIndex: this.props.activeIndex,
-          activeId: this.props.activeId
-        }
-      : this.state;
     const { style, highlight, onHighlight, ariaLabelledBy } = this.props;
     let index = 0;
     const children = React.Children.toArray(this.props.children)
@@ -217,8 +208,16 @@ export class Listbox extends Component {
                 id,
                 index: optionIndex,
                 activeStyles: this.props.activeStyles,
-                isSelected: optionIndex === value.activeIndex,
-                isHighlighted: optionIndex === value.highlightedIndex,
+                isSelected:
+                  optionIndex ===
+                  (this.isControlled()
+                    ? this.props.activeIndex
+                    : this.state.activeIndex),
+                isHighlighted:
+                  optionIndex ===
+                  (this.isControlled()
+                    ? this.props.highlightedIndex
+                    : this.state.highlightedIndex),
                 onMouseEnter: () => {
                   const highlightedIndex = optionIndex;
                   if (highlight) {
@@ -240,28 +239,28 @@ export class Listbox extends Component {
       );
 
     return (
-      <ListboxContext.Provider value={value}>
-        <div
-          tabIndex={0}
-          style={style}
-          role="listbox"
-          id={this.props.id}
-          ref={this.listboxRef}
-          aria-labelledby={ariaLabelledBy}
-          aria-activedescendant={value.activeId}
-          onKeyDown={e => this.onKeyDown(e, children)}
-          onFocus={e => {
-            if (this.state.activeId === undefined) {
-              this.setState({
-                activeIndex: 0,
-                activeId: `${ID_PREFIX}0-0`
-              });
-            }
-          }}
-        >
-          {children}
-        </div>
-      </ListboxContext.Provider>
+      <div
+        tabIndex={0}
+        style={style}
+        role="listbox"
+        id={this.props.id}
+        ref={this.listboxRef}
+        aria-labelledby={ariaLabelledBy}
+        aria-activedescendant={
+          this.isControlled() ? this.props.activeId : this.state.activeId
+        }
+        onKeyDown={e => this.onKeyDown(e, children)}
+        onFocus={e => {
+          if (this.state.activeId === undefined) {
+            this.setState({
+              activeIndex: 0,
+              activeId: `${ID_PREFIX}0-0`
+            });
+          }
+        }}
+      >
+        {children}
+      </div>
     );
   }
 }
