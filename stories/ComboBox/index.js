@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { KEY_CODE } from "../../src/constants";
 import { FRUITS_AND_VEGGIES } from "../constants";
 import { Listbox, Option, OptionsList } from "../../src";
+import { isDescendantListbox } from "../../src/utils";
 
 const COMBO_INPUT_KEYS = [
   KEY_CODE.up,
@@ -70,6 +71,15 @@ export default () => {
         console.log("default");
     }
   };
+  useEffect(() => {
+    const handleExpanded = e => {
+      if (isDescendantListbox(e.target) === false) {
+        setExpanded(false);
+      }
+    };
+    document.body.addEventListener("click", handleExpanded);
+    return () => document.body.removeEventListener("click", handleExpanded);
+  }, []);
   return (
     <>
       <label htmlFor="ex1-input" id="ex1-label">
@@ -91,12 +101,6 @@ export default () => {
           aria-controls="ex1-listbox"
           aria-activedescendant={activeId}
           onKeyDown={onKeyDown}
-          onBlur={() => {
-            if (activeIndex >= 0) {
-              setSearchQuery(suggestions[activeIndex]);
-            }
-            setExpanded(false);
-          }}
           onChange={e => {
             const { value } = e.target;
             setSearchQuery(value);
@@ -111,7 +115,6 @@ export default () => {
           id="ex1-listbox"
           ariaLabelledBy="ex1-label"
           activeIndex={activeIndex}
-          onHighlight={index => setActiveIndex(index)}
           onAriaSelect={activeId => setActiveId(activeId)}
           updateValue={({ activeIndex, selectedItem }) => {
             setExpanded(false);

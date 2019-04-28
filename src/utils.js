@@ -7,7 +7,8 @@ export const getDeepestChild = node => {
 };
 
 export const isDescendantListbox = node => {
-  if (node.getAttribute("role") === "listbox") {
+  const role = node.getAttribute("role");
+  if (role === "listbox" || role === "combobox") {
     return true;
   }
   if (node.parentElement === null) {
