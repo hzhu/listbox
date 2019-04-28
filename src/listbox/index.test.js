@@ -52,7 +52,7 @@ test("render listbox with the first option selected (snapshot)", () => {
 
 test("renders the listbox when user adds native elements as children of listbox (snapshot)", () => {
   const { container } = render(
-    <Listbox focused>
+    <Listbox ariaLabelledBy="lb-title" focused>
       <h1>Fruits</h1> {/* This element is removed from the tree */}
       <OptionsList>
         <Option>Apple</Option>

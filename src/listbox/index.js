@@ -8,24 +8,33 @@ const ListboxContext = createContext();
 
 export class Listbox extends Component {
   static propTypes = {
-    style: PropTypes.object,
     activeClass: PropTypes.string,
-    updateValue: PropTypes.func,
+    activeIndex: PropTypes.number,
     activeStyles: PropTypes.object,
-    onKeyDown: PropTypes.func,
+    ariaLabelledBy: PropTypes.string,
+    children: PropTypes.node.isRequired,
+    highlight: PropTypes.bool,
+    id: PropTypes.string,
+    onAriaSelect: PropTypes.func,
     onHighlight: PropTypes.func,
-    onAriaSelect: PropTypes.func
+    onKeyDown: PropTypes.func,
+    style: PropTypes.object,
+    updateValue: PropTypes.func
   };
 
   static defaultProps = {
-    style: {},
     activeClass: "",
-    updateValue: () => {},
-    activeStyles: { background: "#BDE4FF" },
     activeIndex: undefined,
-    onKeyDown: () => {},
+    activeStyles: { background: "#BDE4FF" },
+    ariaLabelledBy: "",
+    children: "",
+    highlight: false,
+    id: "",
+    onAriaSelect: () => {},
     onHighlight: () => {},
-    onAriaSelect: () => {}
+    onKeyDown: () => {},
+    style: {},
+    updateValue: () => {}
   };
 
   state = {

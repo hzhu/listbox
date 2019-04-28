@@ -4,6 +4,7 @@ exports[`render listbox with the first option selected (snapshot) 1`] = `
 <div
   aria-activedescendant="LISTBOX__OPTION__0-1"
   aria-labelledby="lb-title"
+  id=""
   role="listbox"
   tabindex="0"
 >
@@ -55,6 +56,8 @@ exports[`renders the listbox when user adds native elements as children of listb
 <div>
   <div
     aria-activedescendant="LISTBOX__OPTION__0-0"
+    aria-labelledby="lb-title"
+    id=""
     role="listbox"
     tabindex="0"
   >
