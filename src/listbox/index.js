@@ -1,83 +1,47 @@
-import React, { Component, createRef } from "react";
+import React, { useRef, useState, useEffect, createRef } from "react";
 import * as PropTypes from "prop-types";
 import "@babel/polyfill";
 import { KEY_CODE, ID_PREFIX } from "../constants";
 import { getDeepestChild } from "../utils";
 
-export class Listbox extends Component {
-  static propTypes = {
-    activeClass: PropTypes.string,
-    activeIndex: PropTypes.number,
-    activeStyles: PropTypes.object,
-    ariaLabelledBy: PropTypes.string,
-    children: PropTypes.node.isRequired,
-    highlight: PropTypes.bool,
-    id: PropTypes.string,
-    onAriaSelect: PropTypes.func,
-    onHighlight: PropTypes.func,
-    onKeyDown: PropTypes.func,
-    style: PropTypes.object,
-    updateValue: PropTypes.func
-  };
-
-  static defaultProps = {
-    activeClass: "",
-    activeIndex: undefined,
-    activeStyles: { background: "#BDE4FF" },
-    ariaLabelledBy: "",
-    children: "",
-    highlight: false,
-    id: "",
-    onAriaSelect: () => {},
-    onHighlight: () => {},
-    onKeyDown: () => {},
-    style: {},
-    updateValue: () => {}
-  };
-
-  state = {
-    activeIndex: undefined,
-    activeId: undefined,
-    highlightedIndex: undefined,
-    selectOptionIndex: (activeIndex, activeId, selectedItem) => {
-      this.props.updateValue({ activeIndex, activeId, selectedItem });
-      if (!this.isControlled()) {
-        this.setState({ activeIndex, activeId });
-      }
+export const Listbox = ({
+  id,
+  grid,
+  style,
+  focused,
+  children,
+  onKeyDown,
+  highlight,
+  activeClass,
+  updateValue,
+  onHighlight,
+  onAriaSelect,
+  activeStyles,
+  ariaLabelledBy,
+  activeId: controlledActiveId,
+  activeIndex: controlledActiveIndex
+}) => {
+  const [activeId, setActiveId] = useState();
+  const [activeIndex, setActiveIndex] = useState();
+  const [highlightedIndex, setHighlightedIndex] = useState();
+  const isControlled = controlledActiveIndex != null;
+  const selectOptionIndex = (activeIndex, activeId, selectedItem) => {
+    updateValue({ activeIndex, activeId, selectedItem });
+    if (!isControlled) {
+      setActiveId(activeId);
+      setActiveIndex(activeIndex);
     }
   };
-
-  componentDidMount() {
-    if (this.props.focused) {
-      this.setState({
-        activeIndex: 0,
-        activeId: `${ID_PREFIX}0-0`
-      });
-      this.listboxRef.current.focus();
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.isControlled()) {
-      const { activeIndex, onAriaSelect } = this.props;
-      if (activeIndex !== prevProps.activeIndex) {
-        onAriaSelect(`${ID_PREFIX}0-${activeIndex}`);
-      }
-    }
-  }
-
-  listboxRef = createRef();
-  selectedOptionRef = createRef();
-
-  setItem(element) {
+  const listboxRef = useRef();
+  const selectedOptionRef = createRef();
+  const setItem = element => {
     const activeId = element.id;
     const { index } = element.dataset;
     const activeIndex = Number(index);
-    this.state.selectOptionIndex(activeIndex, activeId, element.textContent);
-  }
-
-  focusItem(element) {
-    const listboxNode = this.listboxRef.current;
+    selectOptionIndex(activeIndex, activeId, element.textContent);
+  };
+  const focusItem = element => {
+    const listboxNode = listboxRef.current;
     const scrollBottom = listboxNode.clientHeight + listboxNode.scrollTop;
     const elementBottom = element.offsetTop + element.offsetHeight;
     if (elementBottom > scrollBottom) {
@@ -85,66 +49,62 @@ export class Listbox extends Component {
     } else if (element.offsetTop < listboxNode.scrollTop) {
       listboxNode.scrollTop = element.offsetTop;
     }
-  }
-
-  checkKeyPress(e, children) {
+  };
+  const checkKeyPress = (e, children) => {
     let currentItem;
     let nextItem;
     switch (e.which) {
       case KEY_CODE.up:
       case KEY_CODE.down:
         e.preventDefault();
-        currentItem = this.isControlled()
-          ? document.getElementById(this.props.activeId)
-          : document.getElementById(this.state.activeId);
+        currentItem = isControlled
+          ? document.getElementById(controlledActiveId)
+          : document.getElementById(activeId);
         if (e.which === KEY_CODE.up) {
           nextItem = currentItem.previousElementSibling;
         } else {
           nextItem = currentItem.nextElementSibling;
         }
         if (nextItem) {
-          this.focusItem(nextItem);
-          this.setItem(nextItem);
+          focusItem(nextItem);
+          setItem(nextItem);
         }
         break;
       default:
-        this.findItemToFocus(e.which, children);
+        findItemToFocus(e.which, children);
     }
-  }
-
-  cacheTypedChars = "";
-  cachedTimeoutId;
-
-  findItemToFocus(key, children) {
-    this.cacheTypedChars += String.fromCharCode(key).toLowerCase();
-    if (this.cachedTimeoutId) {
-      clearTimeout(this.cachedTimeoutId);
+  };
+  const cacheTypedChars = useRef("");
+  const cachedTimeoutId = useRef(null);
+  const findItemToFocus = (key, children) => {
+    cacheTypedChars.current += String.fromCharCode(key).toLowerCase();
+    if (cachedTimeoutId.current) {
+      clearTimeout(cachedTimeoutId.current);
     }
-    this.cachedTimeoutId = setTimeout(() => {
-      this.cacheTypedChars = "";
+    cachedTimeoutId.current = setTimeout(() => {
+      cacheTypedChars.current = "";
     }, 500);
-    if (this.cacheTypedChars) {
+    if (cacheTypedChars.current) {
       const optionsList = children[0].props.children.filter(child => {
         let value = getDeepestChild(child).toLowerCase();
-        return value.startsWith(this.cacheTypedChars);
+        return value.startsWith(cacheTypedChars.current);
       });
       if (optionsList.length) {
         const { id, index } = optionsList[0].props;
         const selectedItem = getDeepestChild(optionsList[0]);
-        this.state.selectOptionIndex(index, id, selectedItem);
+        selectOptionIndex(index, id, selectedItem);
         document.getElementById(id).scrollIntoView(false);
       }
     }
-  }
-
+  };
   /**
    * Handles setting the next active option in a grid based listbox.
    * @param {Object} e
    */
-  checkKeyPressGrid(e) {
-    const activeNode = this.isControlled()
-      ? document.getElementById(this.props.activeId)
-      : document.getElementById(this.state.activeId);
+  const checkKeyPressGrid = e => {
+    const activeNode = isControlled
+      ? document.getElementById(controlledActiveId)
+      : document.getElementById(activeId);
     const currentCoords = activeNode.id.slice(ID_PREFIX.length).split("-");
     let nextItem;
     switch (e.which || e.keyCode) {
@@ -174,96 +134,117 @@ export class Listbox extends Component {
         break;
     }
 
-    if (nextItem) this.setItem(nextItem);
-  }
-
-  onKeyDown = (e, children) => {
-    const { grid, onKeyDown } = this.props;
+    if (nextItem) setItem(nextItem);
+  };
+  const handleKeyDown = (e, children) => {
     onKeyDown(e);
     if (grid) {
-      this.checkKeyPressGrid(e);
+      checkKeyPressGrid(e);
     } else {
-      this.checkKeyPress(e, children);
+      checkKeyPress(e, children);
     }
   };
-
-  isControlled() {
-    return this.props.activeIndex != null;
-  }
-
-  render() {
-    const { style, highlight, onHighlight, ariaLabelledBy } = this.props;
-    let index = 0;
-    const children = React.Children.toArray(this.props.children)
-      .filter(child => typeof child.type === "function")
-      .map((OptionsList, row) =>
-        React.cloneElement(OptionsList, {
-          children: React.Children.map(
-            OptionsList.props.children,
-            (Option, col) => {
-              const optionIndex = index;
-              index++;
-              const id = `${ID_PREFIX}${row}-${col}`;
-              return React.cloneElement(Option, {
-                id,
-                index: optionIndex,
-                activeStyles: this.props.activeStyles,
-                isSelected:
-                  optionIndex ===
-                  (this.isControlled()
-                    ? this.props.activeIndex
-                    : this.state.activeIndex),
-                isHighlighted:
-                  optionIndex ===
-                  (this.isControlled()
-                    ? this.props.highlightedIndex
-                    : this.state.highlightedIndex),
-                onMouseEnter: () => {
-                  const highlightedIndex = optionIndex;
-                  if (highlight) {
-                    this.setState({ highlightedIndex });
-                  }
-                  onHighlight(highlightedIndex);
-                },
-                onSelect: e => {
-                  this.state.selectOptionIndex(
-                    optionIndex,
-                    id,
-                    getDeepestChild(Option)
-                  );
+  useEffect(() => {
+    if (focused) listboxRef.current.focus();
+  });
+  useEffect(() => {
+    if (isControlled) {
+      onAriaSelect(`${ID_PREFIX}0-${controlledActiveIndex}`);
+    }
+  }, [controlledActiveIndex]);
+  let index = 0;
+  const clonedChildren = React.Children.toArray(children)
+    .filter(child => typeof child.type === "function")
+    .map((OptionsList, row) =>
+      React.cloneElement(OptionsList, {
+        children: React.Children.map(
+          OptionsList.props.children,
+          (Option, col) => {
+            const optionIndex = index;
+            index++;
+            const id = `${ID_PREFIX}${row}-${col}`;
+            return React.cloneElement(Option, {
+              id,
+              index: optionIndex,
+              activeStyles,
+              isSelected:
+                optionIndex ===
+                (isControlled ? controlledActiveIndex : activeIndex),
+              isHighlighted:
+                optionIndex ===
+                (isControlled ? highlightedIndex : highlightedIndex),
+              onMouseEnter: () => {
+                const highlightedIndex = optionIndex;
+                if (highlight) {
+                  setHighlightedIndex(highlightedIndex);
                 }
-              });
-            }
-          )
-        })
-      );
-
-    return (
-      <div
-        tabIndex={0}
-        style={style}
-        role="listbox"
-        id={this.props.id}
-        ref={this.listboxRef}
-        aria-labelledby={ariaLabelledBy}
-        aria-activedescendant={
-          this.isControlled() ? this.props.activeId : this.state.activeId
-        }
-        onKeyDown={e => this.onKeyDown(e, children)}
-        onFocus={e => {
-          if (this.state.activeId === undefined) {
-            this.setState({
-              activeIndex: 0,
-              activeId: `${ID_PREFIX}0-0`
+                onHighlight(highlightedIndex);
+              },
+              onSelect: e => {
+                selectOptionIndex(optionIndex, id, getDeepestChild(Option));
+              }
             });
           }
-        }}
-      >
-        {children}
-      </div>
+        )
+      })
     );
-  }
-}
+  return (
+    <div
+      tabIndex={0}
+      style={style}
+      role="listbox"
+      id={id}
+      ref={listboxRef}
+      aria-labelledby={ariaLabelledBy}
+      aria-activedescendant={isControlled ? controlledActiveId : activeId}
+      onKeyDown={e => handleKeyDown(e, clonedChildren)}
+      onFocus={e => {
+        if (activeId === undefined) {
+          setActiveId(`${ID_PREFIX}0-0`);
+          setActiveIndex(0);
+        }
+      }}
+    >
+      {clonedChildren}
+    </div>
+  );
+};
+
+Listbox.propTypes = {
+  activeClass: PropTypes.string,
+  activeIndex: PropTypes.number,
+  activeId: PropTypes.string,
+  activeStyles: PropTypes.object,
+  ariaLabelledBy: PropTypes.string,
+  children: PropTypes.node.isRequired,
+  focused: PropTypes.bool,
+  grid: PropTypes.bool,
+  highlight: PropTypes.bool,
+  id: PropTypes.string,
+  onAriaSelect: PropTypes.func,
+  onHighlight: PropTypes.func,
+  onKeyDown: PropTypes.func,
+  style: PropTypes.object,
+  updateValue: PropTypes.func
+};
+
+Listbox.defaultProps = {
+  activeClass: "",
+  activeIndex: undefined,
+  activeId: undefined,
+  activeStyles: { background: "#BDE4FF" },
+  ariaLabelledBy: "",
+  children: null,
+  focused: false,
+  grid: false,
+  highlight: false,
+  id: "",
+  onAriaSelect: () => {},
+  onHighlight: () => {},
+  onKeyDown: () => {},
+  style: {},
+  updateValue: () => {}
+};
 
 export const OptionsList = ({ style, children }) => (
   <div
