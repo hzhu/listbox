@@ -14,6 +14,32 @@ const COMBO_INPUT_KEYS = [
   KEY_CODE.tab
 ];
 
+const usePartialEmphasis = (query, string) => {
+  let emphasized = "";
+  let rest = "";
+  if (string.toLowerCase().startsWith(query.toLowerCase())) {
+    for (let i = 0; i < string.length; i++) {
+      const char = string[i];
+      if (i < query.length) {
+        emphasized += char;
+      } else {
+        rest += char;
+      }
+    }
+  }
+  return { emphasized, rest };
+};
+
+const PartialEmphasis = ({ query, children }) => {
+  const { emphasized, rest } = usePartialEmphasis(query, children);
+  return (
+    <>
+      <span style={{ fontWeight: "bold" }}>{emphasized}</span>
+      <span>{rest}</span>
+    </>
+  );
+};
+
 export default () => {
   const [activeId, setActiveId] = useState();
   const [activeIndex, setActiveIndex] = useState();
@@ -121,14 +147,13 @@ export default () => {
             setActiveIndex(activeIndex);
             setSearchQuery(selectedItem);
           }}
-          style={{
-            width: "200px",
-            border: "1px solid #CCC"
-          }}
+          style={{ width: "200px", border: "1px solid #CCC" }}
         >
           <OptionsList>
             {suggestions.map(fruit => (
-              <Option key={fruit}>{fruit}</Option>
+              <Option key={fruit}>
+                <PartialEmphasis query={searchQuery}>{fruit}</PartialEmphasis>
+              </Option>
             ))}
           </OptionsList>
         </Listbox>
