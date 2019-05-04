@@ -272,7 +272,7 @@ export const EMOJIS = [
   ]
 ];
 
-export const EMOJISII = [
+export const EMOJI_GRID = [
   [
     {
       name: "grinning face",

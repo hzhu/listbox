@@ -1,14 +1,14 @@
 import React from "react";
 import { Listbox, OptionsList, Option } from "../../src/index.js";
-import { EMOJISII } from "../constants.js";
+import { EMOJI_GRID } from "../constants.js";
 
 export default () => (
   <Listbox focused grid>
-    {EMOJISII.map((row, m) => (
-      <OptionsList key={m} style={{ display: "flex" }}>
-        {row.map((r, i) => {
-          return <Option key={i}>{r.emoji}</Option>;
-        })}
+    {EMOJI_GRID.map((row, i) => (
+      <OptionsList key={i} style={{ display: "flex" }}>
+        {row.map(cell => (
+          <Option key={cell.name}>{cell.emoji}</Option>
+        ))}
       </OptionsList>
     ))}
   </Listbox>
