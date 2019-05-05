@@ -4,23 +4,25 @@ import "@babel/polyfill";
 import { KEY_CODE, ID_PREFIX } from "../constants";
 import { getDeepestChild } from "../utils";
 
-export const Listbox = ({
-  id,
-  grid,
-  style,
-  focused,
-  children,
-  onKeyDown,
-  highlight,
-  activeClass,
-  updateValue,
-  onHighlight,
-  onAriaSelect,
-  activeStyles,
-  ariaLabelledBy,
-  activeId: controlledActiveId,
-  activeIndex: controlledActiveIndex
-}) => {
+export const Listbox = React.forwardRef((props, ref) => {
+  const {
+    id,
+    grid,
+    style,
+    focused,
+    children,
+    onKeyDown,
+    highlight,
+    className,
+    activeClass,
+    updateValue,
+    onHighlight,
+    onAriaSelect,
+    activeStyles,
+    ariaLabelledBy,
+    activeId: controlledActiveId,
+    activeIndex: controlledActiveIndex
+  } = props;
   const [activeId, setActiveId] = useState();
   const [activeIndex, setActiveIndex] = useState();
   const [highlightedIndex, setHighlightedIndex] = useState();
@@ -190,11 +192,12 @@ export const Listbox = ({
     );
   return (
     <div
+      id={id}
       tabIndex={0}
       style={style}
       role="listbox"
-      id={id}
-      ref={listboxRef}
+      className={className}
+      ref={ref === null ? listboxRef : ref}
       aria-labelledby={ariaLabelledBy}
       aria-activedescendant={isControlled ? controlledActiveId : activeId}
       onKeyDown={e => handleKeyDown(e, clonedChildren)}
@@ -208,8 +211,7 @@ export const Listbox = ({
       {clonedChildren}
     </div>
   );
-};
-
+});
 Listbox.propTypes = {
   activeClass: PropTypes.string,
   activeIndex: PropTypes.number,
@@ -258,18 +260,19 @@ export const OptionsList = ({ style, children }) => (
   </div>
 );
 
-export const Option = ({
-  id,
-  index,
-  style,
-  onSelect,
-  isSelected,
-  onMouseEnter,
-  activeStyles,
-  isHighlighted,
-  children,
-  ...restProps
-}) => {
+export const Option = React.forwardRef((props, ref) => {
+  let {
+    id,
+    index,
+    style,
+    onSelect,
+    isSelected,
+    onMouseEnter,
+    activeStyles,
+    isHighlighted,
+    children,
+    ...restProps
+  } = props;
   activeStyles = (isSelected || isHighlighted) && activeStyles;
   return (
     <div
@@ -278,6 +281,7 @@ export const Option = ({
       data-index={index}
       onClick={onSelect}
       onMouseEnter={onMouseEnter}
+      ref={isSelected ? ref : null}
       aria-selected={isSelected || undefined}
       style={{ listStyle: "none", ...activeStyles, ...style }}
       {...restProps}
@@ -285,4 +289,4 @@ export const Option = ({
       {children}
     </div>
   );
-};
+});
