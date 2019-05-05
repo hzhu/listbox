@@ -1,3 +1,13 @@
+export const focusElement = (item, listboxNode) => {
+  const scrollBottom = listboxNode.clientHeight + listboxNode.scrollTop;
+  const itemBottom = item.offsetTop + item.offsetHeight;
+  if (itemBottom > scrollBottom) {
+    listboxNode.scrollTop = itemBottom - listboxNode.clientHeight;
+  } else if (item.offsetTop < listboxNode.scrollTop) {
+    listboxNode.scrollTop = item.offsetTop;
+  }
+};
+
 export const getDeepestChild = node => {
   if (typeof node.props.children === "string") {
     return node.props.children;

@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect, createRef } from "react";
 import * as PropTypes from "prop-types";
 import "@babel/polyfill";
 import { KEY_CODE, ID_PREFIX } from "../constants";
-import { getDeepestChild } from "../utils";
+import { focusElement, getDeepestChild } from "../utils";
 
 export const Listbox = React.forwardRef((props, ref) => {
   const {
@@ -42,16 +42,6 @@ export const Listbox = React.forwardRef((props, ref) => {
     const activeIndex = Number(index);
     selectOptionIndex(activeIndex, activeId, element.textContent);
   };
-  const focusItem = element => {
-    const listboxNode = listboxRef.current;
-    const scrollBottom = listboxNode.clientHeight + listboxNode.scrollTop;
-    const elementBottom = element.offsetTop + element.offsetHeight;
-    if (elementBottom > scrollBottom) {
-      listboxNode.scrollTop = elementBottom - listboxNode.clientHeight;
-    } else if (element.offsetTop < listboxNode.scrollTop) {
-      listboxNode.scrollTop = element.offsetTop;
-    }
-  };
   const checkKeyPress = (e, children) => {
     let currentItem;
     let nextItem;
@@ -68,7 +58,7 @@ export const Listbox = React.forwardRef((props, ref) => {
           nextItem = currentItem.nextElementSibling;
         }
         if (nextItem) {
-          focusItem(nextItem);
+          focusElement(nextItem, listboxRef.current);
           setItem(nextItem);
         }
         break;
