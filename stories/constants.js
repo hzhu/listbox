@@ -1,3 +1,246 @@
+export const SLACK_PROFILES = [
+  {
+    id: "vpdtk9a0hpfgtgyfxcdwb7",
+    name: "Andrew Clark",
+    handle: "acdlite",
+    online: true,
+    status: "",
+    image: "https://ca.slack-edge.com/T062L95S6-U34JZP5T9-g2a62cfdb95b-48"
+  },
+  {
+    id: "6pierxc9jw6uy2jbe3yo8l",
+    name: "Anna Zhu",
+    handle: "itsanna",
+    online: true,
+    status: "Working from home 🏡.",
+    image: "https://ca.slack-edge.com/T03RZGPFR-U0J2QD74G-gc9fd75765d4-48"
+  },
+  {
+    id: "64tishzdx6cs9qqxarrxbf",
+    name: "Austin Wood",
+    handle: "austin",
+    online: false,
+    status: "",
+    image: "https://ca.slack-edge.com/T033RC56T-U3ECMHXD4-bbef1fe0e9ef-48"
+  },
+  {
+    id: "2skx9ulta868y6p6gn8hiu",
+    name: "Chandru Swaminathan",
+    handle: "chandru",
+    online: false,
+    status: "",
+    image: "https://ca.slack-edge.com/T033RC56T-U5AACFN4V-cb4e67263983-48"
+  },
+  {
+    id: "sbj33jjnv8vs9og5b4oet",
+    name: "Matt Ho",
+    handle: "savaki",
+    online: true,
+    status: "",
+    image: "https://ca.slack-edge.com/T1KPGBJ7P-U99B9MRJP-g3b504a1a0b5-48"
+  },
+  {
+    id: "5ype8pfv8pj1mzarlcgpvn",
+    name: "Steven Chen",
+    handle: "esses",
+    online: true,
+    status: "On the track 🏎",
+    image: "https://ca.slack-edge.com/T1KPGBJ7P-U997YSNF5-ge532de8107d-48"
+  },
+  {
+    id: "x3hquwqywcsj3xpwxa4l8",
+    name: "Matthew Jaoudi",
+    handle: "gadfly361",
+    online: true,
+    status: "",
+    image: "https://ca.slack-edge.com/T03RZGPFR-U0522BZ1R-7c82e0cc5696-48"
+  },
+  {
+    id: "sn6ylifp1iskwcv3aa3nk",
+    name: "Ryan Florence",
+    handle: "ryanflorence",
+    online: true,
+    status: "I love 🌮",
+    image: "https://ca.slack-edge.com/T062L95S6-U2W4RGSTW-g749001c9fe6-48"
+  },
+  {
+    id: "3zqmqbh2qiq74fu0whmhsc",
+    name: "Henry Zhu",
+    handle: "hzoo",
+    online: true,
+    status: "",
+    image: "https://ca.slack-edge.com/T062L95S6-U062N7GN9-c5f99780e852-48"
+  },
+  {
+    id: "62g5ime1mj369hp1rasasg",
+    name: "Henry Zhu",
+    handle: "hzhu",
+    online: true,
+    status: "",
+    image: "https://ca.slack-edge.com/T062L95S6-U4RNRG272-g83a8e9ce81e-48"
+  },
+  {
+    id: "cm8cwrrrgv91o94lfzufqj",
+    name: "Liandy Hardikoesoemo",
+    handle: "liandy",
+    online: false,
+    status: "",
+    image: "https://ca.slack-edge.com/T033RC56T-U9E0C1WAC-118fbba53327-48"
+  },
+  {
+    id: "4z72052b6u931fi33zwwl3",
+    name: "Mike Adams [HR2, Founder of HRX]",
+    handle: "Mike Adams [HR2, Founder of HRX]",
+    online: true,
+    status: "",
+    image: "https://ca.slack-edge.com/T035Z8YSZ-U035Z8YT1-c81f9f300303-48"
+  },
+  {
+    id: "l8qfqw1kjboayqkutbon",
+    name: "Kelsey Nichols",
+    handle: "kelsey",
+    online: true,
+    status: "",
+    image: "https://ca.slack-edge.com/T033RC56T-U4B0JSVM2-959eac0e0147-48"
+  },
+  {
+    id: "8a6wrwokm93ttsm9elgvcf",
+    name: "Marcus Phillips",
+    handle: "Mracus",
+    online: false,
+    status: "",
+    image: "https://ca.slack-edge.com/T035Z8YSZ-U9VJHJW06-g10d42ca140d-48"
+  },
+  {
+    id: "uvm72rx6a2c2chonj4pi89",
+    name: "Howard Lo",
+    handle: "howard",
+    online: true,
+    status: "",
+    image: "https://ca.slack-edge.com/T1KPGBJ7P-U2C8KUX3R-ge7cee855060-72"
+  },
+  {
+    id: "wcwyola08phkl7ryabl9y",
+    name: "JP Whitaker",
+    handle: "jpw",
+    online: true,
+    status: "",
+    image: "https://ca.slack-edge.com/T035Z8YSZ-U03HFPNT9-ga6d2ca76fd9-72"
+  },
+  {
+    id: "bocobk693pknvebp8pza",
+    name: "Ross Waycaster",
+    handle: "ross waycaster",
+    online: false,
+    status: "",
+    image: "https://ca.slack-edge.com/T033RC56T-UCZ3ZTF3K-61f1c5364782-48"
+  },
+  {
+    id: "5goey4w6b14b8m9moocub",
+    name: "David Nolen",
+    handle: "dnolen",
+    online: true,
+    status: "",
+    image: "https://ca.slack-edge.com/T03RZGPFR-U050B88UR-gb780672edb2-48"
+  },
+  {
+    id: "crrq68fvwmbarpxjp8sxwb",
+    name: "Yaochin Wu",
+    handle: "jim",
+    online: false,
+    status: "",
+    image: "https://ca.slack-edge.com/T1KPGBJ7P-U1KS2S1DG-g2d88141a29b-72"
+  },
+  {
+    id: "4zmvmberel7t31im7wd0o8",
+    name: "Fred Zirdung ",
+    handle: "Fred Zirdung ",
+    online: true,
+    status: "",
+    image: "https://ca.slack-edge.com/T035Z8YSZ-U9QB30ZHD-g6a7485bb611-48"
+  },
+  {
+    id: "nb8ag74toxlzxv166xhan",
+    name: "Lee Byron",
+    handle: "leebyron",
+    online: true,
+    status: "",
+    image: "https://ca.slack-edge.com/T044QJ50C-U044QJ50N-g4d7885164ae-48"
+  },
+  {
+    id: "tzgr73myz3v45vyk34dz",
+    name: "Pete Hodgson",
+    handle: "moredip",
+    online: false,
+    status: "🌴 Vacationing",
+    image: "https://ca.slack-edge.com/T035Z8YSZ-U1C5XQT3Q-gd5152bd68f7-48"
+  },
+  {
+    id: "m9v76ozz8zg22hyhydfag9",
+    name: "Roman Sverdlov",
+    handle: "roman",
+    online: true,
+    status: "",
+    image: "https://ca.slack-edge.com/T033RC56T-UF7HP3VCH-12ad6d23a835-48"
+  },
+  {
+    id: "x7ccf0fcl1j750bgbg8s1i",
+    name: "Sim Gamboa",
+    handle: "Sim",
+    online: true,
+    status: "",
+    image: "https://ca.slack-edge.com/T033RC56T-U8FN25SD6-e9f378ae5230-48"
+  },
+  {
+    id: "z3udk3n6bzgqgqcaplaahc",
+    name: "Shawn Drost",
+    handle: "shawndrost",
+    online: false,
+    status: "",
+    image: "https://ca.slack-edge.com/T035Z8YSZ-U0366N6E4-gd41a5828cff-48"
+  },
+  {
+    id: "1fpbl9oqdwvfgh1kszd93",
+    name: "Slack Bot",
+    handle: "Slack Bot",
+    online: true,
+    status: "",
+    image: "https://ca.slack-edge.com/T03RZGPFR-USLACKBOT-sv41d8cd98f0-48"
+  },
+  {
+    id: "9goar5pgdwkfgh7vszd39",
+    name: "Sophia Amin",
+    handle: "sophia a",
+    online: true,
+    status: "",
+    image: "https://ca.slack-edge.com/T033RC56T-UAFMD7XA7-0dd33b769fa0-48"
+  },
+  {
+    id: "t1gr7mmyz3vk9sy7x4d4",
+    name: "Stewart Butterfield",
+    handle: "stewart",
+    online: true,
+    status: "",
+    image: "https://ca.slack-edge.com/T035Z8YSZ-U1C5XQT3Q-gd5152bd68f7-48"
+  },
+  {
+    id: "33szl359weraei1wki8p4c",
+    name: "Pasha Smolin",
+    handle: "pasha",
+    online: true,
+    status: "Champ status 🏓",
+    image: "https://ca.slack-edge.com/T033RC56T-U53LE9SAY-d455b97de917-72"
+  },
+  {
+    id: "upp24qnp96rhyg5ilwdh8u",
+    name: "Tim Kharaishvili",
+    handle: "tim",
+    online: true,
+    status: "",
+    image: "https://ca.slack-edge.com/T033RC56T-U4Q7K0SBX-d5939f8182b4-72"
+  }
+];
+
 export const transuraniumElements = [
   "Neptunium",
   "Plutonium",
@@ -28,6 +271,7 @@ export const transuraniumElements = [
 ];
 
 export const FRUITS_AND_VEGGIES = [
+  "Açaí",
   "Apple",
   "Artichoke",
   "Apricot",
@@ -38,6 +282,9 @@ export const FRUITS_AND_VEGGIES = [
   "Bell pepper",
   "Broccoli",
   "Bittermelon",
+  "Blood orange",
+  "Blackberry",
+  "Blueberry",
   "Brussels sprout",
   "Cabbage",
   "Cantaloupe",
@@ -48,29 +295,37 @@ export const FRUITS_AND_VEGGIES = [
   "Chard",
   "Chicory",
   "Clementine",
+  "Coconut",
   "Corn",
+  "Cranberry",
   "Cucumber",
   "Daikon",
   "Date",
   "Dewberry",
   "Durian",
-  "Dragon fruit",
+  "Dragonfruit",
   "Edamame",
   "Eggplant",
   "Elderberry",
   "Fennel",
   "Fig",
   "Garlic",
+  "Goji berry",
   "Grape",
+  "Grapefruit",
   "Honeydew melon",
+  "Huckleberry",
   "Iceberg lettuce",
   "Jackfruit",
   "Jerusalem artichoke",
+  "Jostaberry",
   "Kale",
+  "Kiwano",
   "Kiwi",
   "Kumquat",
   "Leek",
   "Lemon",
+  "Lime",
   "Longan",
   "Loquat",
   "Lychee",
@@ -91,10 +346,12 @@ export const FRUITS_AND_VEGGIES = [
   "Persimmon",
   "Pineapple",
   "Pitaya",
+  "Plantain",
   "Potato",
   "Pomegranate",
   "Pumpkin",
   "Quince",
+  "Raspberry",
   "Rambutan",
   "Radish",
   "Rhubarb",

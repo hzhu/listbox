@@ -8,12 +8,26 @@ import ScrollableListbox from "./ScrollableListbox";
 import EmojiDropdown from "./EmojiDropdown";
 import EmojiListbox from "./EmojiListbox/";
 import GitHubEmojiPicker from "./GitHubEmojiPicker/";
+import SlackComboBox from "./SlackComboBox";
 
 storiesOf("Listbox Widgets", module)
   .add("Listbox (Base)", () => <Listbox />)
-  .add("Listbox (Emoji)", () => <EmojiListbox />)
+  .add("Listbox (Grid)", () => <EmojiListbox />)
   .add("Scrollable Listbox", () => <ScrollableListbox />)
   .add("Collapsible Dropdown", () => <CollapsibleDropdown />)
-  .add("Collapsible Dropdown (Emoji)", () => <EmojiDropdown />)
-  .add("GitHub Reaction Picker", () => <GitHubEmojiPicker />)
-  .add("ComboBox", () => <ComboBox />);
+  .add("Collapsible Dropdown (Grid)", () => <EmojiDropdown />)
+  .add("Combo Box", () => <ComboBox />);
+
+storiesOf("Custom Widgets", module)
+  .addDecorator(getStory => (
+    <>
+      <link
+        type="text/css"
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/tachyons/4.11.1/tachyons.css"
+      />
+      {getStory()}
+    </>
+  ))
+  .add("GitHub Reaction Popover", () => <GitHubEmojiPicker />)
+  .add("Slack Mention Combo Box", () => <SlackComboBox />);

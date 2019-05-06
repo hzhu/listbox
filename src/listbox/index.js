@@ -265,6 +265,7 @@ export const Option = React.forwardRef((props, ref) => {
     index,
     style,
     onSelect,
+    className,
     isSelected,
     onMouseEnter,
     activeStyles,
@@ -279,6 +280,7 @@ export const Option = React.forwardRef((props, ref) => {
       role="option"
       data-index={index}
       onClick={onSelect}
+      className={className}
       onMouseEnter={onMouseEnter}
       ref={isSelected ? ref : null}
       aria-selected={isSelected || undefined}
@@ -289,3 +291,11 @@ export const Option = React.forwardRef((props, ref) => {
     </div>
   );
 });
+
+Option.propTypes = {
+  className: PropTypes.string
+};
+
+Option.defaultProps = {
+  className: ""
+};
