@@ -173,7 +173,14 @@ export const Listbox = React.forwardRef((props, ref) => {
                 onHighlight(highlightedIndex);
               },
               onSelect: e => {
-                selectOptionIndex(optionIndex, id, getDeepestChild(Option));
+                let selectedItem;
+                const { value } = Option.props;
+                if (value) {
+                  selectedItem = value;
+                } else {
+                  selectedItem = getDeepestChild(Option);
+                }
+                selectOptionIndex(optionIndex, id, selectedItem);
               }
             });
           }
@@ -208,6 +215,7 @@ Listbox.propTypes = {
   activeId: PropTypes.string,
   activeStyles: PropTypes.object,
   ariaLabelledBy: PropTypes.string,
+  className: PropTypes.string,
   children: PropTypes.node.isRequired,
   focused: PropTypes.bool,
   grid: PropTypes.bool,
@@ -226,6 +234,7 @@ Listbox.defaultProps = {
   activeId: undefined,
   activeStyles: { background: "#BDE4FF" },
   ariaLabelledBy: "",
+  className: "",
   children: null,
   focused: false,
   grid: false,
@@ -273,7 +282,7 @@ export const Option = React.forwardRef((props, ref) => {
       onMouseEnter={onMouseEnter}
       ref={isSelected ? ref : null}
       aria-selected={isSelected || undefined}
-      style={{ listStyle: "none", ...activeStyles, ...style }}
+      style={{ ...style, ...activeStyles }}
       {...restProps}
     >
       {children}

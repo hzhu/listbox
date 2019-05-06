@@ -522,3 +522,39 @@ test("calls onAriaSelect for a controlled listbox component when aria focus chan
   expect(onAriaSelect).toBeCalledTimes(1);
   expect(onAriaSelect).toHaveBeenLastCalledWith(`${ID_PREFIX}0-${carrotIdx}`);
 });
+
+test("should select the value prop for Option if it contains a complex markup", () => {
+  // Given
+  const CARROT = "Carrot";
+  const fruits = ["Apple", "Bananna", CARROT];
+  const CARROT_IDX = fruits.indexOf(CARROT);
+  const updateValue = jest.fn();
+  const { getByText } = render(
+    <Listbox updateValue={updateValue}>
+      <OptionsList>
+        {fruits.map(fruit => (
+          // When a user selects an option, Listbox should expose the fruit value
+          // "Carrot" as the value being selected and not include other text values,
+          // for example "|" and "On Sale!"
+          <Option key={fruit} value={fruit}>
+            <div>{fruit}</div>
+            <span>|</span>
+            <div>On Sale!</div>
+          </Option>
+        ))}
+      </OptionsList>
+    </Listbox>
+  );
+  const carrotNode = getByText(CARROT);
+
+  // When
+  fireEvent.click(carrotNode);
+
+  // Then
+  expect(updateValue).toBeCalledTimes(1);
+  expect(updateValue).toHaveBeenLastCalledWith({
+    activeId: `${ID_PREFIX}0-${CARROT_IDX}`,
+    activeIndex: CARROT_IDX,
+    selectedItem: CARROT
+  });
+});

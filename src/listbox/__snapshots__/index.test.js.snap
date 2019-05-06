@@ -4,6 +4,7 @@ exports[`render listbox with the first option selected (snapshot) 1`] = `
 <div
   aria-activedescendant="LISTBOX__OPTION__0-1"
   aria-labelledby="lb-title"
+  class=""
   id=""
   role="listbox"
   tabindex="0"
@@ -15,7 +16,7 @@ exports[`render listbox with the first option selected (snapshot) 1`] = `
       data-index="0"
       id="LISTBOX__OPTION__0-0"
       role="option"
-      style="list-style: none;"
+      style=""
     >
       <div
         style="color: black;"
@@ -28,7 +29,7 @@ exports[`render listbox with the first option selected (snapshot) 1`] = `
       data-index="1"
       id="LISTBOX__OPTION__0-1"
       role="option"
-      style="list-style: none; background: rgb(189, 228, 255);"
+      style="background: rgb(189, 228, 255);"
     >
       <div
         style="color: black;"
@@ -40,7 +41,6 @@ exports[`render listbox with the first option selected (snapshot) 1`] = `
       data-index="2"
       id="LISTBOX__OPTION__0-2"
       role="option"
-      style="list-style: none;"
     >
       <div
         style="color: black;"
@@ -57,6 +57,7 @@ exports[`renders the listbox when user adds native elements as children of listb
   <div
     aria-activedescendant="LISTBOX__OPTION__0-0"
     aria-labelledby="lb-title"
+    class=""
     id=""
     role="listbox"
     tabindex="0"
@@ -69,7 +70,7 @@ exports[`renders the listbox when user adds native elements as children of listb
         data-index="0"
         id="LISTBOX__OPTION__0-0"
         role="option"
-        style="list-style: none; background: rgb(189, 228, 255);"
+        style="background: rgb(189, 228, 255);"
       >
         Apple
       </div>
@@ -77,7 +78,6 @@ exports[`renders the listbox when user adds native elements as children of listb
         data-index="1"
         id="LISTBOX__OPTION__0-1"
         role="option"
-        style="list-style: none;"
       >
         Bananna
       </div>
@@ -85,7 +85,6 @@ exports[`renders the listbox when user adds native elements as children of listb
         data-index="2"
         id="LISTBOX__OPTION__0-2"
         role="option"
-        style="list-style: none;"
       >
         Carrot
       </div>
