@@ -149,7 +149,6 @@ const SlackComboBox = () => {
             ariaLabelledBy="ex1-label"
             activeIndex={activeIndex}
             onAriaSelect={activeId => setActiveId(activeId)}
-            onHighlight={index => setHighlightedIndex(index)}
             activeStyles={{ background: "#1D9BD1", color: "#FFF" }}
             updateValue={({ activeIndex, selectedItem }) => {
               setExpanded(false);
@@ -175,6 +174,7 @@ const SlackComboBox = () => {
                     key={profile.id}
                     ref={activeOptionRef}
                     value={profile.handle}
+                    onMouseEnter={index => setHighlightedIndex(index)}
                     style={{
                       height: "30px",
                       display: "flex",

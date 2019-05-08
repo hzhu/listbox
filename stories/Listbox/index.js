@@ -3,7 +3,7 @@ import { Listbox, OptionsList, Option } from "../../src";
 import { CAR_COMPANIES } from "../constants";
 
 export default () => (
-  <Listbox focused>
+  <Listbox highlight focused>
     <OptionsList>
       {CAR_COMPANIES.map(element => (
         <Option key={element} style={{ padding: "0.25rem" }}>

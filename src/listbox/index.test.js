@@ -247,7 +247,7 @@ test("calls updateValue prop with the new listbox state when user types multiple
   });
 });
 
-test("should expose a highlighted index when user highlights an option for controlled listbox component", done => {
+test("should expose a highlighted index when user highlights an option for controlled listbox component", () => {
   // Given
   const CALIFORNIUM = "Californium";
   const transuraniumElements = [
@@ -258,11 +258,14 @@ test("should expose a highlighted index when user highlights an option for contr
     "Moscovium",
     "Tennessine"
   ];
+  const onMouseEnter = jest.fn();
   const { getByText } = render(
-    <Listbox activeIndex={-1} onHighlight={onHighlight}>
+    <Listbox activeIndex={-1} highlight>
       <OptionsList>
         {transuraniumElements.map(element => (
-          <Option key={element}>{element}</Option>
+          <Option onMouseEnter={onMouseEnter} key={element}>
+            {element}
+          </Option>
         ))}
       </OptionsList>
     </Listbox>
@@ -272,11 +275,11 @@ test("should expose a highlighted index when user highlights an option for contr
   // When
   fireEvent.mouseEnter(californiumOption);
 
-  // Then (async)
-  function onHighlight(highlightedIndex) {
-    expect(highlightedIndex).toBe(transuraniumElements.indexOf(CALIFORNIUM));
-    done();
-  }
+  // Then
+  expect(onMouseEnter).toBeCalledTimes(1);
+  expect(onMouseEnter).toHaveBeenLastCalledWith(
+    transuraniumElements.indexOf(CALIFORNIUM)
+  );
 });
 
 test("calls updateValue prop when listbox option selection changes", () => {

@@ -1,8 +1,17 @@
-import React, { useRef, useState, useEffect, createRef } from "react";
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  createRef,
+  useContext,
+  createContext
+} from "react";
 import * as PropTypes from "prop-types";
 import "@babel/polyfill";
 import { KEY_CODE, ID_PREFIX } from "../constants";
 import { focusElement, getDeepestChild } from "../utils";
+
+const ListboxContext = createContext();
 
 export const Listbox = React.forwardRef((props, ref) => {
   const {
@@ -159,19 +168,6 @@ export const Listbox = React.forwardRef((props, ref) => {
               id,
               index: optionIndex,
               activeStyles,
-              isSelected:
-                optionIndex ===
-                (isControlled ? controlledActiveIndex : activeIndex),
-              isHighlighted:
-                optionIndex ===
-                (isControlled ? highlightedIndex : highlightedIndex),
-              onMouseEnter: () => {
-                const highlightedIndex = optionIndex;
-                if (highlight) {
-                  setHighlightedIndex(highlightedIndex);
-                }
-                onHighlight(highlightedIndex);
-              },
               onSelect: e => {
                 let selectedItem;
                 const { value } = Option.props;
@@ -187,26 +183,34 @@ export const Listbox = React.forwardRef((props, ref) => {
         )
       })
     );
+  const context = {
+    highlightedIndex,
+    activeIndex: isControlled ? controlledActiveIndex : activeIndex,
+    highlight,
+    setHighlightedIndex
+  };
   return (
-    <div
-      id={id}
-      tabIndex={0}
-      style={style}
-      role="listbox"
-      className={className}
-      ref={ref === null ? listboxRef : ref}
-      aria-labelledby={ariaLabelledBy}
-      aria-activedescendant={isControlled ? controlledActiveId : activeId}
-      onKeyDown={e => handleKeyDown(e, clonedChildren)}
-      onFocus={e => {
-        if (activeId === undefined) {
-          setActiveId(`${ID_PREFIX}0-0`);
-          setActiveIndex(0);
-        }
-      }}
-    >
-      {clonedChildren}
-    </div>
+    <ListboxContext.Provider value={context}>
+      <div
+        id={id}
+        tabIndex={0}
+        style={style}
+        role="listbox"
+        className={className}
+        ref={ref === null ? listboxRef : ref}
+        aria-labelledby={ariaLabelledBy}
+        aria-activedescendant={isControlled ? controlledActiveId : activeId}
+        onKeyDown={e => handleKeyDown(e, clonedChildren)}
+        onFocus={e => {
+          if (activeId === undefined) {
+            setActiveId(`${ID_PREFIX}0-0`);
+            setActiveIndex(0);
+          }
+        }}
+      >
+        {clonedChildren}
+      </div>
+    </ListboxContext.Provider>
   );
 });
 Listbox.propTypes = {
@@ -266,13 +270,19 @@ export const Option = React.forwardRef((props, ref) => {
     style,
     onSelect,
     className,
-    isSelected,
     onMouseEnter,
     activeStyles,
-    isHighlighted,
     children,
     ...restProps
   } = props;
+  const {
+    highlight,
+    activeIndex,
+    highlightedIndex,
+    setHighlightedIndex
+  } = useContext(ListboxContext);
+  const isSelected = index === activeIndex;
+  const isHighlighted = index === highlightedIndex;
   activeStyles = (isSelected || isHighlighted) && activeStyles;
   return (
     <div
@@ -281,7 +291,12 @@ export const Option = React.forwardRef((props, ref) => {
       data-index={index}
       onClick={onSelect}
       className={className}
-      onMouseEnter={onMouseEnter}
+      onMouseEnter={() => {
+        if (highlight) {
+          setHighlightedIndex(index);
+          onMouseEnter(index);
+        }
+      }}
       ref={isSelected ? ref : null}
       aria-selected={isSelected || undefined}
       style={{ ...style, ...activeStyles }}
@@ -293,9 +308,11 @@ export const Option = React.forwardRef((props, ref) => {
 });
 
 Option.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
+  onMouseEnter: PropTypes.func
 };
 
 Option.defaultProps = {
-  className: ""
+  className: "",
+  onMouseEnter: () => {}
 };
