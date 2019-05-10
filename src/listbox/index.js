@@ -71,14 +71,16 @@ export const Listbox = React.forwardRef((props, ref) => {
           setItem(nextItem);
         }
         break;
-      default:
-        findItemToFocus(e.which, children);
+      default: {
+        const options = [...listboxRef.current.children[0].children];
+        findItemToFocus(e.which, options);
+      }
     }
   };
   const cacheTypedChars = useRef("");
   const cachedTimeoutId = useRef(null);
-  const findItemToFocus = (key, children) => {
-    cacheTypedChars.current += String.fromCharCode(key).toLowerCase();
+  const findItemToFocus = (charCode, options) => {
+    cacheTypedChars.current += String.fromCharCode(charCode).toLowerCase();
     if (cachedTimeoutId.current) {
       clearTimeout(cachedTimeoutId.current);
     }
@@ -86,15 +88,16 @@ export const Listbox = React.forwardRef((props, ref) => {
       cacheTypedChars.current = "";
     }, 500);
     if (cacheTypedChars.current) {
-      const optionsList = children[0].props.children.filter(child => {
-        let value = getDeepestChild(child).toLowerCase();
-        return value.startsWith(cacheTypedChars.current);
-      });
-      if (optionsList.length) {
-        const { id, index } = optionsList[0].props;
-        const selectedItem = getDeepestChild(optionsList[0]);
-        selectOptionIndex(index, id, selectedItem);
-        document.getElementById(id).scrollIntoView(false);
+      const foundItem = options.filter(node =>
+        node.textContent.toLowerCase().startsWith(cacheTypedChars.current)
+      )[0];
+      if (foundItem) {
+        selectOptionIndex(
+          Number(foundItem.dataset.index),
+          foundItem.id,
+          foundItem.textContent
+        );
+        foundItem.scrollIntoView(false);
       }
     }
   };
