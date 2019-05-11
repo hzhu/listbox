@@ -52,8 +52,10 @@ const SlackComboBox = () => {
         e.preventDefault();
         if (noActiveIndex || isFirstIndex) {
           setActiveIndex(suggestions.length - 1);
+          setHighlightedIndex(suggestions.length - 1);
         } else {
           setActiveIndex(activeIndex - 1);
+          setHighlightedIndex(activeIndex - 1);
         }
         if (activeOptionRef.current !== null && listboxRef.current !== null) {
           if (activeOptionRef.current.previousElementSibling === null) {
@@ -70,8 +72,10 @@ const SlackComboBox = () => {
         e.preventDefault();
         if (noActiveIndex || isLastActiveIndex) {
           setActiveIndex(0);
+          setHighlightedIndex(0);
         } else {
           setActiveIndex(activeIndex + 1);
+          setHighlightedIndex(activeIndex + 1);
         }
         if (activeOptionRef.current !== null && listboxRef.current !== null) {
           if (activeOptionRef.current.nextElementSibling === null) {
@@ -114,6 +118,23 @@ const SlackComboBox = () => {
     document.body.addEventListener("click", handleExpanded);
     return () => document.body.removeEventListener("click", handleExpanded);
   }, []);
+  const [isScrolling, setIsScrolling] = useState(false);
+  let timeout = undefined;
+  useEffect(() => {
+    const onScroll = () => {
+      if (timeout) window.clearTimeout(timeout);
+      timeout = setTimeout(() => setIsScrolling(false), 100);
+      setIsScrolling(true);
+    };
+    if (listboxRef.current) {
+      listboxRef.current.addEventListener("scroll", onScroll);
+    }
+    return () => {
+      if (listboxRef.current) {
+        listboxRef.current.removeEventListener("scroll", onScroll);
+      }
+    };
+  }, [expanded, timeout, listboxRef]);
   return (
     <>
       {expanded && suggestions.length && query.length ? (
@@ -148,6 +169,7 @@ const SlackComboBox = () => {
             id="ex1-listbox"
             ariaLabelledBy="ex1-label"
             activeIndex={activeIndex}
+            highlightedIndex={highlightedIndex}
             onAriaSelect={activeId => setActiveId(activeId)}
             activeStyles={{ background: "#1D9BD1", color: "#FFF" }}
             updateValue={({ activeIndex, selectedItem }) => {
@@ -174,7 +196,12 @@ const SlackComboBox = () => {
                     key={profile.id}
                     ref={activeOptionRef}
                     value={profile.handle}
-                    onMouseEnter={index => setHighlightedIndex(index)}
+                    onMouseEnter={index => {
+                      if (!isScrolling) {
+                        setActiveIndex(index);
+                        setHighlightedIndex(index);
+                      }
+                    }}
                     style={{
                       height: "30px",
                       display: "flex",
