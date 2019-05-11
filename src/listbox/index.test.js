@@ -247,7 +247,7 @@ test("calls updateValue prop with the new listbox state when user types multiple
   });
 });
 
-test("should expose a highlighted index when user highlights an option for controlled listbox component", () => {
+test("should expose a highlighted index when user highlights an option", () => {
   // Given
   const CALIFORNIUM = "Californium";
   const transuraniumElements = [
@@ -414,9 +414,7 @@ test("clicking an option should focus and highlight that option", () => {
 
 test("highlights the option on mouse enter when listbox is provided the highlight prop", () => {
   // Given
-  const APPLE = "Apple";
   const BANANNA = "Bananna";
-  const CARROT = "Carrot";
   const fruits = ["Apple", "Bananna", "Carrot"];
   const activeStyle = "background: rgb(189, 228, 255);";
   const { getByText } = render(
@@ -447,7 +445,33 @@ test("highlights the option on mouse enter when listbox is provided the highligh
   });
 });
 
-test("highlights the correct option when a user keys down on an controlled listbox component", () => {
+test("highlights the correct option for a controlled listbox", () => {
+  // Given
+  const ACTIVE_STYLE = "background: rgb(189, 228, 255);";
+  const APPLE = "Apple";
+  const BANANNA = "Bananna";
+  const CARROT = "Carrot";
+  const fruits = [APPLE, BANANNA, CARROT];
+  const { getByText } = render(
+    <Listbox activeIndex={0} highlightedIndex={2}>
+      <OptionsList>
+        {fruits.map(fruit => (
+          <Option key={fruit}>{fruit}</Option>
+        ))}
+      </OptionsList>
+    </Listbox>
+  );
+  const appleNode = getByText(APPLE);
+  const banannaNode = getByText(BANANNA);
+  const carrotNode = getByText(CARROT);
+
+  // THEN
+  expect(appleNode).toHaveAttribute("style", ACTIVE_STYLE);
+  expect(banannaNode).not.toHaveAttribute("style");
+  expect(carrotNode).toHaveAttribute("style", ACTIVE_STYLE);
+});
+
+test("selects the correct option when a user keys down on an controlled listbox component", () => {
   // Given
   const CARROT = "Carrot";
   const fruits = ["Apple", "Bananna", CARROT];

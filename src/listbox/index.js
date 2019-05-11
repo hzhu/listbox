@@ -30,7 +30,8 @@ export const Listbox = React.forwardRef((props, ref) => {
     activeStyles,
     ariaLabelledBy,
     activeId: controlledActiveId,
-    activeIndex: controlledActiveIndex
+    activeIndex: controlledActiveIndex,
+    highlightedIndex: controlledHighlightedIndex
   } = props;
   const [activeId, setActiveId] = useState();
   const [activeIndex, setActiveIndex] = useState();
@@ -187,7 +188,9 @@ export const Listbox = React.forwardRef((props, ref) => {
       })
     );
   const context = {
-    highlightedIndex,
+    highlightedIndex: isControlled
+      ? controlledHighlightedIndex
+      : highlightedIndex,
     activeIndex: isControlled ? controlledActiveIndex : activeIndex,
     highlight,
     setHighlightedIndex
