@@ -300,7 +300,7 @@ export const Option = React.forwardRef((props, ref) => {
       onMouseEnter={() => {
         if (highlight) {
           setHighlightedIndex(index);
-          onMouseEnter(index);
+          onMouseEnter(index, id);
         }
       }}
       ref={isSelected ? ref : null}
