@@ -41,9 +41,11 @@ const Example = () => {
                   setValue(selectedItem);
                   setActiveId(activeId);
                   setActiveIndex(activeIndex);
+                  setHighlightedIndex(activeIndex);
                 }}
                 activeId={activeId}
                 activeIndex={activeIndex}
+                highlightedIndex={activeIndex}
                 style={{
                   fontSize: "26px",
                   background: "#FFF",
@@ -55,6 +57,10 @@ const Example = () => {
                     {row.map((emoji, n) => (
                       <Option
                         key={n}
+                        onMouseEnter={(index, id) => {
+                          setActiveId(id);
+                          setActiveIndex(index);
+                        }}
                         style={{
                           cursor: "pointer",
                           padding: "5px 5px 0px 5px"
