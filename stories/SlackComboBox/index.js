@@ -265,7 +265,7 @@ const SlackComboBox = () => {
         aria-owns="ex1-listbox"
         aria-haspopup="listbox"
         aria-expanded={expanded}
-        className="br3 outline-0"
+        className="br3 pa2 outline-0 flex justify-between"
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
         style={{
@@ -279,13 +279,13 @@ const SlackComboBox = () => {
           id="ex1-input"
           spellCheck="false"
           autoComplete="off"
-          style={{ width: "95%" }}
+          style={{ width: "94%" }}
           placeholder="Message #general"
           aria-autocomplete="list"
           aria-controls="ex1-listbox"
           aria-activedescendant={activeId}
           aria-label="Send A Slack message"
-          className="pa2 br3 bn outline-0 bg-white"
+          className="br3 bn outline-0 bg-white"
           onKeyDown={onKeyDown}
           onChange={e => {
             const { value } = e.target;
@@ -296,7 +296,7 @@ const SlackComboBox = () => {
         />
         <button
           aria-label="Insert mention"
-          className="pointer grow-large"
+          className="pointer grow-large ph2 pv1"
           onClick={() => {
             setQuery("@");
             setExpanded(true);
@@ -315,7 +315,8 @@ export default () => (
     id="slack-combo-box"
     className="example-wrapper absolute bottom-1"
     style={{
-      width: "800px",
+      width: "100%",
+      maxWidth: "800px",
       left: 0,
       right: 0,
       marginLeft: "auto",
