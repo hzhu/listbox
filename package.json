@@ -1,6 +1,6 @@
 {
   "name": "listbox",
-  "version": "0.0.2",
+  "version": "0.1.1",
   "description": "Build & compose ARIA compliant listbox based UI widgets",
   "license": "MIT",
   "author": "Henry Zhu <hz@henryzhu.me>",
