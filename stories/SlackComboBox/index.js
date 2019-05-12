@@ -132,16 +132,7 @@ const SlackComboBox = () => {
     <>
       {expanded && suggestions.length && query.length ? (
         <div className="flex-none">
-          <div
-            className="f7 pa2 lh-copy flex justify-between"
-            style={{
-              background: "#FAF8F6",
-              color: "#7f7f83",
-              border: "1px solid rgba(0,0,0,.15)",
-              borderBottom: "none",
-              borderRadius: "6px 6px 0 0"
-            }}
-          >
+          <div className="f7 pa2 lh-copy flex justify-between bg-near-white mid-gray ba b--moon-gray bb-0 br3 br--top">
             <div>People matching “@”</div>
             <div className="flex">
               <div>
@@ -164,20 +155,14 @@ const SlackComboBox = () => {
             activeIndex={activeIndex}
             highlightIndex={highlightIndex}
             onAriaSelect={activeId => setActiveId(activeId)}
-            activeStyles={{ background: "#1D9BD1", color: "#FFF" }}
+            activeStyles={{ background: "#1D9BD1" }}
             updateValue={({ activeIndex, textContent }) => {
               setExpanded(false);
               setActiveIndex(activeIndex);
               setQuery("@" + textContent);
             }}
-            className="overflow-y-scroll relative"
-            style={{
-              width: "800px",
-              maxHeight: "390px",
-              border: "1px solid #CCC",
-              borderBottomLeftRadius: "6px",
-              borderBottomRightRadius: "6px"
-            }}
+            style={{ maxHeight: "390px" }}
+            className="overflow-y-scroll relative ba br2 b--moon-gray br--bottom"
           >
             <OptionsList>
               {suggestions.map((profile, index) => {
@@ -195,31 +180,19 @@ const SlackComboBox = () => {
                         setHighlightIndex(index);
                       }
                     }}
-                    style={{
-                      height: "30px",
-                      display: "flex",
-                      alignItems: "center",
-                      fontSize: "15px",
-                      cursor: "pointer"
-                    }}
+                    className="flex items-center pointer h2 f5"
                   >
                     <>
                       <div
-                        className="ml2 br-100"
-                        style={{
-                          width: "0.65rem",
-                          height: "0.65rem",
-                          background: `${profile.online ? "green" : "white"}`,
-                          border: "1px solid #CCC"
-                        }}
+                        style={{ width: "0.65rem", height: "0.65rem" }}
+                        className={`ml2 br-100 ba b--moon-gray ${
+                          profile.online ? "bg-green" : "bg-white"
+                        }`}
                       />
                       <img
                         src={profile.image}
                         className="br2 mh2"
-                        style={{
-                          width: "1.25rem",
-                          height: "1.25rem"
-                        }}
+                        style={{ width: "1.25rem", height: "1.25rem" }}
                       />
                       <span
                         className={`fw6 ${isActive ? "white" : "black-90"}`}
@@ -258,12 +231,11 @@ const SlackComboBox = () => {
         aria-owns="ex1-listbox"
         aria-haspopup="listbox"
         aria-expanded={expanded}
-        className="br3 outline-0"
-        onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
-        style={{
-          border: `2px solid rgba(0,0,0, ${isFocused ? "0.6" : ".3"})`
-        }}
+        onFocus={() => setIsFocused(true)}
+        className={`br3 pa2 outline-0 flex justify-between ba bw1 ${
+          isFocused ? "b--mid-gray" : "b--moon-gray"
+        }`}
       >
         <input
           type="text"
@@ -272,13 +244,13 @@ const SlackComboBox = () => {
           id="ex1-input"
           spellCheck="false"
           autoComplete="off"
-          style={{ width: "95%" }}
+          style={{ width: "94%" }}
           placeholder="Message #general"
           aria-autocomplete="list"
           aria-controls="ex1-listbox"
           aria-activedescendant={activeId}
           aria-label="Send A Slack message"
-          className="pa2 br3 bn outline-0 bg-white"
+          className="br3 bn outline-0 bg-white"
           onKeyDown={onKeyDown}
           onChange={e => {
             const { value } = e.target;
@@ -289,7 +261,7 @@ const SlackComboBox = () => {
         />
         <button
           aria-label="Insert mention"
-          className="pointer grow-large"
+          className="pointer grow-large ph2 pv1"
           onClick={() => {
             setQuery("@");
             setExpanded(true);
@@ -306,14 +278,7 @@ const SlackComboBox = () => {
 export default () => (
   <div
     id="slack-combo-box"
-    className="example-wrapper absolute bottom-1"
-    style={{
-      width: "800px",
-      left: 0,
-      right: 0,
-      marginLeft: "auto",
-      marginRight: "auto"
-    }}
+    className="example-wrapper absolute bottom-1 w-100 mw7 left-0 right-0 mr-auto ml-auto"
   >
     <SlackComboBox />
   </div>
