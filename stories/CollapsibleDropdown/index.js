@@ -48,7 +48,7 @@ const Example = () => {
             {expanded ? (
               <Listbox
                 focused
-                ariaLabelledBy="exp_elem"
+                aria-labelledby="exp_elem"
                 updateValue={updateValue}
                 activeId={activeId}
                 activeIndex={activeIndex}

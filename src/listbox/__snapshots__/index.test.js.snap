@@ -9,9 +9,7 @@ exports[`render listbox with the first option selected (snapshot) 1`] = `
   role="listbox"
   tabindex="0"
 >
-  <div
-    style="padding: 0px; margin: 0px;"
-  >
+  <div>
     <div
       class=""
       data-index="0"
@@ -65,9 +63,7 @@ exports[`renders the listbox when user adds native elements as children of listb
     role="listbox"
     tabindex="0"
   >
-    <div
-      style="padding: 0px; margin: 0px;"
-    >
+    <div>
       <div
         aria-selected="true"
         class=""

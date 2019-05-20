@@ -17,7 +17,7 @@ const ScrollableListbox = () => (
       </div>
       <Listbox
         focused
-        ariaLabelledBy="lb-title"
+        aria-labelledby="lb-title"
         activeStyles={{ background: "#BDE4FF" }}
         style={{
           width: "350px",

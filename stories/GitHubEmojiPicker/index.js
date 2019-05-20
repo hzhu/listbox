@@ -147,7 +147,6 @@ const GitHubEmojiPicker = () => {
                 <Listbox
                   grid
                   focused
-                  onHighlight={index => setHighlightedIndex(index)}
                   updateValue={({ selectedItem, activeIndex }) => {
                     setSelectedItem(selectedItem);
                     setHighlightedIndex(activeIndex);
@@ -177,6 +176,7 @@ const GitHubEmojiPicker = () => {
                           style={{
                             cursor: "pointer"
                           }}
+                          onMouseEnter={index => setHighlightedIndex(index)}
                         >
                           <span
                             role="img"

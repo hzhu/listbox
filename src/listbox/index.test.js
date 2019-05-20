@@ -24,7 +24,7 @@ test("render listbox with the first option selected (snapshot)", () => {
   const { getByRole } = render(
     <div>
       <span id={titleId}>Delicious Fruits</span>
-      <Listbox ariaLabelledBy={titleId}>
+      <Listbox aria-labelledby={titleId}>
         <OptionsList>
           {["Apple", "Bananna", "Carrot"].map(fruit => (
             <Option key={fruit}>
@@ -52,7 +52,7 @@ test("render listbox with the first option selected (snapshot)", () => {
 
 test("renders the listbox when user adds native elements as children of listbox (snapshot)", () => {
   const { container } = render(
-    <Listbox ariaLabelledBy="lb-title" focused>
+    <Listbox aria-labelledby="lb-title" focused>
       <h1>Fruits</h1> {/* This element is removed from the tree */}
       <OptionsList>
         <Option>Apple</Option>
@@ -69,7 +69,7 @@ test("renders listbox with a label", () => {
   const { getByRole } = render(
     <div>
       <span id={titleId}>Delicious Fruits</span>
-      <Listbox ariaLabelledBy={titleId}>
+      <Listbox aria-labelledby={titleId}>
         <OptionsList>
           {["Apple", "Bananna", "Carrot"].map(fruit => (
             <Option key={fruit}>{fruit}</Option>
@@ -445,6 +445,35 @@ test("highlights the option on mouse enter when listbox is provided the highligh
       expect(node).not.toHaveStyle(activeStyle);
     }
   });
+});
+
+test("calls the onMouseEnter event for an option with activeIndex & activeId", () => {
+  // Given
+  const BANANNA = "Bananna";
+  const fruits = ["Apple", "Bananna", "Carrot"];
+  const onMouseEnter = jest.fn();
+  const { getByText } = render(
+    <Listbox>
+      <OptionsList>
+        {fruits.map(fruit => (
+          <Option key={fruit} onMouseEnter={onMouseEnter}>
+            {fruit}
+          </Option>
+        ))}
+      </OptionsList>
+    </Listbox>
+  );
+  const BANANNA_ELEMENT = getByText(BANANNA);
+
+  // When
+  fireEvent.mouseEnter(BANANNA_ELEMENT);
+
+  // Then
+  expect(onMouseEnter).toBeCalledTimes(1);
+  expect(onMouseEnter).toHaveBeenLastCalledWith(
+    fruits.indexOf(BANANNA),
+    `${ID_PREFIX}0-${fruits.indexOf(BANANNA)}`
+  );
 });
 
 test("highlights the correct option for a controlled listbox", () => {

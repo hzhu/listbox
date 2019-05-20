@@ -41,7 +41,6 @@ const Example = () => {
                   setValue(selectedItem);
                   setActiveId(activeId);
                   setActiveIndex(activeIndex);
-                  setHighlightedIndex(activeIndex);
                 }}
                 activeId={activeId}
                 activeIndex={activeIndex}
