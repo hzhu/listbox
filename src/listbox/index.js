@@ -15,23 +15,18 @@ const ListboxContext = createContext();
 
 export const Listbox = React.forwardRef((props, ref) => {
   const {
-    id,
     grid,
-    style,
     focused,
     children,
     onKeyDown,
     highlight,
-    className,
-    activeClass,
     updateValue,
-    onHighlight,
     onAriaSelect,
     activeStyles,
-    ariaLabelledBy,
     activeId: controlledActiveId,
     activeIndex: controlledActiveIndex,
-    highlightedIndex: controlledHighlightedIndex
+    highlightedIndex: controlledHighlightedIndex,
+    ...restProps
   } = props;
   const [activeId, setActiveId] = useState();
   const [activeIndex, setActiveIndex] = useState();
@@ -198,13 +193,9 @@ export const Listbox = React.forwardRef((props, ref) => {
   return (
     <ListboxContext.Provider value={context}>
       <div
-        id={id}
         tabIndex={0}
-        style={style}
         role="listbox"
-        className={className}
         ref={ref === null ? listboxRef : ref}
-        aria-labelledby={ariaLabelledBy}
         aria-activedescendant={isControlled ? controlledActiveId : activeId}
         onKeyDown={e => handleKeyDown(e, clonedChildren)}
         onFocus={e => {
@@ -213,6 +204,7 @@ export const Listbox = React.forwardRef((props, ref) => {
             setActiveIndex(0);
           }
         }}
+        {...restProps}
       >
         {clonedChildren}
       </div>
@@ -220,11 +212,9 @@ export const Listbox = React.forwardRef((props, ref) => {
   );
 });
 Listbox.propTypes = {
-  activeClass: PropTypes.string,
   activeIndex: PropTypes.number,
   activeId: PropTypes.string,
   activeStyles: PropTypes.object,
-  ariaLabelledBy: PropTypes.string,
   className: PropTypes.string,
   children: PropTypes.node.isRequired,
   focused: PropTypes.bool,
@@ -232,18 +222,15 @@ Listbox.propTypes = {
   highlight: PropTypes.bool,
   id: PropTypes.string,
   onAriaSelect: PropTypes.func,
-  onHighlight: PropTypes.func,
   onKeyDown: PropTypes.func,
   style: PropTypes.object,
   updateValue: PropTypes.func
 };
 
 Listbox.defaultProps = {
-  activeClass: "",
   activeIndex: undefined,
   activeId: undefined,
   activeStyles: { background: "#BDE4FF" },
-  ariaLabelledBy: "",
   className: "",
   children: null,
   focused: false,
@@ -251,22 +238,13 @@ Listbox.defaultProps = {
   highlight: false,
   id: "",
   onAriaSelect: () => {},
-  onHighlight: () => {},
   onKeyDown: () => {},
   style: {},
   updateValue: () => {}
 };
 
-export const OptionsList = ({ style, children }) => (
-  <div
-    style={{
-      padding: 0,
-      margin: 0,
-      ...style
-    }}
-  >
-    {children}
-  </div>
+export const OptionsList = ({ children, ...restProps }) => (
+  <div {...restProps}>{children}</div>
 );
 
 export const Option = React.forwardRef((props, ref) => {
@@ -275,7 +253,6 @@ export const Option = React.forwardRef((props, ref) => {
     index,
     style,
     onSelect,
-    className,
     onMouseEnter,
     activeStyles,
     children,
@@ -296,12 +273,11 @@ export const Option = React.forwardRef((props, ref) => {
       role="option"
       data-index={index}
       onClick={onSelect}
-      className={className}
       onMouseEnter={() => {
         if (highlight) {
           setHighlightedIndex(index);
-          onMouseEnter(index, id);
         }
+        onMouseEnter(index, id);
       }}
       ref={isSelected ? ref : null}
       aria-selected={isSelected || undefined}

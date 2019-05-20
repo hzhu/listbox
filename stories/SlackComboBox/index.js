@@ -160,7 +160,7 @@ const SlackComboBox = () => {
             highlight
             ref={listboxRef}
             id="ex1-listbox"
-            ariaLabelledBy="ex1-label"
+            aria-labelledby="ex1-label"
             activeIndex={activeIndex}
             highlightedIndex={highlightedIndex}
             onAriaSelect={activeId => setActiveId(activeId)}
