@@ -8,6 +8,7 @@ import ScrollableListbox from "./ScrollableListbox";
 import EmojiDropdown from "./EmojiDropdown";
 import EmojiListbox from "./EmojiListbox/";
 import GitHubEmojiPicker from "./GitHubEmojiPicker/";
+import ShiptComboBox from "./ShiptComboBox";
 import SlackComboBox from "./SlackComboBox";
 
 storiesOf("Listbox Widgets", module)
@@ -30,4 +31,5 @@ storiesOf("Custom Widgets", module)
     </>
   ))
   .add("GitHub Reaction Popover", () => <GitHubEmojiPicker />)
+  .add("Shipt Search Combo Box", () => <ShiptComboBox />)
   .add("Slack Mention Combo Box", () => <SlackComboBox />);
