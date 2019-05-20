@@ -1,19 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
-import { KEY_CODE } from "../../src/constants";
+import { KEY_CODE, COMBO_INPUT_KEYS } from "../../src/constants";
 import { SLACK_PROFILES } from "../constants";
 import { Listbox, Option, OptionsList } from "../../src";
 import { focusElement } from "../../src/utils";
 import "./index.css";
-
-const COMBO_INPUT_KEYS = [
-  KEY_CODE.up,
-  KEY_CODE.down,
-  KEY_CODE.left,
-  KEY_CODE.right,
-  KEY_CODE.return,
-  KEY_CODE.esc,
-  KEY_CODE.tab
-];
 
 const SlackComboBox = () => {
   const inputRef = useRef(null);
@@ -109,6 +99,7 @@ const SlackComboBox = () => {
         console.log("default");
     }
   };
+
   useEffect(() => {
     const handleExpanded = e => {
       if (!document.getElementById("slack-combo-box").contains(e.target)) {
@@ -120,6 +111,7 @@ const SlackComboBox = () => {
   }, []);
   const [isScrolling, setIsScrolling] = useState(false);
   let timeout = undefined;
+
   useEffect(() => {
     const onScroll = () => {
       if (timeout) window.clearTimeout(timeout);
@@ -135,6 +127,7 @@ const SlackComboBox = () => {
       }
     };
   }, [expanded, timeout, listboxRef]);
+
   return (
     <>
       {expanded && suggestions.length && query.length ? (

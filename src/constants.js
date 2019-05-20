@@ -16,3 +16,13 @@ export const KEY_CODE = {
   down: 40,
   delete: 46
 };
+
+export const COMBO_INPUT_KEYS = [
+  KEY_CODE.up,
+  KEY_CODE.down,
+  KEY_CODE.left,
+  KEY_CODE.right,
+  KEY_CODE.return,
+  KEY_CODE.esc,
+  KEY_CODE.tab
+];
