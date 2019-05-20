@@ -149,8 +149,16 @@ const ShiptComboBox = () => {
       setExpanded(true);
     }
   };
+  const focused = expanded && suggestions.length;
+  const shiptGreen = "#599900";
+  const focusedBorder = `1px solid ${shiptGreen}`;
+  const focusOutline = focused ? { border: focusedBorder } : {};
+  const focusOutlineTop = focused ? { borderTop: focusedBorder } : {};
   return (
-    <div className="mw6 ba b--light-silver center black-70 br2">
+    <div
+      className={`mw6 ba b--light-silver center black-70 br2`}
+      style={focusOutline}
+    >
       <label htmlFor="ex1-input" id="ex1-label" style={visuallyHiddenCSS}>
         Search for products at Shipt
       </label>
@@ -167,9 +175,6 @@ const ShiptComboBox = () => {
           type="text"
           id="ex1-input"
           className="pl2 w-100 outline-0 bn br2"
-          style={{
-            "selection:": "red"
-          }}
           autoComplete="off"
           value={searchQuery}
           aria-autocomplete="list"
@@ -185,8 +190,8 @@ const ShiptComboBox = () => {
               ? `Search for ${searchQuery}`
               : "Search for products on Shipt"
           }
-          className="bn br1 br--right pointer"
-          style={{ background: "#599900", padding: "5px 5px 2px 8px" }}
+          className={`bn br--right pointer ${focused ? "br0" : "br1"}`}
+          style={{ background: shiptGreen, padding: "5px 5px 2px 8px" }}
           onClick={() => {
             collapse();
             alert(searchQuery);
@@ -195,7 +200,7 @@ const ShiptComboBox = () => {
           🔍
         </button>
       </div>
-      {expanded && suggestions.length ? (
+      {focused ? (
         <Listbox
           highlight
           id="ex1-listbox"
@@ -204,7 +209,8 @@ const ShiptComboBox = () => {
           activeStyles={{
             background: "rgba(76, 210, 42, 0.25)"
           }}
-          className="pointer outline-0 bt b--light-silver"
+          style={focusOutlineTop}
+          className={`pointer outline-0 bt b--light-silver`}
           highlightedIndex={highlightedIndex}
           onAriaSelect={activeId => setActiveId(activeId)}
           updateValue={({ activeIndex, selectedItem }) => {
@@ -232,7 +238,7 @@ const ShiptComboBox = () => {
 };
 
 export default () => (
-  <div className="sans-serif pa5 f4">
+  <div className="sans-serif pa4 f4">
     <ShiptComboBox />
   </div>
 );
