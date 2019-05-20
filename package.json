@@ -5,7 +5,7 @@
   "license": "MIT",
   "author": "Henry Zhu <hz@henryzhu.me>",
   "main": "./dist/index.js",
-  "homepage": "http://listbox.surge.sh",
+  "homepage": "https://listbox.surge.sh",
   "repository": {
     "type": "git",
     "url": "https://github.com/hzhu/listbox.git"
@@ -43,7 +43,8 @@
     "test": "jest --verbose --watchAll",
     "build": "babel -d dist/ src/",
     "storybook": "start-storybook -p 9009 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "deploy-storybook": "cd ./storybook-static && surge --domain https://listbox.surge.sh"
   },
   "eslintConfig": {
     "extends": "react-app"
