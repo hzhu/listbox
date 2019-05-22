@@ -32,24 +32,27 @@ export const Listbox = React.forwardRef((props, ref) => {
   const [activeIndex, setActiveIndex] = useState();
   const [highlightedIndex, setHighlightedIndex] = useState();
   const isControlled = controlledActiveIndex != null;
-  const selectOptionIndex = (activeIndex, activeId, selectedItem) => {
-    updateValue({ activeIndex, activeId, selectedItem });
+  const selectFromElement = element => {
+    const { id, dataset, textContent } = element;
+    const index = Number(dataset.index);
+    selectOption(index, id, textContent);
+  };
+  const selectOption = (index, id, textContent) => {
+    updateValue({
+      activeId: id,
+      activeIndex: index,
+      selectedItem: textContent
+    });
     if (!isControlled) {
-      setActiveId(activeId);
-      setActiveIndex(activeIndex);
+      setActiveId(id);
+      setActiveIndex(index);
     }
   };
   const listboxRef = useRef();
-  const setItem = element => {
-    const activeId = element.id;
-    const { index } = element.dataset;
-    const activeIndex = Number(index);
-    selectOptionIndex(activeIndex, activeId, element.textContent);
-  };
   const findItem = useFindTypedItem();
   const checkKeyPress = e => {
-    let currentItem;
     let nextItem;
+    let currentItem;
     switch (e.which) {
       case KEY_CODE.up:
       case KEY_CODE.down:
@@ -64,7 +67,7 @@ export const Listbox = React.forwardRef((props, ref) => {
         }
         if (nextItem) {
           focusElement(nextItem, listboxRef.current);
-          setItem(nextItem);
+          selectFromElement(nextItem);
         }
         break;
       default: {
@@ -72,11 +75,7 @@ export const Listbox = React.forwardRef((props, ref) => {
         const foundItem = findItem(e.which, domNodes);
         if (foundItem) {
           foundItem.scrollIntoView(false);
-          selectOptionIndex(
-            Number(foundItem.dataset.index),
-            foundItem.id,
-            foundItem.textContent
-          );
+          selectFromElement(foundItem);
         }
       }
     }
@@ -118,19 +117,15 @@ export const Listbox = React.forwardRef((props, ref) => {
         break;
     }
 
-    if (nextItem) setItem(nextItem);
+    if (nextItem) selectFromElement(nextItem);
   };
-  const handleKeyDown = (e, children) => {
+  const handleKeyDown = e => {
     onKeyDown(e);
-    if (grid) {
-      checkKeyPressGrid(e);
-    } else {
-      checkKeyPress(e);
-    }
+    grid ? checkKeyPressGrid(e) : checkKeyPress(e);
   };
   useEffect(() => {
     if (focused) listboxRef.current.focus();
-  });
+  }, [focused]);
   useEffect(() => {
     if (isControlled) {
       onAriaSelect(`${ID_PREFIX}0-${controlledActiveIndex}`);
@@ -144,23 +139,14 @@ export const Listbox = React.forwardRef((props, ref) => {
         children: React.Children.map(
           OptionsList.props.children,
           (Option, col) => {
+            const { value } = Option.props;
             const optionIndex = index;
             index++;
             const id = `${ID_PREFIX}${row}-${col}`;
             return React.cloneElement(Option, {
               id,
               index: optionIndex,
-              activeStyles,
-              onSelect: e => {
-                let selectedItem;
-                const { value } = Option.props;
-                if (value) {
-                  selectedItem = value;
-                } else {
-                  selectedItem = getDeepestChild(Option);
-                }
-                selectOptionIndex(optionIndex, id, selectedItem);
-              }
+              textContent: value ? value : getDeepestChild(Option)
             });
           }
         )
@@ -172,6 +158,8 @@ export const Listbox = React.forwardRef((props, ref) => {
       : highlightedIndex,
     activeIndex: isControlled ? controlledActiveIndex : activeIndex,
     highlight,
+    activeStyles,
+    selectOption,
     setHighlightedIndex
   };
   return (
@@ -181,7 +169,7 @@ export const Listbox = React.forwardRef((props, ref) => {
         role="listbox"
         ref={ref === null ? listboxRef : ref}
         aria-activedescendant={isControlled ? controlledActiveId : activeId}
-        onKeyDown={e => handleKeyDown(e, clonedChildren)}
+        onKeyDown={handleKeyDown}
         onFocus={e => {
           if (activeId === undefined) {
             setActiveId(`${ID_PREFIX}0-0`);
@@ -235,32 +223,35 @@ export const Option = React.forwardRef((props, ref) => {
   let {
     id,
     index,
+    value,
     style,
-    onSelect,
+    textContent,
     onMouseEnter,
-    activeStyles,
     children,
     ...restProps
   } = props;
-  const {
+
+  let {
     highlight,
     activeIndex,
+    activeStyles,
+    selectOption,
     highlightedIndex,
     setHighlightedIndex
   } = useContext(ListboxContext);
+
   const isSelected = index === activeIndex;
   const isHighlighted = index === highlightedIndex;
   activeStyles = (isSelected || isHighlighted) && activeStyles;
+
   return (
     <div
       id={id}
       role="option"
       data-index={index}
-      onClick={onSelect}
+      onClick={() => selectOption(index, id, textContent)}
       onMouseEnter={() => {
-        if (highlight) {
-          setHighlightedIndex(index);
-        }
+        if (highlight) setHighlightedIndex(index);
         onMouseEnter(index, id);
       }}
       ref={isSelected ? ref : null}
