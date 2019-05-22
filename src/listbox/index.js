@@ -2,7 +2,6 @@ import React, {
   useRef,
   useState,
   useEffect,
-  createRef,
   useContext,
   createContext
 } from "react";
@@ -10,6 +9,7 @@ import * as PropTypes from "prop-types";
 import "@babel/polyfill";
 import { KEY_CODE, ID_PREFIX } from "../constants";
 import { focusElement, getDeepestChild } from "../utils";
+import { useFindTypedItem } from "../hooks";
 
 const ListboxContext = createContext();
 
@@ -40,14 +40,14 @@ export const Listbox = React.forwardRef((props, ref) => {
     }
   };
   const listboxRef = useRef();
-  const selectedOptionRef = createRef();
   const setItem = element => {
     const activeId = element.id;
     const { index } = element.dataset;
     const activeIndex = Number(index);
     selectOptionIndex(activeIndex, activeId, element.textContent);
   };
-  const checkKeyPress = (e, children) => {
+  const findItem = useFindTypedItem();
+  const checkKeyPress = e => {
     let currentItem;
     let nextItem;
     switch (e.which) {
@@ -68,32 +68,16 @@ export const Listbox = React.forwardRef((props, ref) => {
         }
         break;
       default: {
-        const options = [...listboxRef.current.children[0].children];
-        findItemToFocus(e.which, options);
-      }
-    }
-  };
-  const cacheTypedChars = useRef("");
-  const cachedTimeoutId = useRef(null);
-  const findItemToFocus = (charCode, options) => {
-    cacheTypedChars.current += String.fromCharCode(charCode).toLowerCase();
-    if (cachedTimeoutId.current) {
-      clearTimeout(cachedTimeoutId.current);
-    }
-    cachedTimeoutId.current = setTimeout(() => {
-      cacheTypedChars.current = "";
-    }, 500);
-    if (cacheTypedChars.current) {
-      const foundItem = options.filter(node =>
-        node.textContent.toLowerCase().startsWith(cacheTypedChars.current)
-      )[0];
-      if (foundItem) {
-        selectOptionIndex(
-          Number(foundItem.dataset.index),
-          foundItem.id,
-          foundItem.textContent
-        );
-        foundItem.scrollIntoView(false);
+        const domNodes = [...listboxRef.current.children[0].children];
+        const foundItem = findItem(e.which, domNodes);
+        if (foundItem) {
+          foundItem.scrollIntoView(false);
+          selectOptionIndex(
+            Number(foundItem.dataset.index),
+            foundItem.id,
+            foundItem.textContent
+          );
+        }
       }
     }
   };
@@ -141,7 +125,7 @@ export const Listbox = React.forwardRef((props, ref) => {
     if (grid) {
       checkKeyPressGrid(e);
     } else {
-      checkKeyPress(e, children);
+      checkKeyPress(e);
     }
   };
   useEffect(() => {
