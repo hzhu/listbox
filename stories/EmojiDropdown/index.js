@@ -44,7 +44,7 @@ const Example = () => {
                 }}
                 activeId={activeId}
                 activeIndex={activeIndex}
-                highlightedIndex={activeIndex}
+                highlightIndex={activeIndex}
                 style={{
                   fontSize: "26px",
                   background: "#FFF",

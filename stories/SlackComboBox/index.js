@@ -14,7 +14,7 @@ const SlackComboBox = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [expanded, setExpanded] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
-  const [highlightedIndex, setHighlightedIndex] = useState();
+  const [highlightIndex, setHighlightIndex] = useState();
   const suggestions =
     query.charAt(0) === "@"
       ? SLACK_PROFILES.filter(profile => {
@@ -42,10 +42,10 @@ const SlackComboBox = () => {
         e.preventDefault();
         if (noActiveIndex || isFirstIndex) {
           setActiveIndex(suggestions.length - 1);
-          setHighlightedIndex(suggestions.length - 1);
+          setHighlightIndex(suggestions.length - 1);
         } else {
           setActiveIndex(activeIndex - 1);
-          setHighlightedIndex(activeIndex - 1);
+          setHighlightIndex(activeIndex - 1);
         }
         if (activeOptionRef.current !== null && listboxRef.current !== null) {
           if (activeOptionRef.current.previousElementSibling === null) {
@@ -62,10 +62,10 @@ const SlackComboBox = () => {
         e.preventDefault();
         if (noActiveIndex || isLastActiveIndex) {
           setActiveIndex(0);
-          setHighlightedIndex(0);
+          setHighlightIndex(0);
         } else {
           setActiveIndex(activeIndex + 1);
-          setHighlightedIndex(activeIndex + 1);
+          setHighlightIndex(activeIndex + 1);
         }
         if (activeOptionRef.current !== null && listboxRef.current !== null) {
           if (activeOptionRef.current.nextElementSibling === null) {
@@ -162,7 +162,7 @@ const SlackComboBox = () => {
             id="ex1-listbox"
             aria-labelledby="ex1-label"
             activeIndex={activeIndex}
-            highlightedIndex={highlightedIndex}
+            highlightIndex={highlightIndex}
             onAriaSelect={activeId => setActiveId(activeId)}
             activeStyles={{ background: "#1D9BD1", color: "#FFF" }}
             updateValue={({ activeIndex, selectedItem }) => {
@@ -182,7 +182,7 @@ const SlackComboBox = () => {
             <OptionsList>
               {suggestions.map((profile, index) => {
                 const isSelected = index === activeIndex;
-                const isHighlighted = index === highlightedIndex;
+                const isHighlighted = index === highlightIndex;
                 const isActive = isSelected || isHighlighted;
                 return (
                   <Option
@@ -192,7 +192,7 @@ const SlackComboBox = () => {
                     onMouseEnter={index => {
                       if (!isScrolling) {
                         setActiveIndex(index);
-                        setHighlightedIndex(index);
+                        setHighlightIndex(index);
                       }
                     }}
                     style={{

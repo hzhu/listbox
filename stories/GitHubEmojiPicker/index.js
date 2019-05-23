@@ -107,7 +107,7 @@ const Caret = () => (
 
 const GitHubEmojiPicker = () => {
   const [selectedItem, setSelectedItem] = useState("");
-  const [highlightedIndex, setHighlightedIndex] = useState();
+  const [highlightIndex, setHighlightIndex] = useState();
   return (
     <div style={{ width: "145px", margin: "24px auto" }}>
       <CollapsibleDropdown>
@@ -134,8 +134,8 @@ const GitHubEmojiPicker = () => {
               >
                 <Caret />
                 <div style={{ color: "#586069", padding: "10px 8px" }}>
-                  {highlightedIndex !== undefined
-                    ? GITHUB_EMOJIS[highlightedIndex].name
+                  {highlightIndex !== undefined
+                    ? GITHUB_EMOJIS[highlightIndex].name
                     : "Pick your reaction"}
                 </div>
                 <div
@@ -149,7 +149,7 @@ const GitHubEmojiPicker = () => {
                   focused
                   updateValue={({ selectedItem, activeIndex }) => {
                     setSelectedItem(selectedItem);
-                    setHighlightedIndex(activeIndex);
+                    setHighlightIndex(activeIndex);
                   }}
                   activeStyles={{
                     transform: "scale(1.2)",
@@ -176,7 +176,7 @@ const GitHubEmojiPicker = () => {
                           style={{
                             cursor: "pointer"
                           }}
-                          onMouseEnter={index => setHighlightedIndex(index)}
+                          onMouseEnter={index => setHighlightIndex(index)}
                         >
                           <span
                             role="img"

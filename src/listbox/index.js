@@ -14,7 +14,7 @@ import { useFindTypedItem } from "../hooks";
 const ListboxContext = createContext();
 
 export const Listbox = React.forwardRef((props, ref) => {
-  const {
+  let {
     grid,
     focused,
     children,
@@ -25,13 +25,18 @@ export const Listbox = React.forwardRef((props, ref) => {
     activeStyles,
     activeId: controlledActiveId,
     activeIndex: controlledActiveIndex,
-    highlightedIndex: controlledHighlightedIndex,
+    highlightIndex: controlledHighlightIndex,
     ...restProps
   } = props;
-  const [activeId, setActiveId] = useState();
-  const [activeIndex, setActiveIndex] = useState();
-  const [highlightedIndex, setHighlightedIndex] = useState();
-  const isControlled = controlledActiveIndex != null;
+  const [_activeId, setActiveId] = useState();
+  const [_activeIndex, setActiveIndex] = useState();
+  const [_highlightIndex, setHighlightIndex] = useState();
+  const controlled = controlledActiveIndex != null;
+  const activeId = controlled ? controlledActiveId : _activeId;
+  const activeIndex = controlled ? controlledActiveIndex : _activeIndex;
+  const highlightIndex = controlled
+    ? controlledHighlightIndex
+    : _highlightIndex;
   const selectFromElement = element => {
     const { id, dataset, textContent } = element;
     const index = Number(dataset.index);
@@ -43,7 +48,7 @@ export const Listbox = React.forwardRef((props, ref) => {
       activeIndex: index,
       selectedItem: textContent
     });
-    if (!isControlled) {
+    if (!controlled) {
       setActiveId(id);
       setActiveIndex(index);
     }
@@ -57,9 +62,7 @@ export const Listbox = React.forwardRef((props, ref) => {
       case KEY_CODE.up:
       case KEY_CODE.down:
         e.preventDefault();
-        currentItem = isControlled
-          ? document.getElementById(controlledActiveId)
-          : document.getElementById(activeId);
+        currentItem = document.getElementById(activeId);
         if (e.which === KEY_CODE.up) {
           nextItem = currentItem.previousElementSibling;
         } else {
@@ -85,9 +88,7 @@ export const Listbox = React.forwardRef((props, ref) => {
    * @param {Object} e
    */
   const checkKeyPressGrid = e => {
-    const activeNode = isControlled
-      ? document.getElementById(controlledActiveId)
-      : document.getElementById(activeId);
+    const activeNode = document.getElementById(activeId);
     const currentCoords = activeNode.id.slice(ID_PREFIX.length).split("-");
     let nextItem;
     switch (e.which || e.keyCode) {
@@ -123,14 +124,17 @@ export const Listbox = React.forwardRef((props, ref) => {
     onKeyDown(e);
     grid ? checkKeyPressGrid(e) : checkKeyPress(e);
   };
+
   useEffect(() => {
     if (focused) listboxRef.current.focus();
   }, [focused]);
+
   useEffect(() => {
-    if (isControlled) {
-      onAriaSelect(`${ID_PREFIX}0-${controlledActiveIndex}`);
+    if (controlled) {
+      onAriaSelect(`${ID_PREFIX}0-${activeIndex}`);
     }
   }, [controlledActiveIndex]);
+
   let index = 0;
   const clonedChildren = React.Children.toArray(children)
     .filter(child => typeof child.type === "function")
@@ -152,23 +156,23 @@ export const Listbox = React.forwardRef((props, ref) => {
         )
       })
     );
+
   const context = {
-    highlightedIndex: isControlled
-      ? controlledHighlightedIndex
-      : highlightedIndex,
-    activeIndex: isControlled ? controlledActiveIndex : activeIndex,
     highlight,
+    activeIndex,
     activeStyles,
     selectOption,
-    setHighlightedIndex
+    highlightIndex,
+    setHighlightIndex
   };
+
   return (
     <ListboxContext.Provider value={context}>
       <div
         tabIndex={0}
         role="listbox"
         ref={ref === null ? listboxRef : ref}
-        aria-activedescendant={isControlled ? controlledActiveId : activeId}
+        aria-activedescendant={activeId}
         onKeyDown={handleKeyDown}
         onFocus={e => {
           if (activeId === undefined) {
@@ -183,6 +187,7 @@ export const Listbox = React.forwardRef((props, ref) => {
     </ListboxContext.Provider>
   );
 });
+
 Listbox.propTypes = {
   activeIndex: PropTypes.number,
   activeId: PropTypes.string,
@@ -236,12 +241,12 @@ export const Option = React.forwardRef((props, ref) => {
     activeIndex,
     activeStyles,
     selectOption,
-    highlightedIndex,
-    setHighlightedIndex
+    highlightIndex,
+    setHighlightIndex
   } = useContext(ListboxContext);
 
   const isSelected = index === activeIndex;
-  const isHighlighted = index === highlightedIndex;
+  const isHighlighted = index === highlightIndex;
   activeStyles = (isSelected || isHighlighted) && activeStyles;
 
   return (
@@ -251,7 +256,7 @@ export const Option = React.forwardRef((props, ref) => {
       data-index={index}
       onClick={() => selectOption(index, id, textContent)}
       onMouseEnter={() => {
-        if (highlight) setHighlightedIndex(index);
+        if (highlight) setHighlightIndex(index);
         onMouseEnter(index, id);
       }}
       ref={isSelected ? ref : null}

@@ -35,7 +35,7 @@ export default () => {
   const [activeIndex, setActiveIndex] = useState();
   const [expanded, setExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [highlightedIndex, setHighlightedIndex] = useState();
+  const [highlightIndex, setHighlightIndex] = useState();
   const suggestions = FRUITS_AND_VEGGIES.filter(
     fruit => fruit.toLowerCase().indexOf(searchQuery.toLowerCase()) === 0
   );
@@ -132,7 +132,7 @@ export default () => {
           id="ex1-listbox"
           aria-labelledby="ex1-label"
           activeIndex={activeIndex}
-          highlightedIndex={highlightedIndex}
+          highlightIndex={highlightIndex}
           onAriaSelect={activeId => setActiveId(activeId)}
           updateValue={({ activeIndex, selectedItem }) => {
             setExpanded(false);
@@ -145,7 +145,7 @@ export default () => {
             {suggestions.map(fruit => (
               <Option
                 key={fruit}
-                onMouseEnter={index => setHighlightedIndex(index)}
+                onMouseEnter={index => setHighlightIndex(index)}
               >
                 <PartialEmphasis query={searchQuery}>{fruit}</PartialEmphasis>
               </Option>

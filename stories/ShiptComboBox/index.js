@@ -62,7 +62,7 @@ const ShiptComboBox = () => {
   const [activeIndex, setActiveIndex] = useState();
   const [expanded, setExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [highlightedIndex, setHighlightedIndex] = useState();
+  const [highlightIndex, setHighlightIndex] = useState();
   const [suggestions, setSuggestions] = useState([]);
   const onChange = async e => {
     const { value } = e.target;
@@ -75,7 +75,7 @@ const ShiptComboBox = () => {
     setExpanded(false);
     setActiveId(undefined);
     setActiveIndex(-1);
-    setHighlightedIndex(-1);
+    setHighlightIndex(-1);
     setSuggestions([]);
   };
   const onKeyDown = e => {
@@ -211,7 +211,7 @@ const ShiptComboBox = () => {
           }}
           style={focusOutlineTop}
           className={`pointer outline-0 bt b--light-silver`}
-          highlightedIndex={highlightedIndex}
+          highlightIndex={highlightIndex}
           onAriaSelect={activeId => setActiveId(activeId)}
           updateValue={({ activeIndex, selectedItem }) => {
             setExpanded(false);
@@ -225,7 +225,7 @@ const ShiptComboBox = () => {
               <Option
                 className="ph2 pv1"
                 key={term}
-                onMouseEnter={index => setHighlightedIndex(index)}
+                onMouseEnter={index => setHighlightIndex(index)}
               >
                 <PartialEmphasis query={searchQuery}>{term}</PartialEmphasis>
               </Option>

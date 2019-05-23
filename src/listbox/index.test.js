@@ -484,7 +484,7 @@ test("highlights the correct option for a controlled listbox", () => {
   const CARROT = "Carrot";
   const fruits = [APPLE, BANANNA, CARROT];
   const { getByText } = render(
-    <Listbox activeIndex={0} highlightedIndex={2}>
+    <Listbox activeIndex={0} highlightIndex={2}>
       <OptionsList>
         {fruits.map(fruit => (
           <Option key={fruit}>{fruit}</Option>
