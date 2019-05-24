@@ -46,7 +46,7 @@ export const Listbox = React.forwardRef((props, ref) => {
     updateValue({
       activeId: id,
       activeIndex: index,
-      selectedItem: textContent
+      textContent
     });
     if (!controlled) {
       setActiveId(id);

@@ -243,7 +243,7 @@ test("calls updateValue prop with the new listbox state when user types multiple
   expect(updateValue).toHaveBeenLastCalledWith({
     activeId: `${ID_PREFIX}0-${SELECTED_IDX}`,
     activeIndex: SELECTED_IDX,
-    selectedItem: CALIFORNIUM
+    textContent: CALIFORNIUM
   });
 });
 
@@ -316,7 +316,7 @@ test("calls updateValue prop when listbox option selection changes", () => {
   // When
   fireEvent.keyDown(listboxNode, eventProperties);
 
-  // TODO: assert that updateValue was called with activeItem, activeOptionId, selectedItem.
+  // TODO: assert that updateValue was called with activeItem, activeOptionId, textContent.
   // And then
   expect(updateValue).toBeCalledTimes(1);
 
@@ -378,7 +378,7 @@ test("able to navigate a grid based listbox with keyboard navigation", () => {
   expect(updateValue).toHaveBeenLastCalledWith({
     activeId: `${ID_PREFIX}1-2`,
     activeIndex: 5,
-    selectedItem: "Six"
+    textContent: "Six"
   });
 });
 
@@ -613,6 +613,6 @@ test("should select the value prop for Option if it contains a complex markup", 
   expect(updateValue).toHaveBeenLastCalledWith({
     activeId: `${ID_PREFIX}0-${CARROT_IDX}`,
     activeIndex: CARROT_IDX,
-    selectedItem: CARROT
+    textContent: CARROT
   });
 });

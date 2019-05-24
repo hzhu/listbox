@@ -165,10 +165,10 @@ const SlackComboBox = () => {
             highlightIndex={highlightIndex}
             onAriaSelect={activeId => setActiveId(activeId)}
             activeStyles={{ background: "#1D9BD1", color: "#FFF" }}
-            updateValue={({ activeIndex, selectedItem }) => {
+            updateValue={({ activeIndex, textContent }) => {
               setExpanded(false);
               setActiveIndex(activeIndex);
-              setQuery("@" + selectedItem);
+              setQuery("@" + textContent);
             }}
             className="overflow-y-scroll relative"
             style={{

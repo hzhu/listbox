@@ -37,8 +37,8 @@ const Example = () => {
                 grid
                 focused
                 highlight
-                updateValue={({ activeId, activeIndex, selectedItem }) => {
-                  setValue(selectedItem);
+                updateValue={({ activeId, activeIndex, textContent }) => {
+                  setValue(textContent);
                   setActiveId(activeId);
                   setActiveIndex(activeIndex);
                 }}

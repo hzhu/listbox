@@ -134,10 +134,10 @@ export default () => {
           activeIndex={activeIndex}
           highlightIndex={highlightIndex}
           onAriaSelect={activeId => setActiveId(activeId)}
-          updateValue={({ activeIndex, selectedItem }) => {
+          updateValue={({ activeIndex, textContent }) => {
             setExpanded(false);
             setActiveIndex(activeIndex);
-            setSearchQuery(selectedItem);
+            setSearchQuery(textContent);
           }}
           style={{ width: "200px", border: "1px solid #CCC" }}
         >

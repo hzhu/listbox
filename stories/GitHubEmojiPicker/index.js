@@ -106,7 +106,7 @@ const Caret = () => (
 );
 
 const GitHubEmojiPicker = () => {
-  const [selectedItem, setSelectedItem] = useState("");
+  const [textContent, settextContent] = useState("");
   const [highlightIndex, setHighlightIndex] = useState();
   return (
     <div style={{ width: "145px", margin: "24px auto" }}>
@@ -120,7 +120,7 @@ const GitHubEmojiPicker = () => {
                 justifyContent: "flex-end"
               }}
             >
-              <EmojiDropdownButton value={selectedItem} />
+              <EmojiDropdownButton value={textContent} />
             </div>
             {expanded ? (
               <div
@@ -147,8 +147,8 @@ const GitHubEmojiPicker = () => {
                 <Listbox
                   grid
                   focused
-                  updateValue={({ selectedItem, activeIndex }) => {
-                    setSelectedItem(selectedItem);
+                  updateValue={({ textContent, activeIndex }) => {
+                    settextContent(textContent);
                     setHighlightIndex(activeIndex);
                   }}
                   activeStyles={{

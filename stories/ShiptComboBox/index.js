@@ -213,10 +213,10 @@ const ShiptComboBox = () => {
           className={`pointer outline-0 bt b--light-silver`}
           highlightIndex={highlightIndex}
           onAriaSelect={activeId => setActiveId(activeId)}
-          updateValue={({ activeIndex, selectedItem }) => {
+          updateValue={({ activeIndex, textContent }) => {
             setExpanded(false);
             setActiveIndex(activeIndex);
-            setSearchQuery(selectedItem);
+            setSearchQuery(textContent);
             setSuggestions([]);
           }}
         >

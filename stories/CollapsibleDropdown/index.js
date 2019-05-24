@@ -13,11 +13,11 @@ const Example = () => {
   const [activeIndex, setActiveIndex] = useState();
   const [expanded, setExpanded] = useState(false);
   const [value, setValue] = useState(transuraniumElements[0]);
-  const updateValue = ({ activeId, activeIndex, selectedItem }) => {
+  const updateValue = ({ activeId, activeIndex, textContent }) => {
     setActiveId(activeId);
     setActiveIndex(activeIndex);
     setExpanded(true);
-    setValue(selectedItem);
+    setValue(textContent);
   };
   return (
     <>
