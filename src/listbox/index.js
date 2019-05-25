@@ -8,7 +8,7 @@ import React, {
 import * as PropTypes from "prop-types";
 import "@babel/polyfill";
 import { KEY_CODE, ID_PREFIX } from "../constants";
-import { focusElement, getDeepestChild } from "../utils";
+import { getNextDomItem, focusElement, getDeepestChild } from "../utils";
 import { useFindTypedItem } from "../hooks";
 
 const ListboxContext = createContext();
@@ -54,33 +54,13 @@ export const Listbox = React.forwardRef((props, ref) => {
     }
   };
   const listboxRef = useRef();
-  const findItem = useFindTypedItem();
-  const checkKeyPress = e => {
-    let nextItem;
-    let currentItem;
-    switch (e.which) {
-      case KEY_CODE.up:
-      case KEY_CODE.down:
-        e.preventDefault();
-        currentItem = document.getElementById(activeId);
-        if (e.which === KEY_CODE.up) {
-          nextItem = currentItem.previousElementSibling;
-        } else {
-          nextItem = currentItem.nextElementSibling;
-        }
-        if (nextItem) {
-          focusElement(nextItem, listboxRef.current);
-          selectFromElement(nextItem);
-        }
-        break;
-      default: {
-        const domNodes = [...listboxRef.current.children[0].children];
-        const foundItem = findItem(e.which, domNodes);
-        if (foundItem) {
-          foundItem.scrollIntoView(false);
-          selectFromElement(foundItem);
-        }
-      }
+  const findTypedInDomNodes = useFindTypedItem();
+  const checkKeyPress = event => {
+    const activeNode = document.getElementById(activeId);
+    const nextItem = getNextDomItem({ event, activeNode, findTypedInDomNodes });
+    if (nextItem) {
+      focusElement(nextItem, event.target);
+      selectFromElement(nextItem);
     }
   };
   /**
