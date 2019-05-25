@@ -43,13 +43,14 @@ export default () => {
     setExpanded(false);
     setActiveId(undefined);
     setActiveIndex(-1);
+    setHighlightIndex(-1);
   };
   const onKeyDown = e => {
     if (!COMBO_INPUT_KEYS.includes(e.keyCode)) return;
     if (!expanded) return;
     const isFirstIndex = activeIndex === 0;
     const noActiveIndex = activeIndex === undefined;
-    const isLastActiveIndex = activeIndex === suggestions.length - 1;
+    const isLastActiveIndex = activeIndex >= suggestions.length - 1;
     switch (e.keyCode) {
       case KEY_CODE.up:
         e.preventDefault();
