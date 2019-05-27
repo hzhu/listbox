@@ -2,32 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { KEY_CODE, COMBO_INPUT_KEYS } from "../../src/constants";
 import { FRUITS_AND_VEGGIES } from "../constants";
 import { Listbox, Option, OptionsList } from "../../src";
-
-const usePartialEmphasis = (query, string) => {
-  let emphasized = "";
-  let rest = "";
-  if (string.toLowerCase().startsWith(query.toLowerCase())) {
-    for (let i = 0; i < string.length; i++) {
-      const char = string[i];
-      if (i < query.length) {
-        emphasized += char;
-      } else {
-        rest += char;
-      }
-    }
-  }
-  return { emphasized, rest };
-};
-
-const PartialEmphasis = ({ query, children }) => {
-  const { emphasized, rest } = usePartialEmphasis(query, children);
-  return (
-    <>
-      <span style={{ fontWeight: "bold" }}>{emphasized}</span>
-      <span>{rest}</span>
-    </>
-  );
-};
+import { TextEmphasis } from "../utils";
 
 const listboxStyles = {
   width: "200px",
@@ -161,7 +136,12 @@ export default () => {
                   key={fruit}
                   onMouseEnter={index => setHighlightIndex(index)}
                 >
-                  <PartialEmphasis query={searchQuery}>{fruit}</PartialEmphasis>
+                  <TextEmphasis
+                    query={searchQuery}
+                    style={{ fontWeight: "bold" }}
+                  >
+                    {fruit}
+                  </TextEmphasis>
                 </Option>
               ))}
             </OptionsList>

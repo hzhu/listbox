@@ -2,46 +2,7 @@ import React, { useState, useEffect } from "react";
 import { KEY_CODE, COMBO_INPUT_KEYS } from "../../src/constants";
 import { Listbox, Option, OptionsList } from "../../src";
 import { isDescendantListbox } from "../../src/utils";
-
-const usePartialEmphasis = (query, string) => {
-  let emphasized = "";
-  let rest = "";
-  if (string.toLowerCase().startsWith(query.toLowerCase())) {
-    for (let i = 0; i < string.length; i++) {
-      const char = string[i];
-      if (i < query.length) {
-        emphasized += char;
-      } else {
-        rest += char;
-      }
-    }
-  }
-  return { emphasized, rest };
-};
-
-const PartialEmphasis = ({ query, children }) => {
-  const { emphasized, rest } = usePartialEmphasis(query, children);
-
-  return emphasized === "" && rest === "" ? (
-    <span>{children}</span>
-  ) : (
-    <>
-      <span style={{ fontWeight: "bold" }}>{emphasized}</span>
-      <span>{rest}</span>
-    </>
-  );
-};
-
-const visuallyHiddenCSS = {
-  border: 0,
-  clip: "rect(0 0 0 0)",
-  height: "1px",
-  width: "1px",
-  margin: "-1px",
-  padding: 0,
-  overflow: "hidden",
-  position: "absolute"
-};
+import { TextEmphasis, VisuallyHidden } from "../utils";
 
 const fetchSuggestedTerms = async query => {
   const response = await fetch(
@@ -159,9 +120,11 @@ const ShiptComboBox = () => {
       className={`mw6 ba b--light-silver center black-70 br2`}
       style={focusOutline}
     >
-      <label htmlFor="ex1-input" id="ex1-label" style={visuallyHiddenCSS}>
-        Search for products at Shipt
-      </label>
+      <VisuallyHidden>
+        <label htmlFor="ex1-input" id="ex1-label">
+          Search for products at Shipt
+        </label>
+      </VisuallyHidden>
       <div
         role="combobox"
         id="ex1-combobox"
@@ -227,7 +190,12 @@ const ShiptComboBox = () => {
                 key={term}
                 onMouseEnter={index => setHighlightIndex(index)}
               >
-                <PartialEmphasis query={searchQuery}>{term}</PartialEmphasis>
+                <TextEmphasis
+                  query={searchQuery}
+                  style={{ fontWeight: "bold" }}
+                >
+                  {term}
+                </TextEmphasis>
               </Option>
             ))}
           </OptionsList>
