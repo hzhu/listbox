@@ -186,8 +186,9 @@ const ShiptComboBox = () => {
           <OptionsList>
             {suggestions.map(term => (
               <Option
-                className="ph2 pv1"
                 key={term}
+                aria-label={term}
+                className="ph2 pv1"
                 onMouseEnter={index => setHighlightIndex(index)}
               >
                 <TextEmphasis

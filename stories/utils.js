@@ -78,13 +78,13 @@ export const TextEmphasis = ({ query, children, end, ...restProps }) => {
   }
   const { startText, emphasized, endText } = emphasize(query, children);
   return (
-    <span data-testid="visually-shown" aria-label={children}>
+    <>
       {startText}
       <span data-testid="emphasized-text" {...restProps}>
         {emphasized}
       </span>
       {endText}
-    </span>
+    </>
   );
 };
 
