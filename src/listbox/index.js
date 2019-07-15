@@ -6,7 +6,6 @@ import React, {
   createContext
 } from "react";
 import * as PropTypes from "prop-types";
-import "@babel/polyfill";
 import { KEY_CODE, ID_PREFIX } from "../constants";
 import { getNextDomItem, focusElement, getDeepestChild } from "../utils";
 import { useFindTypedItem } from "../hooks";

@@ -1,5 +1,4 @@
 import React, { Component, createRef, createContext } from "react";
-import "@babel/polyfill";
 import { KEY_CODE } from "../constants";
 import { isDescendantListbox } from "../utils";
 
