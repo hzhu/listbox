@@ -1,80 +1,62 @@
-import React, { useState, useEffect } from "react";
+import React, { useReducer, useEffect } from "react";
 import { KEY_CODE, COMBO_INPUT_KEYS } from "../../src/constants";
 import { Listbox, Option, OptionsList } from "../../src";
 import { isDescendantListbox } from "../../src/utils";
 import { TextEmphasis, VisuallyHidden } from "../utils";
 import { fetchPopularTerms, fetchSuggestedTerms } from "./api";
+import comboBoxReducer, { initialState } from "./reducer";
+import * as types from "./actionTypes";
 
 const ShiptComboBox = () => {
-  const [activeId, setActiveId] = useState();
-  const [activeIndex, setActiveIndex] = useState();
-  const [expanded, setExpanded] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [highlightIndex, setHighlightIndex] = useState();
-  const [suggestions, setSuggestions] = useState([]);
+  const [state, dispatch] = useReducer(comboBoxReducer, initialState);
+  const {
+    query,
+    activeId,
+    expanded,
+    suggestions,
+    activeIndex,
+    highlightIndex
+  } = state;
+
   const onChange = async e => {
-    const { value } = e.target;
-    setSearchQuery(value);
-    const suggestions = await fetchSuggestedTerms(value);
-    setSuggestions(suggestions);
-    setExpanded(true);
+    const { value: query } = e.target;
+    dispatch({ type: types.UPDATE_QUERY, query });
+    const suggestions = await fetchSuggestedTerms(query);
+    dispatch({ type: types.UPDATE_SUGGESTIONS, suggestions });
   };
-  const collapse = () => {
-    setExpanded(false);
-    setActiveId(undefined);
-    setActiveIndex(-1);
-    setHighlightIndex(-1);
-    setSuggestions([]);
-  };
+
   const onKeyDown = e => {
     const key = e.keyCode || e.which
     if (!COMBO_INPUT_KEYS.includes(key)) return;
     if (!expanded) return;
-    const isFirstIndex = activeIndex === 0;
-    const noActiveIndex = activeIndex === undefined;
-    const isLastActiveIndex = activeIndex === suggestions.length - 1;
+    e.preventDefault();
     switch (key) {
       case KEY_CODE.up:
-        e.preventDefault();
-        if (noActiveIndex || isFirstIndex) {
-          setActiveIndex(suggestions.length - 1);
-        } else {
-          setActiveIndex(activeIndex - 1);
-        }
+        dispatch({ type: types.FOCUS_PREVIOUS_OPTION });
         break;
       case KEY_CODE.down:
-        e.preventDefault();
-        if (noActiveIndex || isLastActiveIndex) {
-          setActiveIndex(0);
-        } else {
-          setActiveIndex(activeIndex + 1);
-        }
+        dispatch({ type: types.FOCUS_NEXT_OPTION });
         break;
       case KEY_CODE.left:
       case KEY_CODE.right:
-        setActiveIndex(-1);
+        dispatch({ type: types.CLEAR_OPTION });
         break;
       case KEY_CODE.esc:
-        setSearchQuery("");
-        collapse();
-        break;
       case KEY_CODE.tab:
-        collapse();
+        dispatch({ type: types.COLLAPSE_LIST });
         break;
       case KEY_CODE.return:
-        if (activeIndex >= 0) {
-          setSearchQuery(suggestions[activeIndex]);
-          collapse();
-        }
+        dispatch({ type: types.SELECT_LIST_ITEM });
         break;
       default:
-        console.log("default");
+        throw new Error("unsupported combobox key");
     }
   };
+
   useEffect(() => {
     const handleExpanded = e => {
       if (isDescendantListbox(e.target) === false) {
-        collapse();
+        dispatch({ type: types.COLLAPSE_LIST });
       }
     };
     document.body.addEventListener("click", handleExpanded);
@@ -82,17 +64,15 @@ const ShiptComboBox = () => {
   }, []);
 
   const onFocus = async e => {
-    if (!suggestions.length && !searchQuery) {
+    if (!suggestions.length && !query) {
       fetchPopularTerms()
-        .then(suggestions => {
-          setSuggestions(suggestions)
-          setExpanded(true)
-        })
+        .then(suggestions =>
+          dispatch({ type: types.UPDATE_SUGGESTIONS, suggestions })
+        )
         .catch(error => console.log(error));
     } else {
       const suggestions = await fetchSuggestedTerms(e.target.value);
-      setSuggestions(suggestions);
-      setExpanded(true);
+      dispatch({ type: types.UPDATE_SUGGESTIONS, suggestions });
     }
   };
   const focused = expanded && suggestions.length;
@@ -124,7 +104,7 @@ const ShiptComboBox = () => {
           id="ex1-input"
           className="pl2 w-100 outline-0 bn br2"
           autoComplete="off"
-          value={searchQuery}
+          value={query}
           aria-autocomplete="list"
           aria-controls="ex1-listbox"
           aria-activedescendant={activeId}
@@ -134,15 +114,13 @@ const ShiptComboBox = () => {
         />
         <button
           aria-label={
-            searchQuery
-              ? `Search for ${searchQuery}`
-              : "Search for products on Shipt"
+            query ? `Search for ${query}` : "Search for products on Shipt"
           }
           className={`bn br--right pointer ${focused ? "br0" : "br1"}`}
           style={{ background: shiptGreen, padding: "5px 5px 2px 8px" }}
           onClick={() => {
-            collapse();
-            alert(searchQuery);
+            dispatch({ type: types.COLLAPSE_LIST });
+            alert(query);
           }}
         >
           <span role="img" aria-label="magnifying glass" >🔍</span>
@@ -160,13 +138,10 @@ const ShiptComboBox = () => {
           style={focusOutlineTop}
           className="pointer outline-0 bt b--light-silver"
           highlightIndex={highlightIndex}
-          onAriaSelect={activeId => setActiveId(activeId)}
-          updateValue={({ activeIndex, textContent }) => {
-            setExpanded(false);
-            setActiveIndex(activeIndex);
-            setSearchQuery(textContent);
-            setSuggestions([]);
-          }}
+          onAriaSelect={activeId =>
+            dispatch({ type: types.SET_ACTIVE_ID, activeId })
+          }
+          updateValue={() => dispatch({ type: types.SELECT_LIST_ITEM })}
         >
           <OptionsList>
             {suggestions.map(term => (
@@ -174,12 +149,11 @@ const ShiptComboBox = () => {
                 key={term}
                 aria-label={term}
                 className="ph2 pv1"
-                onMouseEnter={index => setHighlightIndex(index)}
+                onMouseEnter={index =>
+                  dispatch({ type: types.HIGHLIGHT, highlightIndex: index })
+                }
               >
-                <TextEmphasis
-                  query={searchQuery}
-                  style={{ fontWeight: "bold" }}
-                >
+                <TextEmphasis query={query} style={{ fontWeight: "bold" }}>
                   {term}
                 </TextEmphasis>
               </Option>
