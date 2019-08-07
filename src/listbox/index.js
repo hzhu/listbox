@@ -110,7 +110,9 @@ export const Listbox = React.forwardRef((props, ref) => {
 
   useEffect(() => {
     if (controlled) {
-      onAriaSelect(`${ID_PREFIX}0-${activeIndex}`);
+      if (activeIndex > -1) {
+        onAriaSelect(`${ID_PREFIX}0-${activeIndex}`);
+      }
     }
   }, [controlledActiveIndex]);
 
