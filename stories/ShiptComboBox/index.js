@@ -3,20 +3,7 @@ import { KEY_CODE, COMBO_INPUT_KEYS } from "../../src/constants";
 import { Listbox, Option, OptionsList } from "../../src";
 import { isDescendantListbox } from "../../src/utils";
 import { TextEmphasis, VisuallyHidden } from "../utils";
-
-const fetchSuggestedTerms = async query => {
-  const response = await fetch(
-    `https://staging-api.shipt.com/autocomplete/v1/suggestions/${query}?store_id=27`
-  );
-  const data = await response.json();
-  return data.suggestions.map(s => s.term);
-};
-
-const fetchPopularTerms = () => {
-  return fetch(
-    `https://staging-api.shipt.com/autocomplete/v1/suggestions?store_id=27`
-  );
-};
+import { fetchPopularTerms, fetchSuggestedTerms } from "./api";
 
 const ShiptComboBox = () => {
   const [activeId, setActiveId] = useState();
@@ -96,12 +83,9 @@ const ShiptComboBox = () => {
   const onFocus = async e => {
     if (!suggestions.length && !searchQuery) {
       fetchPopularTerms()
-        .then(response => response.json())
-        .then(data => data.suggestions)
-        .then(suggestions => suggestions.map(s => s.term))
-        .then(terms => {
-          setSuggestions(terms);
-          setExpanded(true);
+        .then(suggestions => {
+          setSuggestions(suggestions)
+          setExpanded(true)
         })
         .catch(error => console.log(error));
     } else {
