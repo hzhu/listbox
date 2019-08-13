@@ -157,7 +157,7 @@ const ShiptComboBox = () => {
             background: "rgba(76, 210, 42, 0.25)"
           }}
           style={focusOutlineTop}
-          className={`pointer outline-0 bt b--light-silver`}
+          className="pointer outline-0 bt b--light-silver"
           highlightIndex={highlightIndex}
           onAriaSelect={activeId => setActiveId(activeId)}
           updateValue={({ activeIndex, textContent }) => {

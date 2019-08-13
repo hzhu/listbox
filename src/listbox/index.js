@@ -138,6 +138,7 @@ export const Listbox = React.forwardRef((props, ref) => {
       })
     );
 
+  // See: https://reactjs.org/docs/context.html#caveats
   const context = {
     highlight,
     activeIndex,
