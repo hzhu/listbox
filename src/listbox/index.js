@@ -67,7 +67,8 @@ export const Listbox = React.forwardRef((props, ref) => {
    * @param {Object} e
    */
   const checkKeyPressGrid = e => {
-    if (!LIST_BOX_KEYS.includes(e.keyCode || e.which)) return;
+    const key = e.keyCode || e.which
+    if (!LIST_BOX_KEYS.includes(key)) return;
     e.preventDefault();
     let nextItem;
     const activeNode = document.getElementById(activeId);

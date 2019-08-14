@@ -27,12 +27,13 @@ const ShiptComboBox = () => {
     setSuggestions([]);
   };
   const onKeyDown = e => {
-    if (!COMBO_INPUT_KEYS.includes(e.keyCode)) return;
+    const key = e.keyCode || e.which
+    if (!COMBO_INPUT_KEYS.includes(key)) return;
     if (!expanded) return;
     const isFirstIndex = activeIndex === 0;
     const noActiveIndex = activeIndex === undefined;
     const isLastActiveIndex = activeIndex === suggestions.length - 1;
-    switch (e.keyCode) {
+    switch (key) {
       case KEY_CODE.up:
         e.preventDefault();
         if (noActiveIndex || isFirstIndex) {
