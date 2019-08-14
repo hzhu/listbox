@@ -145,7 +145,7 @@ const ShiptComboBox = () => {
             alert(searchQuery);
           }}
         >
-          🔍
+          <span role="img" aria-label="magnifying glass" >🔍</span>
         </button>
       </div>
       {focused ? (
