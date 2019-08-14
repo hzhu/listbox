@@ -17,11 +17,15 @@ export const KEY_CODE = {
   delete: 46
 };
 
-export const COMBO_INPUT_KEYS = [
+export const LIST_BOX_KEYS = [
   KEY_CODE.up,
   KEY_CODE.down,
   KEY_CODE.left,
-  KEY_CODE.right,
+  KEY_CODE.right
+]
+
+export const COMBO_INPUT_KEYS = [
+  ...LIST_BOX_KEYS,
   KEY_CODE.return,
   KEY_CODE.esc,
   KEY_CODE.tab

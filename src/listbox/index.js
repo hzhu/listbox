@@ -6,7 +6,7 @@ import React, {
   createContext
 } from "react";
 import * as PropTypes from "prop-types";
-import { KEY_CODE, ID_PREFIX } from "../constants";
+import { KEY_CODE, LIST_BOX_KEYS, ID_PREFIX } from "../constants";
 import { getNextDomItem, focusElement, getDeepestChild } from "../utils";
 import { useFindTypedItem } from "../hooks";
 
@@ -67,34 +67,32 @@ export const Listbox = React.forwardRef((props, ref) => {
    * @param {Object} e
    */
   const checkKeyPressGrid = e => {
+    if (!LIST_BOX_KEYS.includes(e.keyCode || e.which)) return;
+    e.preventDefault();
+    let nextItem;
     const activeNode = document.getElementById(activeId);
     const currentCoords = activeNode.id.slice(ID_PREFIX.length).split("-");
-    let nextItem;
     switch (e.which || e.keyCode) {
       case KEY_CODE.left:
-        e.preventDefault();
         nextItem = activeNode.previousElementSibling;
         break;
       case KEY_CODE.right:
-        e.preventDefault();
         nextItem = activeNode.nextElementSibling;
         break;
       case KEY_CODE.up:
-        e.preventDefault();
         currentCoords[0] = Number(currentCoords[0]) - 1;
         var nextCoords = currentCoords.join("-");
         var nextActiveId = ID_PREFIX + nextCoords;
         nextItem = document.getElementById(nextActiveId);
         break;
       case KEY_CODE.down:
-        e.preventDefault();
         currentCoords[0] = Number(currentCoords[0]) + 1;
         var nextCoords = currentCoords.join("-");
         var nextActiveId = ID_PREFIX + nextCoords;
         nextItem = document.getElementById(nextActiveId);
         break;
       default:
-        break;
+        throw new Error("Unsupported listbox key.");
     }
 
     if (nextItem) selectFromElement(nextItem);
