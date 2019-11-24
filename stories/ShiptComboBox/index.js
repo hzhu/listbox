@@ -3,7 +3,7 @@ import { KEY_CODE, COMBO_INPUT_KEYS } from "../../src/constants";
 import { Listbox, Option, OptionsList } from "../../src";
 import { isDescendantListbox } from "../../src/utils";
 import { TextEmphasis, VisuallyHidden } from "../utils";
-import { fetchPopularTerms, fetchSuggestedTerms } from "./api";
+import { fetchSuggestedTerms } from "./api";
 import comboBoxReducer, { initialState } from "./reducer";
 import * as types from "./actionTypes";
 
@@ -26,7 +26,7 @@ const ShiptComboBox = () => {
   };
 
   const onKeyDown = e => {
-    const key = e.keyCode || e.which
+    const key = e.keyCode || e.which;
     if (!COMBO_INPUT_KEYS.includes(key)) return;
     if (!expanded) return;
     e.preventDefault();
@@ -64,16 +64,8 @@ const ShiptComboBox = () => {
   }, []);
 
   const onFocus = async e => {
-    if (!suggestions.length && !query) {
-      fetchPopularTerms()
-        .then(suggestions =>
-          dispatch({ type: types.UPDATE_SUGGESTIONS, suggestions })
-        )
-        .catch(error => console.log(error));
-    } else {
-      const suggestions = await fetchSuggestedTerms(e.target.value);
-      dispatch({ type: types.UPDATE_SUGGESTIONS, suggestions });
-    }
+    const suggestions = await fetchSuggestedTerms(e.target.value);
+    dispatch({ type: types.UPDATE_SUGGESTIONS, suggestions });
   };
   const focused = expanded && suggestions.length;
   const shiptGreen = "#599900";
@@ -123,7 +115,9 @@ const ShiptComboBox = () => {
             alert(query);
           }}
         >
-          <span role="img" aria-label="magnifying glass" >🔍</span>
+          <span role="img" aria-label="magnifying glass">
+            🔍
+          </span>
         </button>
       </div>
       {focused ? (

@@ -1,13 +1,8 @@
-const API_URL = "https://staging-api.shipt.com/autocomplete/v1/suggestions";
-
-export const fetchPopularTerms = async () => {
-  const response = await fetch(`${API_URL}?store_id=27`);
-  const data = await response.json();
-  return data.suggestions.map(s => s.term);
-}
+const API_URL = "http://api.edamam.com/auto-complete";
 
 export const fetchSuggestedTerms = async query => {
-  const response = await fetch(`${API_URL}/${query}?store_id=27`);
-  const data = await response.json();
-  return data.suggestions.map(s => s.term);
+  const response = await fetch(
+    `${API_URL}?q=${query}&limit=5&app_id=6a515083&app_key=9abc6f025da04139635498403e733c70`
+  );
+  return await response.json();
 };
