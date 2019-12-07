@@ -41,11 +41,11 @@ export const Listbox = React.forwardRef((props, ref) => {
     const index = Number(dataset.index);
     selectOption(index, id, textContent);
   };
-  const selectOption = (index, id, textContent) => {
+  const selectOption = (index, id, selectedItem) => {
     updateValue({
       activeId: id,
       activeIndex: index,
-      textContent
+      selectedItem
     });
     if (!controlled) {
       setActiveId(id);
@@ -67,7 +67,7 @@ export const Listbox = React.forwardRef((props, ref) => {
    * @param {Object} e
    */
   const checkKeyPressGrid = e => {
-    const key = e.keyCode || e.which
+    const key = e.keyCode || e.which;
     if (!LIST_BOX_KEYS.includes(key)) return;
     e.preventDefault();
     let nextItem;
