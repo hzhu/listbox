@@ -1,4 +1,4 @@
-const API_URL = "http://api.edamam.com/auto-complete";
+const API_URL = "https://api.edamam.com/auto-complete";
 
 export const fetchSuggestedTerms = async query => {
   const response = await fetch(
