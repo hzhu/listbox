@@ -10,7 +10,14 @@ import { KEY_CODE, LIST_BOX_KEYS, ID_PREFIX } from "../constants";
 import { getNextDomItem, focusElement, getDeepestChild } from "../utils";
 import { useFindTypedItem } from "../hooks";
 
+
 const ListboxContext = createContext();
+
+const useListboxContext = () => {
+  const context = createContext(ListboxContext)
+
+  return useContext(context)
+}
 
 export const Listbox = React.forwardRef((props, ref) => {
   let {
@@ -36,10 +43,16 @@ export const Listbox = React.forwardRef((props, ref) => {
   const highlightIndex = controlled
     ? controlledHighlightIndex
     : _highlightIndex;
+  const descendantsRef = useRef([])
+  const domNodesRef = useRef([])
   const selectFromElement = element => {
     const { id, dataset, textContent } = element;
     const index = Number(dataset.index);
-    selectOption(index, id, textContent);
+
+
+    if (textContent === descendantsRef.current[index]) {
+      selectOption(index, id, textContent);
+    }
   };
   const selectOption = (index, id, selectedItem) => {
     updateValue({
@@ -56,9 +69,10 @@ export const Listbox = React.forwardRef((props, ref) => {
   const findTypedInDomNodes = useFindTypedItem();
   const checkKeyPress = event => {
     const activeNode = document.getElementById(activeId);
-    const nextItem = getNextDomItem({ event, activeNode, findTypedInDomNodes });
+    const nextItem = getNextDomItem({ activeIndex, event, activeNode, findTypedInDomNodes, domNodes: domNodesRef.current });
+    console.log(nextItem)
     if (nextItem) {
-      focusElement(nextItem, event.target);
+      focusElement(nextItem, event.target); // moves item physically
       selectFromElement(nextItem);
     }
   };
@@ -117,24 +131,32 @@ export const Listbox = React.forwardRef((props, ref) => {
 
   let index = 0;
   const clonedChildren = React.Children.toArray(children)
-    .filter(child => typeof child.type === "function")
-    .map((OptionsList, row) =>
-      React.cloneElement(OptionsList, {
-        children: React.Children.map(
-          OptionsList.props.children,
-          (Option, col) => {
-            const { value } = Option.props;
-            const optionIndex = index;
-            index++;
-            const id = `${ID_PREFIX}${row}-${col}`;
-            return React.cloneElement(Option, {
-              id,
-              index: optionIndex,
-              textContent: value ? value : getDeepestChild(Option)
-            });
-          }
-        )
-      })
+    // .filter(child => {
+    //   console.log(child.type.displayName, '<--child')
+    //   return typeof child.type === "function"
+    // })
+    .map((OptionsList, row) => {
+      if (OptionsList.type.displayName === 'OptionsList') {
+        return React.cloneElement(OptionsList, {
+          children: React.Children.map(
+            OptionsList.props.children,
+            (Option, col) => {
+              const { value } = Option.props;
+              const optionIndex = index;
+              index++;
+              const id = `${ID_PREFIX}${row}-${col}`;
+              return React.cloneElement(Option, {
+                id,
+                index: optionIndex,
+                textContent: value ? value : getDeepestChild(Option)
+              });
+            }
+          )
+        })
+      } else {
+        return OptionsList
+      }
+    }
     );
 
   // See: https://reactjs.org/docs/context.html#caveats
@@ -144,7 +166,13 @@ export const Listbox = React.forwardRef((props, ref) => {
     activeStyles,
     selectOption,
     highlightIndex,
-    setHighlightIndex
+    setHighlightIndex,
+    descendants: descendantsRef.current,
+    domNodes: domNodesRef.current,
+    registerDescendant: (child, node) => {
+      descendantsRef.current.push(child)
+      domNodesRef.current.push(node)
+    }
   };
 
   return (
@@ -195,10 +223,10 @@ Listbox.defaultProps = {
   grid: false,
   highlight: false,
   id: "",
-  onAriaSelect: () => {},
-  onKeyDown: () => {},
+  onAriaSelect: () => { },
+  onKeyDown: () => { },
   style: {},
-  updateValue: () => {}
+  updateValue: () => { }
 };
 
 export const OptionsList = ({ children, ...restProps }) => (
@@ -223,8 +251,16 @@ export const Option = React.forwardRef((props, ref) => {
     activeStyles,
     selectOption,
     highlightIndex,
-    setHighlightIndex
+    setHighlightIndex,
+    registerDescendant
   } = useContext(ListboxContext);
+
+  const optionRef = React.useRef()
+
+  useEffect(() => {
+    registerDescendant(value ? value : children, optionRef.current)
+  }, [])
+
 
   const isSelected = index === activeIndex;
   const isHighlighted = index === highlightIndex;
@@ -232,15 +268,17 @@ export const Option = React.forwardRef((props, ref) => {
 
   return (
     <div
+      ref={optionRef}
       id={id}
       role="option"
       data-index={index}
-      onClick={() => selectOption(index, id, textContent)}
+      onClick={() => {
+        return selectOption(index, id, textContent)
+      }}
       onMouseEnter={() => {
         if (highlight) setHighlightIndex(index);
         onMouseEnter(index, id);
       }}
-      ref={isSelected ? ref : null}
       aria-selected={isSelected || undefined}
       style={{ ...style, ...activeStyles }}
       {...restProps}
@@ -257,5 +295,5 @@ Option.propTypes = {
 
 Option.defaultProps = {
   className: "",
-  onMouseEnter: () => {}
+  onMouseEnter: () => { }
 };

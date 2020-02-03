@@ -34,7 +34,8 @@ export const focusElement = (element, container) => {
 // vertical listbox) should navigate the user to the previous and next DOM
 // nodes respectively. When a user presses an alpha-numeric key, this function
 // should return the (text) node that starts with the typed character(s).
-export const getNextDomItem = ({ event, activeNode, findTypedInDomNodes }) => {
+export const getNextDomItem = ({ event, activeNode, findTypedInDomNodes, domNodes, activeIndex }) => {
+  console.log(activeIndex, '<----')
   let nextItem;
   switch (event.which) {
     // When a user presses ArrowUp or ArrowDown, we want to return the next element.
@@ -44,9 +45,11 @@ export const getNextDomItem = ({ event, activeNode, findTypedInDomNodes }) => {
     case KEY_CODE.down:
       event.preventDefault();
       if (event.which === KEY_CODE.up) {
-        nextItem = activeNode.previousElementSibling;
+        nextItem = document.querySelector(`div[data-index="${activeIndex - 1}"]`);
+        // nextItem = activeNode.previousElementSibling;
       } else {
-        nextItem = activeNode.nextElementSibling;
+        // nextItem = activeNode.nextElementSibling;
+        nextItem = document.querySelector(`div[data-index="${activeIndex + 1}"]`);
       }
       break;
     default: {
@@ -54,7 +57,6 @@ export const getNextDomItem = ({ event, activeNode, findTypedInDomNodes }) => {
       // is filtered with the typed characters to find the next item. E.g. if we
       // had three text elements: ford, toyota, tesla, and the user types "te",
       // then next item will be "tesla". So the node that contains "tesla" is returned.
-      const domNodes = [...event.target.children[0].children];
       nextItem = findTypedInDomNodes(event.which, domNodes);
     }
   }
