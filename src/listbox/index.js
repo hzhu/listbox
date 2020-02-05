@@ -41,26 +41,67 @@ export const Listbox = React.forwardRef((props, ref) => {
     const index = Number(dataset.index);
     selectOption(index, id, textContent);
   };
-  const selectOption = (index, id, selectedItem) => {
-    updateValue({
-      activeId: id,
-      activeIndex: index,
-      selectedItem
-    });
+  const selectOption = (activeIndex, activeId, textContent) => {
+    updateValue({ activeId, activeIndex, textContent });
     if (!controlled) {
-      setActiveId(id);
-      setActiveIndex(index);
+      setActiveId(activeId);
+      setActiveIndex(activeIndex);
     }
   };
   const listboxRef = useRef();
   const findTypedInDomNodes = useFindTypedItem();
   const checkKeyPress = event => {
+    event.preventDefault()
+
+    let nextActiveId;
+    let nextActiveIndex;
+    let nextTextContent;
+
     const activeNode = document.getElementById(activeId);
-    const nextItem = getNextDomItem({ event, activeNode, findTypedInDomNodes });
-    if (nextItem) {
-      focusElement(nextItem, event.target);
-      selectFromElement(nextItem);
+    if (event.key === 'ArrowDown') {
+      const el = document.querySelector(`div[data-index="${activeIndex + 1}"]`);
+      el && focusElement(el, event.target)
+      setActiveIndex(activeIndex + 1)
+      setActiveId(`${ID_PREFIX}0-${activeIndex + 1}`)
+
+      nextActiveId = `${ID_PREFIX}0-${activeIndex + 1}`
+      nextActiveIndex = activeIndex + 1
+      nextTextContent = el.textContent
+    } else if (event.key === 'ArrowUp') {
+      const el = document.querySelector(`div[data-index="${activeIndex - 1}"]`);
+      el && focusElement(el, event.target)
+      setActiveIndex(activeIndex - 1)
+      setActiveId(`${ID_PREFIX}0-${activeIndex - 1}`)
+
+      nextActiveId = `${ID_PREFIX}0-${activeIndex - 1}`
+      nextActiveIndex = activeIndex - 1
+      nextTextContent = el.textContent
+    } else {
+      const domNodes = [...event.target.children[0].children];
+      nextActiveIndex = findTypedInDomNodes(event.which, domNodes);
+      const el = document.querySelector(`div[data-index="${nextActiveIndex}"]`);
+      if (nextActiveIndex > -1) {
+        el && focusElement(el, event.target)
+        setActiveIndex(nextActiveIndex)
+        setActiveId(`${ID_PREFIX}0-${nextActiveIndex}`)
+      }
     }
+
+    const selectedItem = document.querySelector(`div[data-index="${nextActiveIndex}"]`).textContent
+
+    nextActiveId = `${ID_PREFIX}0-${nextActiveIndex}`
+    nextTextContent = selectedItem
+
+    setActiveIndex(nextActiveIndex)
+    if (nextActiveId > -1) {
+      setActiveId(nextActiveIndex)
+    }
+
+    updateValue({
+      activeId: nextActiveId,
+      activeIndex: nextActiveIndex,
+      textContent: nextTextContent
+    })
   };
   /**
    * Handles setting the next active option in a grid based listbox.
